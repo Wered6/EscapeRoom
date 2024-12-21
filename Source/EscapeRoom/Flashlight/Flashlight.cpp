@@ -19,17 +19,17 @@ AFlashlight::AFlashlight()
 	FlashlightMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	PickUpSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AreaSphere"));
-	PickUpSphere->SetupAttachment(RootComponent);
-	PickUpSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	PickUpSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	PickUpSphere->InitSphereRadius(100.f);
+	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
+	PickupSphere->SetupAttachment(RootComponent);
+	PickupSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PickupSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PickupSphere->InitSphereRadius(100.f);
 
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
 
 	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
-	SceneCapture->SetupAttachment(PickUpSphere);
+	SceneCapture->SetupAttachment(PickupSphere);
 	SceneCapture->FOVAngle = 30.f;
 	SceneCapture->CaptureSource = SCS_FinalColorLDR;
 
@@ -57,20 +57,32 @@ void AFlashlight::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s|PP_Mask is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!SceneCapture)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|SceneCapture is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PickupSphere)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PickupSphere is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	// Apply the PostProcessMaterial dynamically
 	SceneCapture->PostProcessSettings.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, PostProcessMask));
 
-	SetUltraVioletColor(EUltraVioletColor::EVC_Blue);
-
 	Super::BeginPlay();
+
+	PickupSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	PickupSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	PickupSphere->OnComponentBeginOverlap.AddDynamic(this, &AFlashlight::OnSphereOverlap);
+	PickupSphere->OnComponentEndOverlap.AddDynamic(this, &AFlashlight::OnSphereEndOverlap);
 
 	PickupWidget->SetVisibility(false);
 
 	// TODO try to set decals to full invisible
-	// todo why red is working
-	// TODO we don't generate overlap events
+	// TODO using metal isn't good, find something else
 }
 
 void AFlashlight::Tick(float DeltaTime)
@@ -78,43 +90,23 @@ void AFlashlight::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
+void AFlashlight::SwitchToNextColor()
 {
-	// Modify the material parameters at runtime
-	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(PostProcessMask, this)};
-
-#pragma region Nullchecks
-	if (!DynamicMaterial)
+	switch (CurrentColor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	float UltraVioletValue{0.f};
-	switch (UltraVioletColor)
-	{
+	case EUltraVioletColor::EVC_White:
+		SetUltraVioletColor(EUltraVioletColor::EVC_Red);
+		break;
 	case EUltraVioletColor::EVC_Red:
-		UltraVioletValue = 0.03f;
-		SpotLight->SetLightColor(FlashLightColorRed.BaseLight);
-		SpotLightGlow->SetLightColor(FlashLightColorRed.GlowLight);
+		SetUltraVioletColor(EUltraVioletColor::EVC_White);
 		break;
 	case EUltraVioletColor::EVC_Blue:
-		UltraVioletValue = 0.04f;
-		SpotLight->SetLightColor(FlashLightColorBlue.BaseLight);
-		SpotLightGlow->SetLightColor(FlashLightColorBlue.GlowLight);
+		SetUltraVioletColor(EUltraVioletColor::EVC_Green);
 		break;
 	case EUltraVioletColor::EVC_Green:
-		UltraVioletValue = 0.05f;
-		SpotLight->SetLightColor(FlashLightColorGreen.BaseLight);
-		SpotLightGlow->SetLightColor(FlashLightColorGreen.GlowLight);
+		SetUltraVioletColor(EUltraVioletColor::EVC_White);
 		break;
 	}
-
-	DynamicMaterial->SetScalarParameterValue(FName("UltraViolet"), UltraVioletValue);
-
-	// Update the postprocess settings with the dynamic material
-	SceneCapture->PostProcessSettings.WeightedBlendables.Array[0] = FWeightedBlendable(1.f, DynamicMaterial);
 }
 
 void AFlashlight::ShowPickupWidget(const bool bShowWidget) const
@@ -161,4 +153,52 @@ void AFlashlight::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
 	{
 		Character->SetOverlappingFlashlight(nullptr);
 	}
+}
+
+void AFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
+{
+	// Modify the material parameters at runtime
+	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(PostProcessMask, this)};
+
+#pragma region Nullchecks
+	if (!DynamicMaterial)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	float UltraVioletValue{0.f};
+	switch (UltraVioletColor)
+	{
+	case EUltraVioletColor::EVC_White:
+		UltraVioletValue = 0.f;
+		SpotLight->SetLightColor(FLinearColor(FColor::White));
+		SpotLightGlow->SetLightColor(FLinearColor(FColor::White));
+		CurrentColor = EUltraVioletColor::EVC_White;
+		break;
+	case EUltraVioletColor::EVC_Red:
+		UltraVioletValue = 0.03f;
+		SpotLight->SetLightColor(FlashLightColorRed.BaseLight);
+		SpotLightGlow->SetLightColor(FlashLightColorRed.GlowLight);
+		CurrentColor = EUltraVioletColor::EVC_Red;
+		break;
+	case EUltraVioletColor::EVC_Blue:
+		UltraVioletValue = 0.04f;
+		SpotLight->SetLightColor(FlashLightColorBlue.BaseLight);
+		SpotLightGlow->SetLightColor(FlashLightColorBlue.GlowLight);
+		CurrentColor = EUltraVioletColor::EVC_Blue;
+		break;
+	case EUltraVioletColor::EVC_Green:
+		UltraVioletValue = 0.05f;
+		SpotLight->SetLightColor(FlashLightColorGreen.BaseLight);
+		SpotLightGlow->SetLightColor(FlashLightColorGreen.GlowLight);
+		CurrentColor = EUltraVioletColor::EVC_Green;
+		break;
+	}
+
+	DynamicMaterial->SetScalarParameterValue(FName("UltraViolet"), UltraVioletValue);
+
+	// Update the postprocess settings with the dynamic material
+	SceneCapture->PostProcessSettings.WeightedBlendables.Array[0] = FWeightedBlendable(1.f, DynamicMaterial);
 }

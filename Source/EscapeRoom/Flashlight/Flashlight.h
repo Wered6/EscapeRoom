@@ -13,6 +13,7 @@ class USphereComponent;
 UENUM(BlueprintType)
 enum class EUltraVioletColor : uint8
 {
+	EVC_White UMETA(DisplayName = "White"),
 	EVC_Red UMETA(DisplayName = "Red"),
 	EVC_Blue UMETA(DisplayName = "Blue"),
 	EVC_Green UMETA(DisplayName = "Green")
@@ -44,8 +45,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
+	void SwitchToNextColor();
 
 	void ShowPickupWidget(const bool bShowWidget) const;
 
@@ -53,17 +53,17 @@ public:
 
 	FORCEINLINE USphereComponent* GetPickUpSphere() const
 	{
-		return PickUpSphere;
+		return PickupSphere;
 	}
 
 protected:
 	UFUNCTION()
-	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
-	                             AActor* OtherActor,
-	                             UPrimitiveComponent* OtherComp,
-	                             int32 OtherBodyIndex,
-	                             bool bFromSweep,
-	                             const FHitResult& SweepResult);
+	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
+	                     AActor* OtherActor,
+	                     UPrimitiveComponent* OtherComp,
+	                     int32 OtherBodyIndex,
+	                     bool bFromSweep,
+	                     const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
@@ -72,11 +72,14 @@ protected:
 	                        int32 OtherBodyIndex);
 
 private:
+	UFUNCTION(BlueprintCallable)
+	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
+
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UStaticMeshComponent> FlashlightMesh;
 
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USphereComponent> PickUpSphere;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USphereComponent> PickupSphere;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UWidgetComponent> PickupWidget;
@@ -99,6 +102,9 @@ private:
 	FFlashLightColors FlashLightColorBlue{};
 	UPROPERTY(EditDefaultsOnly)
 	FFlashLightColors FlashLightColorGreen{};
+
+	UPROPERTY(VisibleAnywhere)
+	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_White};
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsEquipped{};

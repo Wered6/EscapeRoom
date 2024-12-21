@@ -45,7 +45,6 @@ void AERCharacter::Tick(float DeltaTime)
 
 void AERCharacter::SetOverlappingFlashlight(AFlashlight* Flashlight)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Change Overlapping flashlight"))
 	// If already overlaps some flashlight, turn off their pickup widget
 	if (OverlappingFlashlight)
 	{
@@ -185,9 +184,17 @@ void AERCharacter::EquipButtonPressed()
 		return;
 	}
 
+#pragma region Nullchecks
+	if (!Mesh1P)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Mesh1P is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
 	EquippedFlashlight = OverlappingFlashlight;
 	EquippedFlashlight->SetIsEquipped();
-	const USkeletalMeshSocket* HandSocket{GetMesh()->GetSocketByName(FName("RightHandSocket"))};
+	const USkeletalMeshSocket* HandSocket{Mesh1P->GetSocketByName(FName("RightHandSocket"))};
 
 #pragma region Nullchecks
 	if (!HandSocket)
@@ -197,7 +204,7 @@ void AERCharacter::EquipButtonPressed()
 	}
 #pragma endregion
 
-	HandSocket->AttachActor(EquippedFlashlight, GetMesh());
+	HandSocket->AttachActor(EquippedFlashlight, Mesh1P);
 	EquippedFlashlight->SetOwner(this);
 	EquippedFlashlight->ShowPickupWidget(false);
 	EquippedFlashlight->GetPickUpSphere()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
