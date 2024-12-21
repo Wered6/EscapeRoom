@@ -24,9 +24,9 @@ struct FFlashLightColors
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	FLinearColor BaseLight;
+	FLinearColor BaseLight{};
 	UPROPERTY(EditDefaultsOnly)
-	FLinearColor GlowLight;
+	FLinearColor GlowLight{};
 };
 
 UCLASS()
@@ -48,6 +48,28 @@ public:
 	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
 
 	void ShowPickupWidget(const bool bShowWidget) const;
+
+	void SetIsEquipped();
+
+	FORCEINLINE USphereComponent* GetPickUpSphere() const
+	{
+		return PickUpSphere;
+	}
+
+protected:
+	UFUNCTION()
+	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
+	                             AActor* OtherActor,
+	                             UPrimitiveComponent* OtherComp,
+	                             int32 OtherBodyIndex,
+	                             bool bFromSweep,
+	                             const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
+	                        AActor* OtherActor,
+	                        UPrimitiveComponent* OtherComp,
+	                        int32 OtherBodyIndex);
 
 private:
 	UPROPERTY(EditDefaultsOnly)
@@ -72,9 +94,12 @@ private:
 	TObjectPtr<UMaterialInstance> PostProcessMask;
 
 	UPROPERTY(EditDefaultsOnly)
-	FFlashLightColors FlashLightColorRed;
+	FFlashLightColors FlashLightColorRed{};
 	UPROPERTY(EditDefaultsOnly)
-	FFlashLightColors FlashLightColorBlue;
+	FFlashLightColors FlashLightColorBlue{};
 	UPROPERTY(EditDefaultsOnly)
-	FFlashLightColors FlashLightColorGreen;
+	FFlashLightColors FlashLightColorGreen{};
+
+	UPROPERTY(VisibleAnywhere)
+	bool bIsEquipped{};
 };

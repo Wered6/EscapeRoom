@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "Components/WidgetComponent.h"
+#include "EscapeRoom/Character/ERCharacter.h"
 
 AFlashlight::AFlashlight()
 {
@@ -22,6 +23,7 @@ AFlashlight::AFlashlight()
 	PickUpSphere->SetupAttachment(RootComponent);
 	PickUpSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PickUpSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PickUpSphere->InitSphereRadius(100.f);
 
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
@@ -48,6 +50,7 @@ AFlashlight::AFlashlight()
 
 void AFlashlight::BeginPlay()
 {
+	// code is before Super::BeginPlay because it has to be called before blueprint's BeginPlay
 #pragma region Nullchecks
 	if (!PostProcessMask)
 	{
@@ -62,8 +65,12 @@ void AFlashlight::BeginPlay()
 	SetUltraVioletColor(EUltraVioletColor::EVC_Blue);
 
 	Super::BeginPlay();
-	// todo try to set decals to full invisible
+
+	PickupWidget->SetVisibility(false);
+
+	// TODO try to set decals to full invisible
 	// todo why red is working
+	// TODO we don't generate overlap events
 }
 
 void AFlashlight::Tick(float DeltaTime)
@@ -121,4 +128,37 @@ void AFlashlight::ShowPickupWidget(const bool bShowWidget) const
 #pragma endregion
 
 	PickupWidget->SetVisibility(bShowWidget);
+}
+
+void AFlashlight::SetIsEquipped()
+{
+	bIsEquipped = true;
+
+	ShowPickupWidget(false);
+}
+
+void AFlashlight::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
+                                  AActor* OtherActor,
+                                  UPrimitiveComponent* OtherComp,
+                                  int32 OtherBodyIndex,
+                                  bool bFromSweep,
+                                  const FHitResult& SweepResult)
+{
+	AERCharacter* Character{Cast<AERCharacter>(OtherActor)};
+	if (Character)
+	{
+		Character->SetOverlappingFlashlight(this);
+	}
+}
+
+void AFlashlight::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
+                                     AActor* OtherActor,
+                                     UPrimitiveComponent* OtherComp,
+                                     int32 OtherBodyIndex)
+{
+	AERCharacter* Character{Cast<AERCharacter>(OtherActor)};
+	if (Character)
+	{
+		Character->SetOverlappingFlashlight(nullptr);
+	}
 }
