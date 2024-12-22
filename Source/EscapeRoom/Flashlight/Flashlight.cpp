@@ -98,7 +98,7 @@ void AFlashlight::SwitchToNextColor()
 		SetUltraVioletColor(EUltraVioletColor::EVC_Red);
 		break;
 	case EUltraVioletColor::EVC_Red:
-		SetUltraVioletColor(EUltraVioletColor::EVC_White);
+		SetUltraVioletColor(EUltraVioletColor::EVC_Blue);
 		break;
 	case EUltraVioletColor::EVC_Blue:
 		SetUltraVioletColor(EUltraVioletColor::EVC_Green);

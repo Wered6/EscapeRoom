@@ -117,6 +117,11 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		UE_LOG(LogTemp, Warning, TEXT("%s|EquipAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!FlashlightAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|FlashlightAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -140,6 +145,9 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// Equip
 	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &AERCharacter::EquipButtonPressed);
+
+	// Flashlight
+	EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Started, this, &AERCharacter::FlashlightButtonPressed);
 }
 
 void AERCharacter::Move(const FInputActionValue& Value)
@@ -208,4 +216,15 @@ void AERCharacter::EquipButtonPressed()
 	EquippedFlashlight->SetOwner(this);
 	EquippedFlashlight->ShowPickupWidget(false);
 	EquippedFlashlight->GetPickUpSphere()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AERCharacter::FlashlightButtonPressed()
+{
+	if (!EquippedFlashlight)
+	{
+		return;
+	}
+
+	EquippedFlashlight->SwitchToNextColor();
 }

@@ -72,6 +72,9 @@ protected:
 	/** Called for equip input */
 	void EquipButtonPressed();
 
+	/** Called for flashlight input */
+	void FlashlightButtonPressed();
+
 private:
 	/** MappingContext */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
@@ -88,6 +91,10 @@ private:
 	/** Equip Input Action */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UInputAction> EquipAction;
+
+	/** Flashlight Input Action */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UInputAction> FlashlightAction;
 
 #pragma endregion
 };
