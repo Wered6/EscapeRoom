@@ -13,10 +13,11 @@ class USphereComponent;
 UENUM(BlueprintType)
 enum class EUltraVioletColor : uint8
 {
-	EVC_White UMETA(DisplayName = "White"),
-	EVC_Red UMETA(DisplayName = "Red"),
-	EVC_Blue UMETA(DisplayName = "Blue"),
-	EVC_Green UMETA(DisplayName = "Green")
+	EVC_Off UMETA(DisplayName = "OFF"),
+	EVC_White UMETA(DisplayName = "WHITE"),
+	EVC_Red UMETA(DisplayName = "RED"),
+	EVC_Blue UMETA(DisplayName = "BLUE"),
+	EVC_Green UMETA(DisplayName = "GREEN")
 };
 
 USTRUCT(BlueprintType)
@@ -104,7 +105,7 @@ private:
 	FFlashLightColors FlashLightColorGreen{};
 
 	UPROPERTY(VisibleAnywhere)
-	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_White};
+	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_Off};
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsEquipped{};

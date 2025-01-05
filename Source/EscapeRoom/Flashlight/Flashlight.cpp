@@ -37,11 +37,13 @@ AFlashlight::AFlashlight()
 	SpotLight->SetupAttachment(SceneCapture);
 	SpotLight->Intensity = 100000.f;
 	SpotLight->IntensityUnits = ELightUnits::Unitless;
+	SpotLight->SetVisibility(false);
 
 	SpotLightGlow = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightGlow"));
 	SpotLightGlow->SetupAttachment(SceneCapture);
 	SpotLightGlow->Intensity = 100000.f;
 	SpotLightGlow->IntensityUnits = ELightUnits::Unitless;
+	SpotLightGlow->SetVisibility(false);
 
 	const float FOVSceneCapture{SceneCapture->FOVAngle};
 	SpotLight->SetOuterConeAngle(FOVSceneCapture / 2);
@@ -83,6 +85,7 @@ void AFlashlight::BeginPlay()
 
 	// TODO try to set decals to full invisible
 	// TODO using metal isn't good, find something else
+	// TODO try combine translucent hole mask in M_Sign
 }
 
 void AFlashlight::Tick(float DeltaTime)
@@ -94,17 +97,20 @@ void AFlashlight::SwitchToNextColor()
 {
 	switch (CurrentColor)
 	{
+	case EUltraVioletColor::EVC_Off:
+		SetUltraVioletColor(EUltraVioletColor::EVC_White);
+		break;
 	case EUltraVioletColor::EVC_White:
 		SetUltraVioletColor(EUltraVioletColor::EVC_Red);
 		break;
 	case EUltraVioletColor::EVC_Red:
-		SetUltraVioletColor(EUltraVioletColor::EVC_Blue);
-		break;
-	case EUltraVioletColor::EVC_Blue:
 		SetUltraVioletColor(EUltraVioletColor::EVC_Green);
 		break;
 	case EUltraVioletColor::EVC_Green:
-		SetUltraVioletColor(EUltraVioletColor::EVC_White);
+		SetUltraVioletColor(EUltraVioletColor::EVC_Blue);
+		break;
+	case EUltraVioletColor::EVC_Blue:
+		SetUltraVioletColor(EUltraVioletColor::EVC_Off);
 		break;
 	}
 }
@@ -171,7 +177,14 @@ void AFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 	float UltraVioletValue{0.f};
 	switch (UltraVioletColor)
 	{
+	case EUltraVioletColor::EVC_Off:
+		SpotLight->SetVisibility(false);
+		SpotLightGlow->SetVisibility(false);
+		CurrentColor = EUltraVioletColor::EVC_Off;
+		break;
 	case EUltraVioletColor::EVC_White:
+		SpotLight->SetVisibility(true);
+		SpotLightGlow->SetVisibility(true);
 		UltraVioletValue = 0.f;
 		SpotLight->SetLightColor(FLinearColor(FColor::White));
 		SpotLightGlow->SetLightColor(FLinearColor(FColor::White));
