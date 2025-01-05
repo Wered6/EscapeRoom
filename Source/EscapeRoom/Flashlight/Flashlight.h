@@ -43,19 +43,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void Tick(float DeltaTime) override;
-
-public:
 	void SwitchToNextColor();
 
 	void ShowPickupWidget(const bool bShowWidget) const;
 
 	void SetIsEquipped();
-
-	FORCEINLINE USphereComponent* GetPickUpSphere() const
-	{
-		return PickupSphere;
-	}
 
 protected:
 	UFUNCTION()

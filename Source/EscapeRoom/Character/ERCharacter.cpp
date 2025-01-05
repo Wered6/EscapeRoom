@@ -214,8 +214,6 @@ void AERCharacter::EquipButtonPressed()
 
 	HandSocket->AttachActor(EquippedFlashlight, Mesh1P);
 	EquippedFlashlight->SetOwner(this);
-	EquippedFlashlight->ShowPickupWidget(false);
-	EquippedFlashlight->GetPickUpSphere()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst

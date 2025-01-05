@@ -14,10 +14,11 @@ AFlashlight::AFlashlight()
 
 	FlashlightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlashlightMesh"));
 	SetRootComponent(FlashlightMesh);
-
 	FlashlightMesh->SetCollisionResponseToAllChannels(ECR_Block);
 	FlashlightMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	FlashlightMesh->SetSimulatePhysics(true);
+	FlashlightMesh->SetCastShadow(false);
 
 	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
 	PickupSphere->SetupAttachment(RootComponent);
@@ -76,8 +77,10 @@ void AFlashlight::BeginPlay()
 
 	Super::BeginPlay();
 
+	// TODO: why it cant be moved to constructor?
 	PickupSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	PickupSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	//
 	PickupSphere->OnComponentBeginOverlap.AddDynamic(this, &AFlashlight::OnSphereOverlap);
 	PickupSphere->OnComponentEndOverlap.AddDynamic(this, &AFlashlight::OnSphereEndOverlap);
 
@@ -86,11 +89,6 @@ void AFlashlight::BeginPlay()
 	// TODO try to set decals to full invisible
 	// TODO using metal isn't good, find something else
 	// TODO try combine translucent hole mask in M_Sign
-}
-
-void AFlashlight::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AFlashlight::SwitchToNextColor()
@@ -133,6 +131,9 @@ void AFlashlight::SetIsEquipped()
 	bIsEquipped = true;
 
 	ShowPickupWidget(false);
+	FlashlightMesh->SetSimulatePhysics(false);
+	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PickupSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AFlashlight::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
