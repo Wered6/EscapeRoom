@@ -34,4 +34,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UTexture2D> FlashlightIcon;
+
+	// TODO add key so player knows what to press
 };
