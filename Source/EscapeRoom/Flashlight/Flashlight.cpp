@@ -22,9 +22,10 @@ AFlashlight::AFlashlight()
 
 	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
 	PickupSphere->SetupAttachment(RootComponent);
-	PickupSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	PickupSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PickupSphere->InitSphereRadius(100.f);
+	PickupSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PickupSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	PickupSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
@@ -77,10 +78,6 @@ void AFlashlight::BeginPlay()
 
 	Super::BeginPlay();
 
-	// TODO: why it cant be moved to constructor?
-	PickupSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	PickupSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	//
 	PickupSphere->OnComponentBeginOverlap.AddDynamic(this, &AFlashlight::OnSphereOverlap);
 	PickupSphere->OnComponentEndOverlap.AddDynamic(this, &AFlashlight::OnSphereEndOverlap);
 
@@ -197,17 +194,17 @@ void AFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 		SpotLightGlow->SetLightColor(FlashLightColorRed.GlowLight);
 		CurrentColor = EUltraVioletColor::EVC_Red;
 		break;
-	case EUltraVioletColor::EVC_Blue:
-		UltraVioletValue = 0.04f;
-		SpotLight->SetLightColor(FlashLightColorBlue.BaseLight);
-		SpotLightGlow->SetLightColor(FlashLightColorBlue.GlowLight);
-		CurrentColor = EUltraVioletColor::EVC_Blue;
-		break;
 	case EUltraVioletColor::EVC_Green:
 		UltraVioletValue = 0.05f;
 		SpotLight->SetLightColor(FlashLightColorGreen.BaseLight);
 		SpotLightGlow->SetLightColor(FlashLightColorGreen.GlowLight);
 		CurrentColor = EUltraVioletColor::EVC_Green;
+		break;
+	case EUltraVioletColor::EVC_Blue:
+		UltraVioletValue = 0.04f;
+		SpotLight->SetLightColor(FlashLightColorBlue.BaseLight);
+		SpotLightGlow->SetLightColor(FlashLightColorBlue.GlowLight);
+		CurrentColor = EUltraVioletColor::EVC_Blue;
 		break;
 	}
 

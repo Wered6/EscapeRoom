@@ -16,8 +16,8 @@ enum class EUltraVioletColor : uint8
 	EVC_Off UMETA(DisplayName = "OFF"),
 	EVC_White UMETA(DisplayName = "WHITE"),
 	EVC_Red UMETA(DisplayName = "RED"),
-	EVC_Blue UMETA(DisplayName = "BLUE"),
-	EVC_Green UMETA(DisplayName = "GREEN")
+	EVC_Green UMETA(DisplayName = "GREEN"),
+	EVC_Blue UMETA(DisplayName = "BLUE")
 };
 
 USTRUCT(BlueprintType)
@@ -48,6 +48,11 @@ public:
 	void ShowPickupWidget(const bool bShowWidget) const;
 
 	void SetIsEquipped();
+
+	FORCEINLINE EUltraVioletColor GetCurrentColor() const
+	{
+		return CurrentColor;
+	}
 
 protected:
 	UFUNCTION()

@@ -2,14 +2,13 @@
 
 
 #include "ERCharacter.h"
-
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "EscapeRoom/Flashlight/Flashlight.h"
+#include "EscapeRoom/PlayerController/ERPlayerController.h"
 
 AERCharacter::AERCharacter()
 {
@@ -202,6 +201,19 @@ void AERCharacter::EquipButtonPressed()
 
 	EquippedFlashlight = OverlappingFlashlight;
 	EquippedFlashlight->SetIsEquipped();
+
+	const AERPlayerController* PC{Cast<AERPlayerController>(GetController())};
+
+#pragma region Nullchecks
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	PC->AddToViewportFlashlightWidget();
+
 	const USkeletalMeshSocket* HandSocket{Mesh1P->GetSocketByName(FName("RightHandSocket"))};
 
 #pragma region Nullchecks
@@ -225,4 +237,15 @@ void AERCharacter::FlashlightButtonPressed()
 	}
 
 	EquippedFlashlight->SwitchToNextColor();
+	const AERPlayerController* PC{Cast<AERPlayerController>(GetController())};
+
+#pragma region Nullchecks
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	PC->OutlineUltraVioletColor(EquippedFlashlight->GetCurrentColor());
 }
