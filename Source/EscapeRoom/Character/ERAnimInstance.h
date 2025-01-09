@@ -6,7 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "ERAnimInstance.generated.h"
 
-class AFlashlight;
+class AERFlashlight;
 class AERCharacter;
 
 UCLASS()
@@ -26,6 +26,6 @@ private:
 	bool bHasFlashlight;
 
 	UPROPERTY()
-	TObjectPtr<AFlashlight> EquippedFlashlight;
+	TObjectPtr<AERFlashlight> EquippedFlashlight;
 
 };

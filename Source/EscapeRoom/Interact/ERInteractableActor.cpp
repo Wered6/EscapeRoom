@@ -9,28 +9,30 @@ AERInteractableActor::AERInteractableActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	InteractKeyWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractKeyWidgetComponent"));
-	InteractKeyWidget->SetupAttachment(RootComponent);
-	InteractKeyWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
+	SetRootComponent(RootMesh);
+
+	InteractWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractKeyWidget"));
+	InteractWidget->SetupAttachment(RootMesh);
+	InteractWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	// At start it's hidden because we want to see it only when player is near enough
-	InteractKeyWidget->SetVisibility(false);
+	InteractWidget->SetVisibility(false);
 }
 
 void AERInteractableActor::InteractStart_Implementation(AActor* OtherInstigator)
 {
 	InteractInstigator = OtherInstigator;
-	// TODO highlight outline around object and show widget to interact (preferably E key)
 }
 
 void AERInteractableActor::DisplayInteractionUI_Implementation(const bool bShowInteract)
 {
 #pragma region Nullchecks
-	if (!InteractKeyWidget)
+	if (!InteractWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|InteractKeyWidgetComponent is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	InteractKeyWidget->SetVisibility(bShowInteract);
+	InteractWidget->SetVisibility(bShowInteract);
 }

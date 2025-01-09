@@ -7,7 +7,7 @@
 #include "ERCharacter.generated.h"
 
 struct FInputActionValue;
-class AFlashlight;
+class AERFlashlight;
 class UInputAction;
 class UInputMappingContext;
 class UCameraComponent;
@@ -97,16 +97,16 @@ public:
 		return EquippedFlashlight ? true : false;
 	}
 
-	FORCEINLINE AFlashlight* GetEquippedFlashlight() const
+	FORCEINLINE AERFlashlight* GetEquippedFlashlight() const
 	{
 		return EquippedFlashlight;
 	}
 
-	void EquipFlashlight(AFlashlight* Flashlight);
+	void EquipFlashlight(AERFlashlight* Flashlight);
 
 private:
 	UPROPERTY()
-	TObjectPtr<AFlashlight> EquippedFlashlight;
+	TObjectPtr<AERFlashlight> EquippedFlashlight;
 
 #pragma endregion
 };

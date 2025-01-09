@@ -2,7 +2,10 @@
 
 
 #include "ERKeyItem.h"
-#include "EscapeRoom/Lockers/ERLockItem.h"
+#include "ERUnlockInterface.h"
+#include "EscapeRoom/Items/Interactables/Lockers/ERLockItem.h"
+
+class UERUnlockInterface;
 
 AERKeyItem::AERKeyItem()
 {

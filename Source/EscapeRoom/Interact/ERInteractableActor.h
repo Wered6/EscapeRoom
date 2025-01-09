@@ -21,11 +21,19 @@ public:
 	virtual void DisplayInteractionUI_Implementation(const bool bShowInteract) override;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER")
+	TObjectPtr<UStaticMeshComponent> RootMesh;
+
+	/**
+	 * Pointer to player who can interact with actor
+	 */
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	TObjectPtr<AActor> InteractInstigator;
 
 private:
-	// Widget component for interact key
+	/**
+	 * Widget that shows when we point at interactable actor
+	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
-	TObjectPtr<UWidgetComponent> InteractKeyWidget;
+	TObjectPtr<UWidgetComponent> InteractWidget;
 };

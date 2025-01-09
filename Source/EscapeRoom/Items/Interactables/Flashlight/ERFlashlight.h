@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "EscapeRoom/Interact/ERInteractableActor.h"
 #include "GameFramework/Actor.h"
-#include "Flashlight.generated.h"
+#include "ERFlashlight.generated.h"
 
 class USpotLightComponent;
 class UWidgetComponent;
@@ -34,12 +34,12 @@ struct FFlashLightColors
 
 // TODO Add prefix ER
 UCLASS()
-class ESCAPEROOM_API AFlashlight : public AERInteractableActor
+class ESCAPEROOM_API AERFlashlight : public AERInteractableActor
 {
 	GENERATED_BODY()
 
 public:
-	AFlashlight();
+	AERFlashlight();
 
 protected:
 	virtual void BeginPlay() override;
@@ -61,9 +61,6 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UStaticMeshComponent> FlashlightMesh;
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponent2D> SceneCapture;
 
@@ -76,11 +73,11 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterialInstance> PostProcessMask;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="ER")
 	FFlashLightColors FlashLightColorRed{};
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="ER")
 	FFlashLightColors FlashLightColorBlue{};
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="ER")
 	FFlashLightColors FlashLightColorGreen{};
 
 	UPROPERTY(VisibleAnywhere)

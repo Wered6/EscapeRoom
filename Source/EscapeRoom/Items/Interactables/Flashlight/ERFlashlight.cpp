@@ -1,24 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Flashlight.h"
+#include "ERFlashlight.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/SpotLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 
-AFlashlight::AFlashlight()
+AERFlashlight::AERFlashlight()
 {
-	PrimaryActorTick.bCanEverTick = false;
-
-	FlashlightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlashlightMesh"));
-	SetRootComponent(FlashlightMesh);
-	FlashlightMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	FlashlightMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	FlashlightMesh->SetCastShadow(false);
+	RootMesh->SetCollisionResponseToAllChannels(ECR_Block);
+	RootMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	RootMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	RootMesh->SetCastShadow(false);
 
 	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
-	SceneCapture->SetupAttachment(FlashlightMesh);
+	SceneCapture->SetupAttachment(RootMesh);
 	SceneCapture->FOVAngle = 30.f;
 	SceneCapture->CaptureSource = SCS_FinalColorLDR;
 
@@ -39,7 +35,7 @@ AFlashlight::AFlashlight()
 	SpotLightGlow->SetOuterConeAngle(FOVSceneCapture / 2);
 }
 
-void AFlashlight::BeginPlay()
+void AERFlashlight::BeginPlay()
 {
 	// code is before Super::BeginPlay because it has to be called before blueprint's BeginPlay
 #pragma region Nullchecks
@@ -65,7 +61,7 @@ void AFlashlight::BeginPlay()
 	// TODO try combine translucent hole mask in M_Sign
 }
 
-void AFlashlight::SwitchToNextColor()
+void AERFlashlight::SwitchToNextColor()
 {
 	switch (CurrentColor)
 	{
@@ -87,7 +83,7 @@ void AFlashlight::SwitchToNextColor()
 	}
 }
 
-void AFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
+void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 {
 	Super::InteractStart_Implementation(OtherInstigator);
 
@@ -102,11 +98,11 @@ void AFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 #pragma endregion
 
 	Character->EquipFlashlight(this);
-	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RootMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // TODO try const on UltraVioletColor
-void AFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
+void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 {
 	// Modify the material parameters at runtime
 	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(PostProcessMask, this)};

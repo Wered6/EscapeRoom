@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EscapeRoom/Interact/ERInteractableActor.h"
-#include "EscapeRoom/Keys/ERUnlockInterface.h"
+#include "EscapeRoom/Items/Interactables/Keys/ERUnlockInterface.h"
 #include "GameFramework/Actor.h"
 #include "ERLockItem.generated.h"
 

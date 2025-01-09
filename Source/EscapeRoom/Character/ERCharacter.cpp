@@ -7,8 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
-#include "EscapeRoom/Flashlight/Flashlight.h"
 #include "EscapeRoom/Interact/ERInteractInterface.h"
+#include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 #include "EscapeRoom/PlayerController/ERPlayerController.h"
 
 AERCharacter::AERCharacter()
@@ -277,7 +277,7 @@ void AERCharacter::PerformInteractionCheck()
 	}
 }
 
-void AERCharacter::EquipFlashlight(AFlashlight* Flashlight)
+void AERCharacter::EquipFlashlight(AERFlashlight* Flashlight)
 {
 	EquippedFlashlight = Flashlight;
 	const AERPlayerController* PC{Cast<AERPlayerController>(GetController())};

@@ -3,7 +3,7 @@
 
 #include "FlashlightWidget.h"
 #include "Components/Image.h"
-#include "EscapeRoom/Flashlight/Flashlight.h"
+#include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 
 void UFlashlightWidget::OutlineUltraVioletColor(const EUltraVioletColor UltraVioletColor) const
 {

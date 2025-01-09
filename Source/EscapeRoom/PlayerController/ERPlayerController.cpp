@@ -2,8 +2,8 @@
 
 
 #include "ERPlayerController.h"
-#include "EscapeRoom/Flashlight/Flashlight.h"
 #include "EscapeRoom/HUD/FlashlightWidget.h"
+#include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 
 void AERPlayerController::AddToViewportFlashlightWidget() const
 {
