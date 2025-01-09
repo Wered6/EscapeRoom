@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "EscapeRoom/Flashlight/Flashlight.h"
+#include "EscapeRoom/Interact/ERInteractInterface.h"
 #include "EscapeRoom/PlayerController/ERPlayerController.h"
 
 AERCharacter::AERCharacter()
@@ -32,34 +33,11 @@ AERCharacter::AERCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-4.f, 0.f, -150.f));
 }
 
-void AERCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void AERCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void AERCharacter::SetOverlappingFlashlight(AFlashlight* Flashlight)
-{
-	// If already overlaps some flashlight, turn off their pickup widget
-	if (OverlappingFlashlight)
-	{
-		OverlappingFlashlight->ShowPickupWidget(false);
-	}
-	OverlappingFlashlight = Flashlight;
-	// If there is new flashlight turn on their pickup widget
-	if (OverlappingFlashlight)
-	{
-		OverlappingFlashlight->ShowPickupWidget(true);
-	}
-}
-
 void AERCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
+
+	// TODO try to capture PlayerController here and save it in class instead of functions
 
 	if (!Controller)
 	{
@@ -98,6 +76,13 @@ void AERCharacter::NotifyControllerChanged()
 	Subsystem->AddMappingContext(DefaultMappingContext, 0);
 }
 
+void AERCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	PerformInteractionCheck();
+}
+
 void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 #pragma region Nullchecks
@@ -111,14 +96,14 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		UE_LOG(LogTemp, Warning, TEXT("%s|LookAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!EquipAction)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|EquipAction is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 	if (!FlashlightAction)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|FlashlightAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!InteractAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
@@ -142,11 +127,11 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	// Looking
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AERCharacter::Look);
 
-	// Equip
-	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &AERCharacter::EquipButtonPressed);
-
 	// Flashlight
 	EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Started, this, &AERCharacter::FlashlightButtonPressed);
+
+	// Interact
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AERCharacter::Interact);
 }
 
 void AERCharacter::Move(const FInputActionValue& Value)
@@ -184,50 +169,6 @@ void AERCharacter::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(LookAxisVector.Y);
 }
 
-void AERCharacter::EquipButtonPressed()
-{
-	if (!OverlappingFlashlight)
-	{
-		return;
-	}
-
-#pragma region Nullchecks
-	if (!Mesh1P)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Mesh1P is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	EquippedFlashlight = OverlappingFlashlight;
-	EquippedFlashlight->SetIsEquipped();
-
-	const AERPlayerController* PC{Cast<AERPlayerController>(GetController())};
-
-#pragma region Nullchecks
-	if (!PC)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	PC->AddToViewportFlashlightWidget();
-
-	const USkeletalMeshSocket* HandSocket{Mesh1P->GetSocketByName(FName("RightHandSocket"))};
-
-#pragma region Nullchecks
-	if (!HandSocket)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|HandSocket is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	HandSocket->AttachActor(EquippedFlashlight, Mesh1P);
-	EquippedFlashlight->SetOwner(this);
-}
-
 // ReSharper disable once CppMemberFunctionMayBeConst
 void AERCharacter::FlashlightButtonPressed()
 {
@@ -248,4 +189,124 @@ void AERCharacter::FlashlightButtonPressed()
 #pragma endregion
 
 	PC->OutlineUltraVioletColor(EquippedFlashlight->GetCurrentColor());
+}
+
+void AERCharacter::Interact()
+{
+	// Return if no interactable actor found
+	if (!InteractableActor)
+	{
+		return;
+	}
+
+	// If interactable actor has interact interface fire interact start function
+	if (InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractStart(InteractableActor, this);
+	}
+}
+
+void AERCharacter::PerformInteractionCheck()
+{
+	// Get the player controller
+	const APlayerController* PC{Cast<APlayerController>(GetController())};
+
+#pragma region Nullchecks
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	// Get camera location and direction
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	// Define the start and end points of the line trace
+	const FVector Start{CameraLocation};
+	const FVector End{Start + CameraRotation.Vector() * InteractionDistance};
+
+	// Perform the line trace
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		Start,
+		End,
+		ECC_Visibility
+	);
+
+	// Check if the hit actor implements the interact interface
+	if (HitResult.GetActor())
+	{
+		AActor* HitActor{HitResult.GetActor()};
+		// If hit actor same as interactable actor early return
+		if (HitActor == InteractableActor)
+		{
+			return;
+		}
+		// Else if interactable actor is already set and we aren't pointing at him, hide interaction UI of current interactable actor
+		// No check for implement because we can always interact with interactable actor
+		if (InteractableActor)
+		{
+			IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
+		}
+
+		// If HitActor implements interact interface show interaction UI
+		if (HitActor->Implements<UERInteractInterface>())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit interactable actor: %s"), *HitActor->GetName())
+			IERInteractInterface::Execute_DisplayInteractionUI(HitActor, true);
+			InteractableActor = HitActor;
+		}
+		// Else set InteractableActor to nullptr
+		else
+		{
+			InteractableActor = nullptr;
+			UE_LOG(LogTemp, Warning, TEXT("Hit object doesn't implement interact interface"))
+		}
+	}
+	// If we hit nothing, hide interaction UI of current interactable actor
+	// No check for implement because we can always interact with interactable actor
+	else if (InteractableActor)
+	{
+		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
+		InteractableActor = nullptr;
+		UE_LOG(LogTemp, Warning, TEXT("No object hit"))
+	}
+}
+
+void AERCharacter::EquipFlashlight(AFlashlight* Flashlight)
+{
+	EquippedFlashlight = Flashlight;
+	const AERPlayerController* PC{Cast<AERPlayerController>(GetController())};
+
+#pragma region Nullchecks
+	if (!EquippedFlashlight)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|EquippedFlashlight is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	EquippedFlashlight->SetOwner(this);
+	PC->AddToViewportFlashlightWidget();
+
+	const USkeletalMeshSocket* HandSocket{Mesh1P->GetSocketByName(FName("RightHandSocket"))};
+
+#pragma region Nullchecks
+	if (!HandSocket)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|HandSocket is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	HandSocket->AttachActor(EquippedFlashlight, Mesh1P);
 }

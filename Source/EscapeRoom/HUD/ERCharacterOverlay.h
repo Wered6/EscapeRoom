@@ -3,14 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "ERBaseKeyItem.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "ERCharacterOverlay.generated.h"
 
 UCLASS()
-class ESCAPEROOM_API AERBaseKeyItem : public AActor
+class ESCAPEROOM_API UERCharacterOverlay : public UUserWidget
 {
 	GENERATED_BODY()
-
-public:
-	AERBaseKeyItem();
 };

@@ -3,9 +3,7 @@
 
 #include "Flashlight.h"
 #include "Components/SceneCaptureComponent2D.h"
-#include "Components/SphereComponent.h"
 #include "Components/SpotLightComponent.h"
-#include "Components/WidgetComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 
 AFlashlight::AFlashlight()
@@ -17,21 +15,10 @@ AFlashlight::AFlashlight()
 	FlashlightMesh->SetCollisionResponseToAllChannels(ECR_Block);
 	FlashlightMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	FlashlightMesh->SetSimulatePhysics(true);
 	FlashlightMesh->SetCastShadow(false);
 
-	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
-	PickupSphere->SetupAttachment(RootComponent);
-	PickupSphere->InitSphereRadius(100.f);
-	PickupSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	PickupSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	PickupSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
-	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
-	PickupWidget->SetupAttachment(RootComponent);
-
 	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
-	SceneCapture->SetupAttachment(PickupSphere);
+	SceneCapture->SetupAttachment(FlashlightMesh);
 	SceneCapture->FOVAngle = 30.f;
 	SceneCapture->CaptureSource = SCS_FinalColorLDR;
 
@@ -66,22 +53,12 @@ void AFlashlight::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s|SceneCapture is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!PickupSphere)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PickupSphere is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 #pragma endregion
 
 	// Apply the PostProcessMaterial dynamically
 	SceneCapture->PostProcessSettings.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, PostProcessMask));
 
 	Super::BeginPlay();
-
-	PickupSphere->OnComponentBeginOverlap.AddDynamic(this, &AFlashlight::OnSphereOverlap);
-	PickupSphere->OnComponentEndOverlap.AddDynamic(this, &AFlashlight::OnSphereEndOverlap);
-
-	PickupWidget->SetVisibility(false);
 
 	// TODO try to set decals to full invisible
 	// TODO using metal isn't good, find something else
@@ -110,55 +87,25 @@ void AFlashlight::SwitchToNextColor()
 	}
 }
 
-void AFlashlight::ShowPickupWidget(const bool bShowWidget) const
+void AFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 {
+	Super::InteractStart_Implementation(OtherInstigator);
+
+	AERCharacter* Character{Cast<AERCharacter>(OtherInstigator)};
+
 #pragma region Nullchecks
-	if (!PickupWidget)
+	if (!Character)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PickupWidget is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|Character is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	PickupWidget->SetVisibility(bShowWidget);
-}
-
-void AFlashlight::SetIsEquipped()
-{
-	bIsEquipped = true;
-
-	ShowPickupWidget(false);
-	FlashlightMesh->SetSimulatePhysics(false);
+	Character->EquipFlashlight(this);
 	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	PickupSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AFlashlight::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
-                                  AActor* OtherActor,
-                                  UPrimitiveComponent* OtherComp,
-                                  int32 OtherBodyIndex,
-                                  bool bFromSweep,
-                                  const FHitResult& SweepResult)
-{
-	AERCharacter* Character{Cast<AERCharacter>(OtherActor)};
-	if (Character)
-	{
-		Character->SetOverlappingFlashlight(this);
-	}
-}
-
-void AFlashlight::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
-                                     AActor* OtherActor,
-                                     UPrimitiveComponent* OtherComp,
-                                     int32 OtherBodyIndex)
-{
-	AERCharacter* Character{Cast<AERCharacter>(OtherActor)};
-	if (Character)
-	{
-		Character->SetOverlappingFlashlight(nullptr);
-	}
-}
-
+// TODO try const on UltraVioletColor
 void AFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 {
 	// Modify the material parameters at runtime

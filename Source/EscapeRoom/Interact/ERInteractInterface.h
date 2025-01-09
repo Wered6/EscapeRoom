@@ -17,4 +17,8 @@ class IERInteractInterface
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	void InteractStart(AActor* OtherInstigator);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	void DisplayInteractionUI(const bool bShowInteract);
 };

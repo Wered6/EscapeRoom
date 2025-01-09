@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EscapeRoom/Interact/ERInteractableActor.h"
 #include "GameFramework/Actor.h"
 #include "Flashlight.generated.h"
 
@@ -31,8 +32,9 @@ struct FFlashLightColors
 	FLinearColor GlowLight{};
 };
 
+// TODO Add prefix ER
 UCLASS()
-class ESCAPEROOM_API AFlashlight : public AActor
+class ESCAPEROOM_API AFlashlight : public AERInteractableActor
 {
 	GENERATED_BODY()
 
@@ -45,42 +47,22 @@ protected:
 public:
 	void SwitchToNextColor();
 
-	void ShowPickupWidget(const bool bShowWidget) const;
-
-	void SetIsEquipped();
-
 	FORCEINLINE EUltraVioletColor GetCurrentColor() const
 	{
 		return CurrentColor;
 	}
 
-protected:
-	UFUNCTION()
-	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
-	                     AActor* OtherActor,
-	                     UPrimitiveComponent* OtherComp,
-	                     int32 OtherBodyIndex,
-	                     bool bFromSweep,
-	                     const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
-	                        AActor* OtherActor,
-	                        UPrimitiveComponent* OtherComp,
-	                        int32 OtherBodyIndex);
+	/**
+	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
+	 */
+	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 
 private:
 	UFUNCTION(BlueprintCallable)
 	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UStaticMeshComponent> FlashlightMesh;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> PickupSphere;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UWidgetComponent> PickupWidget;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponent2D> SceneCapture;
@@ -103,7 +85,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_Off};
-
-	UPROPERTY(VisibleAnywhere)
-	bool bIsEquipped{};
 };

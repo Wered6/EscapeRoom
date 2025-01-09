@@ -21,26 +21,10 @@ public:
 	AERCharacter();
 
 protected:
-	virtual void BeginPlay() override;
-
-public:
-	virtual void Tick(float DeltaTime) override;
-
-public:
-	void SetOverlappingFlashlight(AFlashlight* Flashlight);
-
-	FORCEINLINE bool HasFlashlight() const
-	{
-		return EquippedFlashlight ? true : false;
-	}
-
-	FORCEINLINE AFlashlight* GetEquippedFlashlight() const
-	{
-		return EquippedFlashlight;
-	}
-
-protected:
 	virtual void NotifyControllerChanged() override;
+
+public:
+	virtual void Tick(float DeltaSeconds) override;
 
 private:
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
@@ -50,12 +34,6 @@ private:
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCameraComponent> Camera1P;
-
-	UPROPERTY()
-	TObjectPtr<AFlashlight> OverlappingFlashlight;
-
-	UPROPERTY()
-	TObjectPtr<AFlashlight> EquippedFlashlight;
 
 #pragma region Input
 
@@ -69,32 +47,66 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-	/** Called for equip input */
-	void EquipButtonPressed();
-
 	/** Called for flashlight input */
 	void FlashlightButtonPressed();
 
+	/** Called for interact input */
+	void Interact();
+
 private:
 	/** MappingContext */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	/** Move Input Action */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
 	TObjectPtr<UInputAction> MoveAction;
 
 	/** Look Input Action */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
 	TObjectPtr<UInputAction> LookAction;
 
-	/** Equip Input Action */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UInputAction> EquipAction;
-
 	/** Flashlight Input Action */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
 	TObjectPtr<UInputAction> FlashlightAction;
+
+	/** Interact Input Action */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
+	TObjectPtr<UInputAction> InteractAction;
+
+#pragma endregion
+
+#pragma region Interact
+
+private:
+	void PerformInteractionCheck();
+
+	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	TObjectPtr<AActor> InteractableActor;
+
+	UPROPERTY(EditAnywhere, Category="ER|Interact")
+	float InteractionDistance{1000.f};
+
+#pragma endregion
+
+#pragma region Flashlight
+
+public:
+	FORCEINLINE bool HasFlashlight() const
+	{
+		return EquippedFlashlight ? true : false;
+	}
+
+	FORCEINLINE AFlashlight* GetEquippedFlashlight() const
+	{
+		return EquippedFlashlight;
+	}
+
+	void EquipFlashlight(AFlashlight* Flashlight);
+
+private:
+	UPROPERTY()
+	TObjectPtr<AFlashlight> EquippedFlashlight;
 
 #pragma endregion
 };
