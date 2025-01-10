@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "EscapeRoom/Interact/ERInteractableActor.h"
-#include "GameFramework/Actor.h"
 #include "ERFlashlight.generated.h"
 
 class USpotLightComponent;
@@ -58,28 +57,28 @@ public:
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 
 private:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="ER|UV")
 	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="ER|UV")
 	TObjectPtr<USceneCaptureComponent2D> SceneCapture;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, Category="ER|UV")
 	TObjectPtr<USpotLightComponent> SpotLight;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, Category="ER|UV")
 	TObjectPtr<USpotLightComponent> SpotLightGlow;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
 	TObjectPtr<UMaterialInstance> PostProcessMask;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER")
+	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
 	FFlashLightColors FlashLightColorRed{};
-	UPROPERTY(EditDefaultsOnly, Category="ER")
+	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
 	FFlashLightColors FlashLightColorBlue{};
-	UPROPERTY(EditDefaultsOnly, Category="ER")
+	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
 	FFlashLightColors FlashLightColorGreen{};
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="ER|UV")
 	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_Off};
 };

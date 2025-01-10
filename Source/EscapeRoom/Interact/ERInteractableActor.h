@@ -21,6 +21,9 @@ public:
 	virtual void DisplayInteractionUI_Implementation(const bool bShowInteract) override;
 
 protected:
+	/**
+	 * Base mesh of every interactable actor
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER")
 	TObjectPtr<UStaticMeshComponent> RootMesh;
 

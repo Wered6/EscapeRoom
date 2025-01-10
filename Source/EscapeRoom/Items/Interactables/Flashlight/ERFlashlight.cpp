@@ -113,6 +113,21 @@ void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!SpotLight)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|SpotLight is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!SpotLightGlow)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|SpotLightGlow is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PostProcessMask)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PostProcessMask is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	float UltraVioletValue{0.f};
@@ -138,13 +153,13 @@ void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 		CurrentColor = EUltraVioletColor::EVC_Red;
 		break;
 	case EUltraVioletColor::EVC_Green:
-		UltraVioletValue = 0.05f;
+		UltraVioletValue = 0.04f;
 		SpotLight->SetLightColor(FlashLightColorGreen.BaseLight);
 		SpotLightGlow->SetLightColor(FlashLightColorGreen.GlowLight);
 		CurrentColor = EUltraVioletColor::EVC_Green;
 		break;
 	case EUltraVioletColor::EVC_Blue:
-		UltraVioletValue = 0.04f;
+		UltraVioletValue = 0.05f;
 		SpotLight->SetLightColor(FlashLightColorBlue.BaseLight);
 		SpotLightGlow->SetLightColor(FlashLightColorBlue.GlowLight);
 		CurrentColor = EUltraVioletColor::EVC_Blue;
