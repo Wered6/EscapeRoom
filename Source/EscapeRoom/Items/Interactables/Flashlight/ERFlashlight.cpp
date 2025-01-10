@@ -8,11 +8,6 @@
 
 AERFlashlight::AERFlashlight()
 {
-	RootMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	RootMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	RootMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	RootMesh->SetCastShadow(false);
-
 	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
 	SceneCapture->SetupAttachment(RootMesh);
 	SceneCapture->FOVAngle = 30.f;

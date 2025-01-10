@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "ERInteractableActor.generated.h"
 
+class USphereComponent;
 class UWidgetComponent;
 
 UCLASS()
@@ -39,4 +40,10 @@ private:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
 	TObjectPtr<UWidgetComponent> InteractWidget;
+	/**
+	 * Area to facilitate player interactions
+	 * Adjust in blueprints to size of item
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
+	TObjectPtr<USphereComponent> InteractArea;
 };
