@@ -46,4 +46,5 @@ private:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
 	TObjectPtr<USphereComponent> InteractArea;
+	// TODO consider adding name of items and shows them when player is near enough
 };
