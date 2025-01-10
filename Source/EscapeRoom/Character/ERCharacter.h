@@ -28,11 +28,11 @@ public:
 
 private:
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Mesh, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ER|Mesh", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<USkeletalMeshComponent> Mesh1P;
 
 	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ER|Camera", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCameraComponent> Camera1P;
 
 #pragma region Input
@@ -85,7 +85,7 @@ private:
 	TObjectPtr<AActor> InteractableActor;
 
 	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	float InteractionDistance{1000.f};
+	float InteractionDistance{200.f};
 
 #pragma endregion
 
@@ -105,7 +105,7 @@ public:
 	void EquipFlashlight(AERFlashlight* Flashlight);
 
 private:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")
 	TObjectPtr<AERFlashlight> EquippedFlashlight;
 
 #pragma endregion
