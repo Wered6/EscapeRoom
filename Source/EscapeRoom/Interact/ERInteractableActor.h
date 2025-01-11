@@ -7,7 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "ERInteractableActor.generated.h"
 
-class USphereComponent;
+class UCapsuleComponent;
 class UWidgetComponent;
 
 UCLASS()
@@ -25,7 +25,7 @@ protected:
 	/**
 	 * Base mesh of every interactable actor
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> RootMesh;
 
 	/**
@@ -45,6 +45,6 @@ private:
 	 * Adjust in blueprints to size of item
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
-	TObjectPtr<USphereComponent> InteractArea;
+	TObjectPtr<UCapsuleComponent> InteractArea;
 	// TODO consider adding name of items and shows them when player is near enough
 };

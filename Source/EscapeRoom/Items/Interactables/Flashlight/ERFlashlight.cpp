@@ -53,7 +53,6 @@ void AERFlashlight::BeginPlay()
 
 	// TODO try to set decals to full invisible
 	// TODO using metal isn't good, find something else
-	// TODO try combine translucent hole mask in M_Sign
 }
 
 void AERFlashlight::SwitchToNextColor()
@@ -76,6 +75,7 @@ void AERFlashlight::SwitchToNextColor()
 		SetUltraVioletColor(EUltraVioletColor::EVC_Off);
 		break;
 	}
+	// TODO Add click sound
 }
 
 void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
@@ -142,19 +142,19 @@ void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 		CurrentColor = EUltraVioletColor::EVC_White;
 		break;
 	case EUltraVioletColor::EVC_Red:
-		UltraVioletValue = 0.03f;
+		UltraVioletValue = FlashLightColorRed.UltraVioletValue;
 		SpotLight->SetLightColor(FlashLightColorRed.BaseLight);
 		SpotLightGlow->SetLightColor(FlashLightColorRed.GlowLight);
 		CurrentColor = EUltraVioletColor::EVC_Red;
 		break;
 	case EUltraVioletColor::EVC_Green:
-		UltraVioletValue = 0.04f;
+		UltraVioletValue = FlashLightColorGreen.UltraVioletValue;
 		SpotLight->SetLightColor(FlashLightColorGreen.BaseLight);
 		SpotLightGlow->SetLightColor(FlashLightColorGreen.GlowLight);
 		CurrentColor = EUltraVioletColor::EVC_Green;
 		break;
 	case EUltraVioletColor::EVC_Blue:
-		UltraVioletValue = 0.05f;
+		UltraVioletValue = FlashLightColorBlue.UltraVioletValue;
 		SpotLight->SetLightColor(FlashLightColorBlue.BaseLight);
 		SpotLightGlow->SetLightColor(FlashLightColorBlue.GlowLight);
 		CurrentColor = EUltraVioletColor::EVC_Blue;

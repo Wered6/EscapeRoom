@@ -3,7 +3,7 @@
 
 #include "ERInteractableActor.h"
 
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -15,7 +15,7 @@ AERInteractableActor::AERInteractableActor()
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionResponseToAllChannels(ECR_Block);
 	RootMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	RootMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	RootMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	RootMesh->SetCastShadow(false);
 
 	InteractWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractKeyWidget"));
@@ -24,7 +24,7 @@ AERInteractableActor::AERInteractableActor()
 	// At start it's hidden because we want to see it only when player is near enough
 	InteractWidget->SetVisibility(false);
 
-	InteractArea = CreateDefaultSubobject<USphereComponent>(TEXT("InteractArea"));
+	InteractArea = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InteractArea"));
 	InteractArea->SetupAttachment(RootMesh);
 	InteractArea->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InteractArea->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);

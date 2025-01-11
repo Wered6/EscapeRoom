@@ -29,9 +29,10 @@ struct FFlashLightColors
 	FLinearColor BaseLight{};
 	UPROPERTY(EditDefaultsOnly)
 	FLinearColor GlowLight{};
+	UPROPERTY(EditDefaultsOnly)
+	float UltraVioletValue{};
 };
 
-// TODO Add prefix ER
 UCLASS()
 class ESCAPEROOM_API AERFlashlight : public AERInteractableActor
 {
@@ -75,9 +76,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
 	FFlashLightColors FlashLightColorRed{};
 	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
-	FFlashLightColors FlashLightColorBlue{};
-	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
 	FFlashLightColors FlashLightColorGreen{};
+	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
+	FFlashLightColors FlashLightColorBlue{};
 
 	UPROPERTY(VisibleAnywhere, Category="ER|UV")
 	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_Off};
