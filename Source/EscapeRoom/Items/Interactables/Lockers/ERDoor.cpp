@@ -13,4 +13,5 @@ AERDoor::AERDoor()
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	DoorMesh->SetupAttachment(RootMesh);
 	DoorMesh->SetCollisionResponseToAllChannels(ECR_Block);
+	DoorMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 }

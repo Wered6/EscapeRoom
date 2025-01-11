@@ -34,18 +34,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	TObjectPtr<AActor> InteractInstigator;
 
-private:
-	/**
-	 * Widget that shows when we point at interactable actor
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
-	TObjectPtr<UWidgetComponent> InteractWidget;
 	/**
 	 * Area to facilitate player interactions
 	 * Adjust in blueprints to size of item
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
 	TObjectPtr<UBoxComponent> InteractArea;
+
+private:
+	/**
+	 * Widget that shows when we point at interactable actor
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
+	TObjectPtr<UWidgetComponent> InteractWidget;
 
 	/**
 	 * Material for outlining item when pointing at it

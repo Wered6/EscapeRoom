@@ -2,7 +2,6 @@
 
 
 #include "ERKeyItem.h"
-#include "ERUnlockInterface.h"
 #include "EscapeRoom/Items/Interactables/Lockers/ERLockItem.h"
 
 class UERUnlockInterface;
@@ -15,18 +14,4 @@ AERKeyItem::AERKeyItem()
 void AERKeyItem::InteractStart_Implementation(AActor* OtherInstigator)
 {
 	Super::InteractStart_Implementation(OtherInstigator);
-
-#pragma region Nullchecks
-	if (!LockedItem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LockedItem is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	// If locked item has unlock interface fire unlock function
-	if (LockedItem->Implements<UERUnlockInterface>())
-	{
-		IERUnlockInterface::Execute_Unlock(this);
-	}
 }

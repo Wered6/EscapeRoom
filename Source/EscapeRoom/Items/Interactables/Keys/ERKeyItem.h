@@ -25,7 +25,7 @@ public:
 	 */
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 
-private:
+protected:
 	UPROPERTY(EditInstanceOnly, Category="ER")
 	TObjectPtr<AERLockItem> LockedItem;
 };
