@@ -2,8 +2,7 @@
 
 
 #include "ERInteractableActor.h"
-
-#include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -21,10 +20,11 @@ AERInteractableActor::AERInteractableActor()
 	InteractWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractKeyWidget"));
 	InteractWidget->SetupAttachment(RootMesh);
 	InteractWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	InteractWidget->SetDrawAtDesiredSize(true);
 	// At start it's hidden because we want to see it only when player is near enough
 	InteractWidget->SetVisibility(false);
 
-	InteractArea = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InteractArea"));
+	InteractArea = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractArea"));
 	InteractArea->SetupAttachment(RootMesh);
 	InteractArea->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InteractArea->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
@@ -47,4 +47,6 @@ void AERInteractableActor::DisplayInteractionUI_Implementation(const bool bShowI
 #pragma endregion
 
 	InteractWidget->SetVisibility(bShowInteract);
+
+	RootMesh->SetOverlayMaterial(bShowInteract ? OutlineMaterial : nullptr);
 }

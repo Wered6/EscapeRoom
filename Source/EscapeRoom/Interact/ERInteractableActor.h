@@ -7,7 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "ERInteractableActor.generated.h"
 
-class UCapsuleComponent;
+class UBoxComponent;
 class UWidgetComponent;
 
 UCLASS()
@@ -45,6 +45,12 @@ private:
 	 * Adjust in blueprints to size of item
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
-	TObjectPtr<UCapsuleComponent> InteractArea;
+	TObjectPtr<UBoxComponent> InteractArea;
+
+	/**
+	 * Material for outlining item when pointing at it
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
+	TObjectPtr<UMaterialInterface> OutlineMaterial;
 	// TODO consider adding name of items and shows them when player is near enough
 };
