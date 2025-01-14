@@ -13,6 +13,7 @@ AERInteractableActor::AERInteractableActor()
 	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	RootMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 
 	InteractWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractKeyWidget"));
 	InteractWidget->SetupAttachment(RootMesh);
