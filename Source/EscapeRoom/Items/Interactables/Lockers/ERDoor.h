@@ -17,4 +17,7 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> DoorMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
+	TObjectPtr<UStaticMeshComponent> HandleMesh;
 };

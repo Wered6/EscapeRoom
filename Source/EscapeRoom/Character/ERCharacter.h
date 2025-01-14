@@ -105,6 +105,7 @@ public:
 	void EquipFlashlight(AERFlashlight* Flashlight);
 
 private:
+	// TODO Adjust center of flashlight to center of screen
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")
 	TObjectPtr<AERFlashlight> EquippedFlashlight;
 

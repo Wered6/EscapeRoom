@@ -41,6 +41,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
 	TObjectPtr<UBoxComponent> InteractArea;
 
+	/**
+	 * Set mesh which one should be outlined, when interact
+	 */
+	UPROPERTY()
+	TObjectPtr<UStaticMeshComponent> OutlineMeshComponentPtr;
+
 private:
 	/**
 	 * Widget that shows when we point at interactable actor
@@ -53,5 +59,6 @@ private:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
 	TObjectPtr<UMaterialInterface> OutlineMaterial;
+
 	// TODO consider adding name of items and shows them when player is near enough
 };

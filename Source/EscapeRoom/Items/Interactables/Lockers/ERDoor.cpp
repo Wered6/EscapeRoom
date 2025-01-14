@@ -8,10 +8,13 @@ AERDoor::AERDoor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	RootMesh->SetCollisionResponseToAllChannels(ECR_Block);
-
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	DoorMesh->SetupAttachment(RootMesh);
-	DoorMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	DoorMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
+
+	HandleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HandleMesh"));
+	HandleMesh->SetupAttachment(DoorMesh);
+	HandleMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+	OutlineMeshComponentPtr = HandleMesh;
 }

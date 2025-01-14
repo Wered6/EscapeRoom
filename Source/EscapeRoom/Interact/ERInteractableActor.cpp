@@ -12,10 +12,7 @@ AERInteractableActor::AERInteractableActor()
 
 	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
 	SetRootComponent(RootMesh);
-	RootMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	RootMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	RootMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	RootMesh->SetCastShadow(false);
+	RootMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
 	InteractWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractKeyWidget"));
 	InteractWidget->SetupAttachment(RootMesh);
@@ -44,9 +41,19 @@ void AERInteractableActor::DisplayInteractionUI_Implementation(const bool bShowI
 		UE_LOG(LogTemp, Warning, TEXT("%s|InteractKeyWidgetComponent is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!OutlineMeshComponentPtr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|OutlineMesh is nullptr. Set it in C++, in constructor."), *FString(__FUNCTION__))
+		return;
+	}
+	if (!OutlineMaterial)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|OutlineMaterial is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	InteractWidget->SetVisibility(bShowInteract);
 
-	RootMesh->SetOverlayMaterial(bShowInteract ? OutlineMaterial : nullptr);
+	OutlineMeshComponentPtr->SetOverlayMaterial(bShowInteract ? OutlineMaterial : nullptr);
 }

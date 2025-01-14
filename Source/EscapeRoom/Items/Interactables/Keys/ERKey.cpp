@@ -8,6 +8,8 @@
 AERKey::AERKey()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	OutlineMeshComponentPtr = RootMesh;
 }
 
 void AERKey::InteractStart_Implementation(AActor* OtherInstigator)

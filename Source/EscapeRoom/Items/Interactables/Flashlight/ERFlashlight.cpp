@@ -8,6 +8,10 @@
 
 AERFlashlight::AERFlashlight()
 {
+	RootMesh->SetCollisionResponseToAllChannels(ECR_Block);
+	RootMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	RootMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
 	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
 	SceneCapture->SetupAttachment(RootMesh);
 	SceneCapture->FOVAngle = 30.f;
@@ -28,6 +32,9 @@ AERFlashlight::AERFlashlight()
 	const float FOVSceneCapture{SceneCapture->FOVAngle};
 	SpotLight->SetOuterConeAngle(FOVSceneCapture / 2);
 	SpotLightGlow->SetOuterConeAngle(FOVSceneCapture / 2);
+
+	OutlineMeshComponentPtr = RootMesh;
+	// TODO think what to do with shadow of flashlight
 }
 
 void AERFlashlight::BeginPlay()
