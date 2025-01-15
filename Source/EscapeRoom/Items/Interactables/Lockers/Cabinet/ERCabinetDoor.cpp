@@ -7,4 +7,6 @@
 AERCabinetDoor::AERCabinetDoor()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	OutlineMeshComponentPtr = RootMesh;
 }

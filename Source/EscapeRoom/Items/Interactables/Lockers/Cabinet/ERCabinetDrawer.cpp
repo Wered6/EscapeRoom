@@ -7,5 +7,6 @@
 AERCabinetDrawer::AERCabinetDrawer()
 {
 	PrimaryActorTick.bCanEverTick = false;
-}
 
+	OutlineMeshComponentPtr = RootMesh;
+}
