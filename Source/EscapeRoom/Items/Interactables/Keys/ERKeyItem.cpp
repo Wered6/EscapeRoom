@@ -11,6 +11,7 @@ AERKeyItem::AERKeyItem()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+// TODO Check if it's necessary here
 void AERKeyItem::InteractStart_Implementation(AActor* OtherInstigator)
 {
 	Super::InteractStart_Implementation(OtherInstigator);

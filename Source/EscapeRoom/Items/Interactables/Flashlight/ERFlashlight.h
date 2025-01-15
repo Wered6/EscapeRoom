@@ -82,4 +82,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category="ER|UV")
 	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_Off};
+	// TODO add light mask to look like flashlight
 };

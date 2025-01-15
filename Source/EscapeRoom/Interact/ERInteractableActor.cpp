@@ -24,9 +24,7 @@ AERInteractableActor::AERInteractableActor()
 
 	InteractArea = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractArea"));
 	InteractArea->SetupAttachment(RootMesh);
-	InteractArea->SetCollisionResponseToAllChannels(ECR_Ignore);
-	InteractArea->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-	InteractArea->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InteractArea->SetCollisionProfileName(TEXT("InteractArea"));
 }
 
 void AERInteractableActor::InteractStart_Implementation(AActor* OtherInstigator)

@@ -38,7 +38,7 @@ protected:
 	 * Area to facilitate player interactions
 	 * Adjust in blueprints to size of item
 	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Interact")
 	TObjectPtr<UBoxComponent> InteractArea;
 
 	/**

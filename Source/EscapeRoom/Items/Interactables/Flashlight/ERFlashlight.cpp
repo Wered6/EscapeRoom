@@ -19,13 +19,13 @@ AERFlashlight::AERFlashlight()
 
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLight"));
 	SpotLight->SetupAttachment(SceneCapture);
-	SpotLight->Intensity = 100000.f;
+	SpotLight->Intensity = 10000.f;
 	SpotLight->IntensityUnits = ELightUnits::Unitless;
 	SpotLight->SetVisibility(false);
 
 	SpotLightGlow = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightGlow"));
 	SpotLightGlow->SetupAttachment(SceneCapture);
-	SpotLightGlow->Intensity = 100000.f;
+	SpotLightGlow->Intensity = 10000.f;
 	SpotLightGlow->IntensityUnits = ELightUnits::Unitless;
 	SpotLightGlow->SetVisibility(false);
 

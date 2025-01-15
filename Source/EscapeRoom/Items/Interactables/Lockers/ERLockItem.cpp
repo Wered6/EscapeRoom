@@ -31,6 +31,6 @@ void AERLockItem::InteractStart_Implementation(AActor* OtherInstigator)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hurray! %s is not locked, let's open it!"), *GetName())
-		InteractArea->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		InteractArea->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 }

@@ -20,12 +20,13 @@ class ESCAPEROOM_API AERKeyItem : public AERInteractableActor
 public:
 	AERKeyItem();
 
+	// TODO Check if it's necessary here
 	/**
 	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
 	 */
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 
 protected:
-	UPROPERTY(EditInstanceOnly, Category="ER")
+	UPROPERTY(EditInstanceOnly, Category="ER|Pick Actor")
 	TObjectPtr<AERLockItem> LockedItem;
 };
