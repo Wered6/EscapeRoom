@@ -9,7 +9,7 @@ AERLockItem::AERLockItem()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AERLockItem::Unlock()
+void AERLockItem::Unlock_Implementation()
 {
 	if (!bLocked)
 	{

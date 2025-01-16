@@ -83,6 +83,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	TObjectPtr<AActor> InteractableActor;
+	UPROPERTY()
+	TObjectPtr<UPrimitiveComponent> InteractableHitComponent;
 
 	UPROPERTY(EditAnywhere, Category="ER|Interact")
 	float InteractionDistance{200.f};

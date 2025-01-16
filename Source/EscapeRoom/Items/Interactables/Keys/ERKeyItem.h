@@ -27,6 +27,22 @@ public:
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 
 protected:
-	UPROPERTY(EditInstanceOnly, Category="ER|Pick Actor")
-	TObjectPtr<AERLockItem> LockedItem;
+	/**
+	 * Use for simple "many keys-one door".
+	 * Tags can override LockedItem
+	 */
+	UPROPERTY(EditInstanceOnly, Category="ER|Actors to unlock")
+	TArray<AActor*> LockedItems;
+
+	/**
+	 * Use for complex "many keys-many doors" or actor with children like Cabinet.
+	 * If LockedChildTag is empty, it will search only through LockedParentTag
+	 */
+	UPROPERTY(EditAnywhere, Category="ER|Actors to unlock")
+	FName LockedParentTag{};
+	/**
+	 * If LockedParentTag is empty, but LockedChildTag is not empty it won't use tags anyway.
+	 */
+	UPROPERTY(EditAnywhere, Category="ER|Actors to unlock")
+	FName LockedChildTag{};
 };

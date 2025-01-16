@@ -241,38 +241,42 @@ void AERCharacter::PerformInteractionCheck()
 	if (HitResult.GetActor())
 	{
 		AActor* HitActor{HitResult.GetActor()};
+		UPrimitiveComponent* HitComponent{HitResult.GetComponent()};
 		// If hit actor same as interactable actor early return
-		if (HitActor == InteractableActor)
+		if (HitComponent == InteractableHitComponent)
 		{
 			return;
 		}
 		// Else if interactable actor is already set and we aren't pointing at him, hide interaction UI of current interactable actor
-		// No check for implement because we can always interact with interactable actor
 		if (InteractableActor)
 		{
+			// No check for implement because we can always interact with interactable actor
 			IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
 		}
 
-		// If HitActor implements interact interface show interaction UI
-		if (HitActor->Implements<UERInteractInterface>())
+		// If HitActor implements interact interface and hit component has collision profile name "InteractArea" show interaction UI
+		if (HitActor->Implements<UERInteractInterface>() && HitComponent->GetCollisionProfileName() == FName("InteractArea"))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Hit interactable actor: %s"), *HitActor->GetName())
 			IERInteractInterface::Execute_DisplayInteractionUI(HitActor, true);
 			InteractableActor = HitActor;
+			InteractableHitComponent = HitComponent;
 		}
-		// Else set InteractableActor to nullptr
+		// Else set InteractableActor and InteractableHitComponent to nullptr
 		else
 		{
 			InteractableActor = nullptr;
+			InteractableHitComponent = nullptr;
 			UE_LOG(LogTemp, Warning, TEXT("Hit object doesn't implement interact interface"))
 		}
 	}
-	// If we hit nothing, hide interaction UI of current interactable actor
-	// No check for implement because we can always interact with interactable actor
+	// If we hit nothing after hitting interactable actor, hide interaction UI of current interactable actor
 	else if (InteractableActor)
 	{
+		// No check for implement because we can always interact with interactable actor
 		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
 		InteractableActor = nullptr;
+		InteractableHitComponent = nullptr;
 		UE_LOG(LogTemp, Warning, TEXT("No object hit"))
 	}
 }

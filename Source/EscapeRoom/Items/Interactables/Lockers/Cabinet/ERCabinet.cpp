@@ -15,12 +15,16 @@ AERCabinet::AERCabinet()
 
 	DoorLeft = CreateDefaultSubobject<UChildActorComponent>(TEXT("DoorLeft"));
 	DoorLeft->SetupAttachment(RootMesh);
+
 	DoorRight = CreateDefaultSubobject<UChildActorComponent>(TEXT("DoorRight"));
 	DoorRight->SetupAttachment(RootMesh);
+
 	DrawerFirst = CreateDefaultSubobject<UChildActorComponent>(TEXT("DrawerFirst"));
 	DrawerFirst->SetupAttachment(RootMesh);
+
 	DrawerSecond = CreateDefaultSubobject<UChildActorComponent>(TEXT("DrawerSecond"));
 	DrawerSecond->SetupAttachment(RootMesh);
+
 	DrawerThird = CreateDefaultSubobject<UChildActorComponent>(TEXT("DrawerThird"));
 	DrawerThird->SetupAttachment(RootMesh);
 }
