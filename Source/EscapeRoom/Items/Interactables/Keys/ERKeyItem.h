@@ -20,13 +20,9 @@ class ESCAPEROOM_API AERKeyItem : public AERInteractableActor
 public:
 	AERKeyItem();
 
-	// TODO Check if it's necessary here
-	/**
-	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
-	 */
-	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
-
 protected:
+	virtual void BeginPlay() override;
+
 	/**
 	 * Use for simple "many keys-one door".
 	 * Tags can override LockedItem

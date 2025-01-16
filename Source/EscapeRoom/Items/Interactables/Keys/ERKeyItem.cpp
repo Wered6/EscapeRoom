@@ -2,7 +2,6 @@
 
 
 #include "ERKeyItem.h"
-#include "EscapeRoom/Items/Interactables/Lockers/ERLockItem.h"
 #include "Kismet/GameplayStatics.h"
 
 AERKeyItem::AERKeyItem()
@@ -10,9 +9,9 @@ AERKeyItem::AERKeyItem()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AERKeyItem::InteractStart_Implementation(AActor* OtherInstigator)
+void AERKeyItem::BeginPlay()
 {
-	Super::InteractStart_Implementation(OtherInstigator);
+	Super::BeginPlay();
 
 	if (LockedParentTag.IsNone())
 	{
