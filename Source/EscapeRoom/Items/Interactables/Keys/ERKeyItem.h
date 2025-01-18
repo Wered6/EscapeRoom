@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category="ER|Actors to unlock")
 	TArray<AActor*> LockedItems;
 
+private:
+	void PopulateLockedItemsFromTags();
+
 	/**
 	 * Use for complex "many keys-many doors" or actor with children like Cabinet.
 	 * If LockedChildTag is empty, it will search only through LockedParentTag

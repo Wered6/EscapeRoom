@@ -13,6 +13,11 @@ void AERKeyItem::BeginPlay()
 {
 	Super::BeginPlay();
 
+	PopulateLockedItemsFromTags();
+}
+
+void AERKeyItem::PopulateLockedItemsFromTags()
+{
 	if (LockedParentTag.IsNone())
 	{
 		return;
