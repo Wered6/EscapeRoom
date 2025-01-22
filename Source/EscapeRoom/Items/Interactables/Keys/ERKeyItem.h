@@ -24,15 +24,19 @@ protected:
 	virtual void BeginPlay() override;
 
 	/**
+	 * Unlocking all locked items in LockedItems array
+	 */
+	void UnlockLockedItems();
+
+private:
+	void PopulateLockedItemsFromTags();
+
+	/**
 	 * Use for simple "many keys-one door".
 	 * Tags can override LockedItem
 	 */
 	UPROPERTY(EditInstanceOnly, Category="ER|Actors to unlock")
 	TArray<AActor*> LockedItems;
-
-private:
-	void PopulateLockedItemsFromTags();
-
 	/**
 	 * Use for complex "many keys-many doors" or actor with children like Cabinet.
 	 * If LockedChildTag is empty, it will search only through LockedParentTag
@@ -44,4 +48,8 @@ private:
 	 */
 	UPROPERTY(EditAnywhere, Category="ER|Actors to unlock")
 	FName LockedChildTag{};
+	/**
+	 * TODO think of creating in interactable actor (or some child class) more items to interact with
+	 * just like here, soi for example in LampSwitch we can pick multiple lamps
+	 */
 };

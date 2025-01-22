@@ -15,7 +15,7 @@ public:
 	AERKey();
 
 	/**
-	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
+	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor in KeyItem)
 	 */
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 };

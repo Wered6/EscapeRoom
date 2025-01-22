@@ -34,4 +34,5 @@ private:
 	// TODO add sound buzzing when "on"
 	// TODO add buzzing/flickering on light left or right, but remember you would have to change also materials emissive colors of them
 	// TODO when turns on make it light real, with some delay and flash
+	// TODO add spotlight to every room so it wont be completely dark when turning lamp off
 };

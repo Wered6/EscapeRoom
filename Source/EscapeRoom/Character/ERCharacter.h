@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "ERCharacter.generated.h"
 
@@ -40,43 +41,114 @@ private:
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void EnterDefaultInputMode() const;
+	void EnterKeypadInputMode() const;
+
 protected:
-	/** Called for movement input */
+	/**
+	 * Call for default movement action
+	 */
 	void Move(const FInputActionValue& Value);
 
-	/** Called for looking input */
+	/**
+	 * Call for default looking action
+	 */
 	void Look(const FInputActionValue& Value);
 
-	/** Called for flashlight input */
-	void FlashlightButtonPressed();
+	/**
+	 * Call for default change color flashlight action
+	 */
+	void FlashlightChangeColorButtonPressed();
 
-	/** Called for interact input */
+	/**
+	 * Call for default interact action
+	 */
 	void Interact();
 
+	/**
+	 * Call for keypad move action
+	 */
+	void KeypadMove(const FInputActionValue& Value);
+
+	/**
+	 * Call for keypad accept button pressed action
+	 */
+	void KeypadAcceptButtonPressed();
+
+	/**
+	 * Call for keypad accept button released action
+	 */
+	void KeypadAcceptButtonReleased();
+
+	/**
+	 * Call for keypad exit action
+	 */
+	void KeypadExit();
+
 private:
-	/** MappingContext */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
+	/**
+	 * Default Mapping Context
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-	/** Move Input Action */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
+	/**
+	 * Default Move Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
 	TObjectPtr<UInputAction> MoveAction;
 
-	/** Look Input Action */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
+	/**
+	 * Default Look Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
 	TObjectPtr<UInputAction> LookAction;
 
-	/** Flashlight Input Action */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
-	TObjectPtr<UInputAction> FlashlightAction;
+	/**
+	 * Default Flashlight Change Color Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
+	TObjectPtr<UInputAction> FlashlightChangeColorAction;
 
-	/** Interact Input Action */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
+	/**
+	 * Default Interact Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
 	TObjectPtr<UInputAction> InteractAction;
+
+	/**
+	 * Keypad Mapping Context
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
+	TObjectPtr<UInputMappingContext> KeypadMappingContext;
+
+	/**
+	 * Keypad Move Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
+	TObjectPtr<UInputAction> KeypadMoveAction;
+
+	/**
+	 * Keypad Accept Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
+	TObjectPtr<UInputAction> KeypadAcceptAction;
+
+	/**
+	 * Keypad exit Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
+	TObjectPtr<UInputAction> KeypadExitAction;
 
 #pragma endregion
 
 #pragma region Interact
+
+public:
+	FORCEINLINE void SetInteractionCheck(const bool bValue)
+	{
+		bInteractionCheck = bValue;
+	}
 
 private:
 	void PerformInteractionCheck();
@@ -88,6 +160,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="ER|Interact")
 	float InteractionDistance{200.f};
+
+	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	bool bInteractionCheck{true};
 
 #pragma endregion
 
@@ -107,9 +182,13 @@ public:
 	void EquipFlashlight(AERFlashlight* Flashlight);
 
 private:
-	// TODO Adjust center of flashlight to center of screen
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")
 	TObjectPtr<AERFlashlight> EquippedFlashlight;
 
+#pragma endregion
+
+#pragma region Keypad
+
+public:
 #pragma endregion
 };

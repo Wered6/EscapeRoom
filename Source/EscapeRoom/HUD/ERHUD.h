@@ -22,4 +22,5 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="ER")
 	TObjectPtr<UTexture2D> DotCenter;
+	// TODO Hide DotCenter when interact with keypad
 };

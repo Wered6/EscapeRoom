@@ -9,6 +9,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "EscapeRoom/Interact/ERInteractInterface.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
+#include "EscapeRoom/Items/Interactables/Keys/Keypad/ERKeypadInteface.h"
 #include "EscapeRoom/PlayerController/ERPlayerController.h"
 
 AERCharacter::AERCharacter()
@@ -37,50 +38,17 @@ void AERCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
 
-	// TODO try to capture PlayerController here and save it in class instead of functions
-
-	if (!Controller)
-	{
-		return;
-	}
-
-#pragma region Nullchecks
-	if (!DefaultMappingContext)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	// Add input Mapping Context
-	const APlayerController* PlayerController{Cast<APlayerController>(Controller)};
-
-#pragma region Nullchecks
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
-
-#pragma region Nullchecks
-	if (!Subsystem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	EnterDefaultInputMode();
 }
 
 void AERCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	PerformInteractionCheck();
+	if (bInteractionCheck)
+	{
+		PerformInteractionCheck();
+	}
 }
 
 void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -96,7 +64,7 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		UE_LOG(LogTemp, Warning, TEXT("%s|LookAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!FlashlightAction)
+	if (!FlashlightChangeColorAction)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|FlashlightAction is nullptr"), *FString(__FUNCTION__))
 		return;
@@ -104,6 +72,21 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (!InteractAction)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|InteractAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!KeypadMoveAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadMoveAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!KeypadAcceptAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadAcceptAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!KeypadExitAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadExitAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
@@ -121,56 +104,123 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	}
 #pragma endregion
 
-	// Moving
+	// Default Moving
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AERCharacter::Move);
 
-	// Looking
+	// Default Looking
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AERCharacter::Look);
 
-	// Flashlight
-	EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Started, this, &AERCharacter::FlashlightButtonPressed);
+	// Default Flashlight change color
+	EnhancedInputComponent->BindAction(FlashlightChangeColorAction, ETriggerEvent::Started, this, &AERCharacter::FlashlightChangeColorButtonPressed);
 
-	// Interact
+	// Default Interact
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AERCharacter::Interact);
+
+	// Keypad Moving
+	EnhancedInputComponent->BindAction(KeypadMoveAction, ETriggerEvent::Triggered, this, &AERCharacter::KeypadMove);
+
+	// Keypad Accept button pressed
+	EnhancedInputComponent->BindAction(KeypadAcceptAction, ETriggerEvent::Started, this, &AERCharacter::KeypadAcceptButtonPressed);
+
+	// Keypad Accept button released
+	EnhancedInputComponent->BindAction(KeypadAcceptAction, ETriggerEvent::Completed, this, &AERCharacter::KeypadAcceptButtonReleased);
+
+	// Keypad Exit
+	EnhancedInputComponent->BindAction(KeypadExitAction, ETriggerEvent::Started, this, &AERCharacter::KeypadExit);
 }
 
-void AERCharacter::Move(const FInputActionValue& Value)
+void AERCharacter::EnterDefaultInputMode() const
 {
-#pragma region Nullchecks
 	if (!Controller)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Controller is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	const APlayerController* PlayerController{Cast<APlayerController>(Controller)};
+
+#pragma region Nullchecks
+	if (!DefaultMappingContext)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
+	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
+
+#pragma region Nullchecks
+	if (!Subsystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	Subsystem->ClearAllMappings();
+	Subsystem->AddMappingContext(DefaultMappingContext, 0);
+}
+
+void AERCharacter::EnterKeypadInputMode() const
+{
+	if (!Controller)
+	{
+		return;
+	}
+	const APlayerController* PlayerController{Cast<APlayerController>(Controller)};
+
+#pragma region Nullchecks
+	if (!KeypadMappingContext)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
+
+#pragma region Nullchecks
+	if (!Subsystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	Subsystem->ClearAllMappings();
+	Subsystem->AddMappingContext(KeypadMappingContext, 0);
+}
+
+void AERCharacter::Move(const FInputActionValue& Value)
+{
 	// Input is a Vector2D
 	const FVector2D MovementVector{Value.Get<FVector2D>()};
 
-	// Add movement
+	// Add movement to character
 	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 	AddMovementInput(GetActorRightVector(), MovementVector.X);
 }
 
 void AERCharacter::Look(const FInputActionValue& Value)
 {
-#pragma region Nullchecks
-	if (!Controller)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Controller is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
 	// Input is a Vector2D
 	const FVector2D LookAxisVector{Value.Get<FVector2D>()};
 
+	// Add rotation to controller
 	AddControllerYawInput(LookAxisVector.X);
 	AddControllerPitchInput(LookAxisVector.Y);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void AERCharacter::FlashlightButtonPressed()
+void AERCharacter::FlashlightChangeColorButtonPressed()
 {
 	if (!EquippedFlashlight)
 	{
@@ -203,6 +253,81 @@ void AERCharacter::Interact()
 	if (InteractableActor->Implements<UERInteractInterface>())
 	{
 		IERInteractInterface::Execute_InteractStart(InteractableActor, this);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AERCharacter::KeypadMove(const FInputActionValue& Value)
+{
+	// Input is a Vector2D
+	const FVector2D MovementVector{Value.Get<FVector2D>()};
+
+#pragma region Nullchecks
+	if (!InteractableActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractableActor is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	// If interactable actor has keypad interface fire keypad move function
+	if (InteractableActor->Implements<UERKeypadInterface>())
+	{
+		IERKeypadInterface::Execute_KeypadMove(InteractableActor, MovementVector);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AERCharacter::KeypadAcceptButtonPressed()
+{
+#pragma region Nullchecks
+	if (!InteractableActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractableActor is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	// If interactable actor has keypad interface fire keypad move function
+	if (InteractableActor->Implements<UERKeypadInterface>())
+	{
+		IERKeypadInterface::Execute_KeypadAcceptButtonPressed(InteractableActor);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AERCharacter::KeypadAcceptButtonReleased()
+{
+#pragma region Nullchecks
+	if (!InteractableActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractableActor is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	// If interactable actor has keypad interface fire keypad move function
+	if (InteractableActor->Implements<UERKeypadInterface>())
+	{
+		IERKeypadInterface::Execute_KeypadAcceptButtonReleased(InteractableActor);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AERCharacter::KeypadExit()
+{
+#pragma region Nullchecks
+	if (!InteractableActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractableActor is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	// If interactable actor has keypad interface fire keypad move function
+	if (InteractableActor->Implements<UERKeypadInterface>())
+	{
+		IERKeypadInterface::Execute_KeypadExit(InteractableActor);
 	}
 }
 
