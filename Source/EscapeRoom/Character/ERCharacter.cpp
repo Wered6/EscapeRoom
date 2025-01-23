@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "EscapeRoom/HUD/ERHUD.h"
 #include "EscapeRoom/Interact/ERInteractInterface.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 #include "EscapeRoom/Items/Interactables/Keys/Keypad/ERKeypadInteface.h"
@@ -34,9 +35,26 @@ AERCharacter::AERCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-4.f, 0.f, -150.f));
 }
 
+void AERCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CameraDefaultTransform = Camera1P->GetRelativeTransform();
+}
+
 void AERCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
+
+#pragma region Nullchecks
+	if (!Controller)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Controller is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	PlayerController = Cast<AERPlayerController>(Controller);
 
 	EnterDefaultInputMode();
 }
@@ -45,10 +63,23 @@ void AERCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (bInteractionCheck)
+	if (bCanCheckInteraction)
 	{
 		PerformInteractionCheck();
 	}
+}
+
+void AERCharacter::ResetCameraTransform() const
+{
+#pragma region Nullchecks
+	if (!Camera1P)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Camera1P is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	Camera1P->SetRelativeTransform(CameraDefaultTransform);
 }
 
 void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -131,12 +162,6 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AERCharacter::EnterDefaultInputMode() const
 {
-	if (!Controller)
-	{
-		return;
-	}
-	const APlayerController* PlayerController{Cast<APlayerController>(Controller)};
-
 #pragma region Nullchecks
 	if (!DefaultMappingContext)
 	{
@@ -166,12 +191,6 @@ void AERCharacter::EnterDefaultInputMode() const
 
 void AERCharacter::EnterKeypadInputMode() const
 {
-	if (!Controller)
-	{
-		return;
-	}
-	const APlayerController* PlayerController{Cast<APlayerController>(Controller)};
-
 #pragma region Nullchecks
 	if (!KeypadMappingContext)
 	{
@@ -228,17 +247,15 @@ void AERCharacter::FlashlightChangeColorButtonPressed()
 	}
 
 	EquippedFlashlight->SwitchToNextColor();
-	const AERPlayerController* PC{Cast<AERPlayerController>(GetController())};
-
 #pragma region Nullchecks
-	if (!PC)
+	if (!PlayerController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	PC->OutlineUltraVioletColor(EquippedFlashlight->GetCurrentColor());
+	PlayerController->OutlineUltraVioletColor(EquippedFlashlight->GetCurrentColor());
 }
 
 void AERCharacter::Interact()
@@ -331,15 +348,35 @@ void AERCharacter::KeypadExit()
 	}
 }
 
-void AERCharacter::PerformInteractionCheck()
+void AERCharacter::SetIndicatorVisibility(const bool bVisible) const
 {
-	// Get the player controller
-	const APlayerController* PC{Cast<APlayerController>(GetController())};
+#pragma region Nullchecks
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	AERHUD* HUD{Cast<AERHUD>(PlayerController->GetHUD())};
 
 #pragma region Nullchecks
-	if (!PC)
+	if (!HUD)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|HUD is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	HUD->SetIndicatorVisibility(bVisible);
+}
+
+void AERCharacter::PerformInteractionCheck()
+{
+#pragma region Nullchecks
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
@@ -347,7 +384,7 @@ void AERCharacter::PerformInteractionCheck()
 	// Get camera location and direction
 	FVector CameraLocation;
 	FRotator CameraRotation;
-	PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
+	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 
 	// Define the start and end points of the line trace
 	const FVector Start{CameraLocation};
@@ -409,7 +446,6 @@ void AERCharacter::PerformInteractionCheck()
 void AERCharacter::EquipFlashlight(AERFlashlight* Flashlight)
 {
 	EquippedFlashlight = Flashlight;
-	const AERPlayerController* PC{Cast<AERPlayerController>(GetController())};
 
 #pragma region Nullchecks
 	if (!EquippedFlashlight)
@@ -417,15 +453,15 @@ void AERCharacter::EquipFlashlight(AERFlashlight* Flashlight)
 		UE_LOG(LogTemp, Warning, TEXT("%s|EquippedFlashlight is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!PC)
+	if (!PlayerController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PC is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
 	EquippedFlashlight->SetOwner(this);
-	PC->AddToViewportFlashlightWidget();
+	PlayerController->AddToViewportFlashlightWidget();
 
 	const USkeletalMeshSocket* HandSocket{Mesh1P->GetSocketByName(FName("RightHandSocket"))};
 

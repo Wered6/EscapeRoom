@@ -55,3 +55,16 @@ void AERInteractableActor::DisplayInteractionUI_Implementation(const bool bShowI
 
 	OutlineMeshComponentPtr->SetOverlayMaterial(bShowInteract ? OutlineMaterial : nullptr);
 }
+
+void AERInteractableActor::DisableInteraction() const
+{
+#pragma region Nullchecks
+	if (!InteractArea)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractArea is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	InteractArea->SetCollisionProfileName(TEXT("NoCollision"));
+}

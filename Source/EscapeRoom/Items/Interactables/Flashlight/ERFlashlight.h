@@ -58,29 +58,29 @@ public:
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 
 private:
-	UFUNCTION(BlueprintCallable, Category="ER|UV")
+	UFUNCTION(BlueprintCallable, Category="ER|Flashlight|UV")
 	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
 
-	UPROPERTY(VisibleAnywhere, Category="ER|UV")
+	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
 	TObjectPtr<USceneCaptureComponent2D> SceneCapture;
 
-	UPROPERTY(VisibleAnywhere, Category="ER|UV")
+	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
 	TObjectPtr<USpotLightComponent> SpotLight;
 
-	UPROPERTY(VisibleAnywhere, Category="ER|UV")
+	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
 	TObjectPtr<USpotLightComponent> SpotLightGlow;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV|DynamicMaterial")
 	TObjectPtr<UMaterialInstance> PostProcessMask;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV")
 	FFlashLightColors FlashLightColorRed{};
-	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV")
 	FFlashLightColors FlashLightColorGreen{};
-	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV")
 	FFlashLightColors FlashLightColorBlue{};
 
-	UPROPERTY(VisibleAnywhere, Category="ER|UV")
+	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
 	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_Off};
 	// TODO add light mask to look like flashlight
 };

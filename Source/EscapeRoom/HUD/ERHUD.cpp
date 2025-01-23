@@ -12,12 +12,15 @@ void AERHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
-	// TODO show dot after laptop intro, and change color to red when can interact with something
-	DrawDotCenter();
+	if (bIndicatorVisibility)
+	{
+		DrawDotCenter();
+	}
 }
 
 void AERHUD::DrawDotCenter()
 {
+	// TODO if u dont change DotCenter texture dynamically, replace logic with addtoviewport
 	if (DotCenter)
 	{
 		FVector2D ViewportSize;

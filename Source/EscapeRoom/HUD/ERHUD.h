@@ -17,10 +17,17 @@ protected:
 public:
 	virtual void DrawHUD() override;
 
+	FORCEINLINE void SetIndicatorVisibility(const bool bVisible)
+	{
+		bIndicatorVisibility = bVisible;
+	}
+
 private:
 	void DrawDotCenter();
 
-	UPROPERTY(EditDefaultsOnly, Category="ER")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Indicator")
 	TObjectPtr<UTexture2D> DotCenter;
-	// TODO Hide DotCenter when interact with keypad
+
+	UPROPERTY(VisibleAnywhere, Category="ER|Indicator")
+	bool bIndicatorVisibility{true};
 };

@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "ERCharacter.generated.h"
 
+class AERPlayerController;
 struct FInputActionValue;
 class AERFlashlight;
 class UInputAction;
@@ -22,19 +23,38 @@ public:
 	AERCharacter();
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void NotifyControllerChanged() override;
 
 public:
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
-	/** Pawn mesh: 1st person view (arms; seen only by self) */
+	/**
+	 * Pawn mesh: 1st person view (arms; seen only by self)
+	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ER|Mesh", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<USkeletalMeshComponent> Mesh1P;
 
-	/** First person camera */
+	UPROPERTY()
+	TObjectPtr<AERPlayerController> PlayerController;
+
+#pragma region Camera
+
+public:
+	void ResetCameraTransform() const;
+
+private:
+	/**
+	 * First person camera
+	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ER|Camera", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCameraComponent> Camera1P;
+
+	UPROPERTY(VisibleAnywhere, Category="ER|Camera")
+	FTransform CameraDefaultTransform;
+
+#pragma endregion
 
 #pragma region Input
 
@@ -145,10 +165,12 @@ private:
 #pragma region Interact
 
 public:
-	FORCEINLINE void SetInteractionCheck(const bool bValue)
+	FORCEINLINE void SetCanCheckInteraction(const bool bValue)
 	{
-		bInteractionCheck = bValue;
+		bCanCheckInteraction = bValue;
 	}
+
+	void SetIndicatorVisibility(const bool bVisible) const;
 
 private:
 	void PerformInteractionCheck();
@@ -162,7 +184,7 @@ private:
 	float InteractionDistance{200.f};
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
-	bool bInteractionCheck{true};
+	bool bCanCheckInteraction{true};
 
 #pragma endregion
 
@@ -185,10 +207,5 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")
 	TObjectPtr<AERFlashlight> EquippedFlashlight;
 
-#pragma endregion
-
-#pragma region Keypad
-
-public:
 #pragma endregion
 };

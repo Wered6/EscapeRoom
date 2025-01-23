@@ -7,13 +7,36 @@
 #include "EscapeRoom/Items/Interactables/Keys/ERKeyItem.h"
 #include "ERKeypad.generated.h"
 
+
 USTRUCT(BlueprintType)
-struct FMeshArray
+struct FKeypadButton
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, Category="ER|Mesh")
-	TArray<TObjectPtr<UStaticMeshComponent>> Meshes;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Keypad|Button")
+	TObjectPtr<UStaticMeshComponent> Mesh;
+	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
+	uint8 Value{};
+};
+
+USTRUCT()
+struct FKeypadButtonArray
+{
+	GENERATED_BODY()
+
+	FKeypadButtonArray()
+	{
+	}
+
+	FKeypadButtonArray(const FKeypadButton& Button1, const FKeypadButton& Button2, const FKeypadButton& Button3)
+	{
+		ButtonArray.Add(Button1);
+		ButtonArray.Add(Button2);
+		ButtonArray.Add(Button3);
+	}
+
+	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
+	TArray<FKeypadButton> ButtonArray;
 };
 
 class URectLightComponent;
@@ -26,6 +49,10 @@ class ESCAPEROOM_API AERKeypad : public AERKeyItem, public IERKeypadInterface
 public:
 	AERKeypad();
 
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	/**
 	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor in KeyItem)
 	 */
@@ -48,17 +75,88 @@ public:
 	 */
 	virtual void KeypadExit_Implementation() override;
 
-protected:
-	virtual void BeginPlay() override;
-
 private:
+	void PopulateButton2DArray();
+
+	void EnterKeypadMode();
+	void EnterDefaultMode() const;
+
 	/**
 	 * Adjust Player and it's Camera location and rotation so it looks at keypad.
 	 */
-	void SetPlayerAndCameraLocationRotation(AActor* Player) const;
+	void LookAtKeypad() const;
 
-	void PopulateButtonMeshArray();
+	/**
+	 * Updates SelectedButton variable (struct containing mesh and value of button) and outline it's mesh
+	 */
+	void UpdateSelectedButton();
 
+	/**
+	 * Start loop timer of CheckingPassword function
+	 */
+	void StartCheckingPassword();
+	void CheckingPassword();
+	void CheckPassword();
+
+	void GreenLedFlash(const float FlashTime);
+	void RedLedFlash(const float FlashTime);
+
+	void ResetGreenLedEmissive();
+	void ResetRedLedEmissive();
+	void ResetLedEmissive(UStaticMeshComponent* LedMesh);
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Utility")
+	TObjectPtr<USceneComponent> PlayerLocationScene;
+
+	/**
+	 * 0 - 9 is the same
+	 * DEL is 10, OK is 20
+	 */
+	TArray<FKeypadButtonArray> Button2DArray;
+	int8 Button2DArrayX{1};
+	int8 Button2DArrayY{1};
+	bool bCanNavigate{true};
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Keypad|Button", meta=(AllowPrivateAccess="true"))
+	FKeypadButton SelectedButton;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Button")
+	TObjectPtr<UMaterialInterface> OutlineButtonMaterial;
+
+	UPROPERTY(EditAnywhere, Category="ER|Keypad|Password")
+	FString Password;
+	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Password")
+	FString UserPassword;
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Leds")
+	TObjectPtr<UMaterialInstance> LedMaterial;
+
+	FTimerHandle GreenLedEmissiveTimerHandle;
+	FTimerHandle RedLedEmissiveTimerHandle;
+	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
+	float LedShortFlashTime{0.1f};
+	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
+	float LedLongFlashTime{1.f};
+
+	FTimerHandle LedBlinkTimerHandle;
+	/**
+	 * Interval between blinks when checking password
+	 */
+	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
+	float LedBlinkInterval{0.5f};
+	/**
+	 * Counter of blinks when checking password
+	 */
+	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Leds")
+	uint8 LoopsCounter{};
+	/**
+	 * Loops of blinking when checking password
+	 */
+	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
+	uint8 BlinkLoops{5};
+
+#pragma region Meshes
+
+private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> ButtonOneMesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
@@ -97,30 +195,6 @@ private:
 	TObjectPtr<UStaticMeshComponent> LedGreenMesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> LedRedMesh;
-
-	UPROPERTY(EditDefaultsOnly, Category="ER|Utility")
-	TObjectPtr<USceneComponent> PlayerLocationScene;
-
-	// max x is 2
-	// max y is 3
-	// arrow up [x][y == 0 ? y = 3 : y -= 1]
-	// arrow down [x][y == 3 ? y = 0 : y += 1]
-	// arrow right [x == 0 ? x = 2 : x += 1]
-	// arrow left [x == 2 ? x = 2 : x -= 1]
-	UPROPERTY(VisibleAnywhere, Category="ER|Operation")
-	int8 ButtonArrayX{1};
-	UPROPERTY(VisibleAnywhere, Category="ER|Operation")
-	int8 ButtonArrayY{1};
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="ER|Operation", meta=(AllowPrivateAccess="true"))
-	TArray<FMeshArray> ButtonMeshArray;
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="ER|Operation", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UStaticMeshComponent> SelectedButtonMesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Operation")
-	TObjectPtr<UMaterialInterface> OutlineButtonMaterial;
-	// TODO selected button when interacted with erkeypad should outline and we can switch it dynamically with inputs
-
-#pragma region Input
-
 
 #pragma endregion
 };

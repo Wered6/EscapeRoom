@@ -106,15 +106,7 @@ void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 // TODO try const on UltraVioletColor
 void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 {
-	// Modify the material parameters at runtime
-	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(PostProcessMask, this)};
-
 #pragma region Nullchecks
-	if (!DynamicMaterial)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 	if (!SpotLight)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|SpotLight is nullptr"), *FString(__FUNCTION__))
@@ -128,6 +120,17 @@ void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 	if (!PostProcessMask)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|PostProcessMask is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	// Modify the material parameters at runtime
+	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(PostProcessMask, this)};
+
+#pragma region Nullchecks
+	if (!DynamicMaterial)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion

@@ -22,6 +22,8 @@ public:
 	virtual void DisplayInteractionUI_Implementation(const bool bShowInteract) override;
 
 protected:
+	void DisableInteraction() const;
+
 	/**
 	 * Base mesh of every interactable actor
 	 */
