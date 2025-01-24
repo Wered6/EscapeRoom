@@ -99,6 +99,7 @@ void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 	}
 #pragma endregion
 
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	Character->EquipFlashlight(this);
 	RootMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

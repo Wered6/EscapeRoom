@@ -11,7 +11,6 @@ AERCabinet::AERCabinet()
 	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionProfileName(TEXT("BlockAll"));
-	RootMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 
 	DoorLeft = CreateDefaultSubobject<UChildActorComponent>(TEXT("DoorLeft"));
 	DoorLeft->SetupAttachment(RootMesh);
