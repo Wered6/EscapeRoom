@@ -68,6 +68,8 @@ AERKeypad::AERKeypad()
 	ShieldLogoMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShieldLogoMesh"));
 	ShieldLogoMesh->SetCollisionProfileName("NoCollision");
 	ShieldLogoMesh->SetupAttachment(RootMesh);
+
+	// Leds
 	LedGreenMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LedGreenMesh"));
 	LedGreenMesh->SetCollisionProfileName("NoCollision");
 	LedGreenMesh->SetupAttachment(RootMesh);
