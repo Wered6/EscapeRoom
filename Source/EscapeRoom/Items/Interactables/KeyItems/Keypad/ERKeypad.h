@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ERKeypadInteface.h"
-#include "EscapeRoom/Items/Interactables/Keys/ERKeyItem.h"
+#include "EscapeRoom/Items/Interactables/KeyItems/ERKeyItem.h"
 #include "ERKeypad.generated.h"
 
 

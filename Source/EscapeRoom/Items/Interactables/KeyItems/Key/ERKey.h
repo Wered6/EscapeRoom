@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/Keys/ERKeyItem.h"
+#include "EscapeRoom/Items/Interactables/KeyItems/ERKeyItem.h"
 #include "ERKey.generated.h"
 
 UCLASS()
