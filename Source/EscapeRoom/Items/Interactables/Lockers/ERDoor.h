@@ -20,4 +20,5 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> HandleMesh;
+	// TODO move it to separate folder
 };

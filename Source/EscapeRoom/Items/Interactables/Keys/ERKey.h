@@ -18,4 +18,5 @@ public:
 	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor in KeyItem)
 	 */
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
+	// TODO move it to separate folder
 };

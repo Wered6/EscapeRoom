@@ -33,5 +33,6 @@ private:
 	UPROPERTY(EditAnywhere, Category="ER|Drawers")
 	TObjectPtr<UChildActorComponent> DrawerThird;
 	// TODO change widgets when drawers and door are open from "otwórz" to "zamknij"
-	// TODO think about collision with drawers/doors(movable items) because not there is collision with a player
+	// TODO think about collision with drawers/doors(movable items) because there is collision with a player
+	// TODO ChildActorComponents are bad, think of creating interactablecomponent from actorcomponent and then creating from those Drawers an Doors
 };

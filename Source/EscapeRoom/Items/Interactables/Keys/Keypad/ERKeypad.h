@@ -197,4 +197,5 @@ private:
 	TObjectPtr<UStaticMeshComponent> LedRedMesh;
 
 #pragma endregion
+// TODO try to combine meshes and textures to lower the size
 };
