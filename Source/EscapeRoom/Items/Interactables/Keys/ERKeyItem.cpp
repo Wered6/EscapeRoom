@@ -2,7 +2,7 @@
 
 
 #include "ERKeyItem.h"
-#include "EscapeRoom/Items/Interactables/Lockers/ERUnlockInterface.h"
+#include "EscapeRoom/Items/Interactables/LockedItems/ERUnlockInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 AERKeyItem::AERKeyItem()

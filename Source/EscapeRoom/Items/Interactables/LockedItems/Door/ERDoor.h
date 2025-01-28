@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ERLockItem.h"
+#include "EscapeRoom/Items/Interactables/LockedItems/ERLockedItem.h"
 #include "ERDoor.generated.h"
 
 UCLASS()
-class ESCAPEROOM_API AERDoor : public AERLockItem
+class ESCAPEROOM_API AERDoor : public AERLockedItem
 {
 	GENERATED_BODY()
 
@@ -20,5 +20,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> HandleMesh;
-	// TODO move it to separate folder
 };

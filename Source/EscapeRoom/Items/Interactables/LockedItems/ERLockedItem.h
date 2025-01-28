@@ -4,21 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "ERUnlockInterface.h"
-#include "EscapeRoom/Interact/ERInteractableActor.h"
+#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "GameFramework/Actor.h"
-#include "ERLockItem.generated.h"
+#include "ERLockedItem.generated.h"
 
 /**
  * Base class for items/objects that can be locked and with possibility to unlock with keys (ERKeyItem and derivatives)
  */
 // TODO Create and implement unlock interface
 UCLASS()
-class ESCAPEROOM_API AERLockItem : public AERInteractableActor, public IERUnlockInterface
+class ESCAPEROOM_API AERLockedItem : public AERInteractableActor, public IERUnlockInterface
 {
 	GENERATED_BODY()
 
 public:
-	AERLockItem();
+	AERLockedItem();
 
 	/**
 	 * Overriding Unlock function from ERUnlockInterface

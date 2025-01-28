@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ERKeyItem.h"
+#include "EscapeRoom/Items/Interactables/Keys/ERKeyItem.h"
 #include "ERKey.generated.h"
 
 UCLASS()
@@ -18,5 +18,4 @@ public:
 	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor in KeyItem)
 	 */
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
-	// TODO move it to separate folder
 };

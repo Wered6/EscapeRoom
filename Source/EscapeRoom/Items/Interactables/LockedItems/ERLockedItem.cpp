@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ERLockItem.h"
+#include "ERLockedItem.h"
 #include "Components/BoxComponent.h"
 
-AERLockItem::AERLockItem()
+AERLockedItem::AERLockedItem()
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AERLockItem::Unlock_Implementation()
+void AERLockedItem::Unlock_Implementation()
 {
 	if (!bLocked)
 	{
@@ -19,7 +19,7 @@ void AERLockItem::Unlock_Implementation()
 	bLocked = false;
 }
 
-void AERLockItem::InteractStart_Implementation(AActor* OtherInstigator)
+void AERLockedItem::InteractStart_Implementation(AActor* OtherInstigator)
 {
 	Super::InteractStart_Implementation(OtherInstigator);
 

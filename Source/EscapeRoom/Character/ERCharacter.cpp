@@ -8,7 +8,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "EscapeRoom/HUD/ERHUD.h"
-#include "EscapeRoom/Interact/ERInteractInterface.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 #include "EscapeRoom/Items/Interactables/Keys/Keypad/ERKeypadInteface.h"
 #include "EscapeRoom/PlayerController/ERPlayerController.h"

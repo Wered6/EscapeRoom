@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Interact/ERInteractableActor.h"
+#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "GameFramework/Actor.h"
 #include "ERKeyItem.generated.h"
 
-class AERLockItem;
+class AERLockedItem;
 
 /**
  * Base class for items/objects than can unlock locked items (ERLockItem and derivatives)

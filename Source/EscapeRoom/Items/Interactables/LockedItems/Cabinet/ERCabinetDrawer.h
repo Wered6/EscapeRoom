@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/Lockers/ERLockItem.h"
+#include "EscapeRoom/Items/Interactables/LockedItems/ERLockedItem.h"
 #include "ERCabinetDrawer.generated.h"
 
 UCLASS()
-class ESCAPEROOM_API AERCabinetDrawer : public AERLockItem
+class ESCAPEROOM_API AERCabinetDrawer : public AERLockedItem
 {
 	GENERATED_BODY()
 

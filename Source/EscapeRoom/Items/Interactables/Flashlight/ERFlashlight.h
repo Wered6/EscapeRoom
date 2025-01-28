@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Interact/ERInteractableActor.h"
+#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "ERFlashlight.generated.h"
 
 class USpotLightComponent;
