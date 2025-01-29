@@ -49,7 +49,7 @@ void AERTV::BeginPlay()
 	}
 #pragma endregion
 
-	// Comment out only fo test
+	// Comment out only for tests
 	// FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowWidgetOnScreen);
 	// FilmMediaPlayer->OpenSource(FilmMediaSource);
 }
