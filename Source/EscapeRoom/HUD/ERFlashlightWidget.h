@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "FlashlightWidget.generated.h"
+#include "ERFlashlightWidget.generated.h"
 
 enum class EUltraVioletColor : uint8;
 
 class UImage;
 
 UCLASS()
-class ESCAPEROOM_API UFlashlightWidget : public UUserWidget
+class ESCAPEROOM_API UERFlashlightWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FlashlightWidget.h"
+#include "ERFlashlightWidget.h"
 #include "Components/Image.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 
-void UFlashlightWidget::OutlineUltraVioletColor(const EUltraVioletColor UltraVioletColor) const
+void UERFlashlightWidget::OutlineUltraVioletColor(const EUltraVioletColor UltraVioletColor) const
 {
 #pragma region Nullchecks
 	if (!FlashlightIcon_OFF)
@@ -61,7 +61,7 @@ void UFlashlightWidget::OutlineUltraVioletColor(const EUltraVioletColor UltraVio
 	}
 }
 
-void UFlashlightWidget::OutlineIcon(UImage* Icon, const bool bOutline) const
+void UERFlashlightWidget::OutlineIcon(UImage* Icon, const bool bOutline) const
 {
 #pragma region Nullchecks
 	if (!FlashlightIcon)

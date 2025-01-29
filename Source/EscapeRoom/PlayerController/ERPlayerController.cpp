@@ -2,7 +2,7 @@
 
 
 #include "ERPlayerController.h"
-#include "EscapeRoom/HUD/FlashlightWidget.h"
+#include "EscapeRoom/HUD/ERFlashlightWidget.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 
 void AERPlayerController::AddToViewportFlashlightWidget() const
@@ -44,5 +44,5 @@ void AERPlayerController::BeginPlay()
 	}
 #pragma endregion
 
-	FlashlightWidget = CreateWidget<UFlashlightWidget>(this, FlashlightWidgetClass);
+	FlashlightWidget = CreateWidget<UERFlashlightWidget>(this, FlashlightWidgetClass);
 }

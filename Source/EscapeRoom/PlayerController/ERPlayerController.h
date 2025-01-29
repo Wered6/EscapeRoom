@@ -7,7 +7,7 @@
 #include "ERPlayerController.generated.h"
 
 enum class EUltraVioletColor : uint8;
-class UFlashlightWidget;
+class UERFlashlightWidget;
 
 UCLASS()
 class ESCAPEROOM_API AERPlayerController : public APlayerController
@@ -23,8 +23,8 @@ protected:
 
 private:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UFlashlightWidget> FlashlightWidgetClass;
+	TSubclassOf<UERFlashlightWidget> FlashlightWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UFlashlightWidget> FlashlightWidget;
+	TObjectPtr<UERFlashlightWidget> FlashlightWidget;
 };
