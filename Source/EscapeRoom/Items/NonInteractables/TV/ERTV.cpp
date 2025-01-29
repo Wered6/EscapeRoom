@@ -21,7 +21,7 @@ AERTV::AERTV()
 	TVScreenWidget->SetupAttachment(RootMesh);
 	// Hide widget from screen in scene
 	TVScreenWidget->SetRelativeLocation(FVector(0.f, 0.f, 1000.f));
-	TVScreenWidget->SetDrawSize(FVector2D(1080.f, 1080.f));
+	TVScreenWidget->SetDrawSize(FVector2D(1440.f, 1440.f));
 
 	FilmSound = CreateDefaultSubobject<UMediaSoundComponent>(TEXT("FilmSound"));
 	FilmSound->SetupAttachment(RootMesh);
