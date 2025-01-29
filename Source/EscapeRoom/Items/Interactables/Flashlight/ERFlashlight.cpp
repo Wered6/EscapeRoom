@@ -127,6 +127,7 @@ void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 
 	// Modify the material parameters at runtime
 	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(PostProcessMask, this)};
+	// TODO change all UMaterialInstanceDynamic::Create into Mesh->CreateDynamicMaterialInstance
 
 #pragma region Nullchecks
 	if (!DynamicMaterial)

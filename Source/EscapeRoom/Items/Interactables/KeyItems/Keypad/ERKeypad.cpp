@@ -378,6 +378,7 @@ void AERKeypad::GreenLedFlash(const float FlashTime)
 {
 	// Modify the material parameters at runtime
 	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(LedMaterial, this)};
+	// TODO change all UMaterialInstanceDynamic::Create into Mesh->CreateDynamicMaterialInstance
 
 #pragma region Nullchecks
 	if (!DynamicMaterial)

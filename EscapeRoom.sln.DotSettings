@@ -4,12 +4,15 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=EFS/@EntryIndexedValue">EFS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=ER/@EntryIndexedValue">ER</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=ERHUD/@EntryIndexedValue">ERHUD</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=ERTV/@EntryIndexedValue">ERTV</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=EVC/@EntryIndexedValue">EVC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=GREEN/@EntryIndexedValue">GREEN</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=OFF/@EntryIndexedValue">OFF</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=RED/@EntryIndexedValue">RED</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=WHITE/@EntryIndexedValue">WHITE</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=aertv/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=eklc/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=erhud/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=ertv/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=leds/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=ssword/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
