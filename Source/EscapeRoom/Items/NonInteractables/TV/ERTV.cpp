@@ -17,7 +17,7 @@ AERTV::AERTV()
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
-	TVScreenWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TVWidget"));
+	TVScreenWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TVScreenWidget"));
 	TVScreenWidget->SetupAttachment(RootMesh);
 	// Hide widget from screen in scene
 	TVScreenWidget->SetRelativeLocation(FVector(0.f, 0.f, 1000.f));
@@ -49,11 +49,12 @@ void AERTV::BeginPlay()
 	}
 #pragma endregion
 
-	FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowWidgetOnScreen);
-	FilmMediaPlayer->OpenSource(FilmMediaSource);
+	// Comment out only fo test
+	// FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowWidgetOnScreen);
+	// FilmMediaPlayer->OpenSource(FilmMediaSource);
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
+// ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
 void AERTV::ShowWidgetOnScreen()
 {
 	UMaterialInstanceDynamic* DynamicMaterial{RootMesh->CreateDynamicMaterialInstance(1)};
@@ -67,6 +68,11 @@ void AERTV::ShowWidgetOnScreen()
 	if (!TVScreenWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!TVScreenWidget->GetRenderTarget())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget->GetRenderTarget() is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion

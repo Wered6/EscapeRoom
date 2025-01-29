@@ -24,7 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UFUNCTION()
+	// It's callable only for tests
+	UFUNCTION(BlueprintCallable)
 	void ShowWidgetOnScreen();
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
