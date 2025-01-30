@@ -90,6 +90,9 @@ void AERKeypad::BeginPlay()
 	Super::BeginPlay();
 
 	PopulateButton2DArray();
+
+	GreenLedDynamicMaterial = LedGreenMesh->CreateDynamicMaterialInstance(0);
+	RedLedDynamicMaterial = LedRedMesh->CreateDynamicMaterialInstance(0);
 }
 
 void AERKeypad::InteractStart_Implementation(AActor* OtherInstigator)
@@ -129,7 +132,7 @@ void AERKeypad::KeypadAcceptButtonPressed_Implementation()
 	{
 		UserPassword = UserPassword + FString::FromInt(SelectedButton.Value);
 
-		GreenLedFlash(LedShortFlashTime);
+		LedFlash(ELedColor::Green, LedShortFlashTime);
 		// TODO add sound for green led
 	}
 	// DEL/OK
@@ -143,7 +146,7 @@ void AERKeypad::KeypadAcceptButtonPressed_Implementation()
 				UserPassword = UserPassword.LeftChop(1);
 			}
 
-			RedLedFlash(LedShortFlashTime);
+			LedFlash(ELedColor::Red, LedShortFlashTime);
 			// TODO add sound for red led
 		}
 		// If OK
@@ -341,8 +344,8 @@ void AERKeypad::CheckingPassword()
 	// Perform blink leds as many times as BlinkLoops counts
 	if (LoopsCounter++ < BlinkLoops)
 	{
-		RedLedFlash(LedShortFlashTime);
-		GreenLedFlash(LedShortFlashTime);
+		LedFlash(ELedColor::Red, LedShortFlashTime);
+		LedFlash(ELedColor::Green, LedShortFlashTime);
 	}
 
 	// End of blinking; BlinkLoops +1 to give one more loop without flashes
@@ -362,125 +365,58 @@ void AERKeypad::CheckPassword()
 	if (Password == UserPassword)
 	{
 		UnlockLockedItems();
-		GreenLedFlash(LedLongFlashTime);
+		LedFlash(ELedColor::Green, LedLongFlashTime);
 		EnterDefaultMode();
 		DisableInteraction();
 	}
 	else
 	{
-		RedLedFlash(LedLongFlashTime);
+		LedFlash(ELedColor::Red, LedLongFlashTime);
 		UserPassword.Empty();
 		// TODO add sound
 	}
 }
 
-void AERKeypad::GreenLedFlash(const float FlashTime)
-{
-	// Modify the material parameters at runtime
-	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(LedMaterial, this)};
-	// TODO change all UMaterialInstanceDynamic::Create into Mesh->CreateDynamicMaterialInstance
-
-#pragma region Nullchecks
-	if (!DynamicMaterial)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!LedGreenMesh)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedGreenMesh is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	DynamicMaterial->SetScalarParameterValue(FName("Emissive"), 2.f);
-	LedGreenMesh->SetMaterial(0, DynamicMaterial);
-
-	// Set timer to flash led
-	GetWorldTimerManager().SetTimer(GreenLedEmissiveTimerHandle, this, &AERKeypad::ResetGreenLedEmissive, FlashTime);
-}
-
-void AERKeypad::RedLedFlash(const float FlashTime)
-{
-	// Modify the material parameters at runtime
-	UMaterialInstanceDynamic* DynamicMaterial{UMaterialInstanceDynamic::Create(LedMaterial, this)};
-
-#pragma region Nullchecks
-	if (!DynamicMaterial)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!LedGreenMesh)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedGreenMesh is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	DynamicMaterial->SetScalarParameterValue(FName("Emissive"), 2.f);
-	LedRedMesh->SetMaterial(0, DynamicMaterial);
-
-	// Set timer to flash led
-	GetWorldTimerManager().SetTimer(RedLedEmissiveTimerHandle, this, &AERKeypad::ResetRedLedEmissive, FlashTime);
-}
-
-void AERKeypad::ResetGreenLedEmissive()
+void AERKeypad::LedFlash(const ELedColor LedColor, const float FlashTime)
 {
 #pragma region Nullchecks
-	if (!LedGreenMesh)
+	if (!GreenLedDynamicMaterial)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedGreenMesh is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|GreenLedDynamicMaterial is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!RedLedDynamicMaterial)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|RedLedDynamicMaterial is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	ResetLedEmissive(LedGreenMesh);
-}
-
-void AERKeypad::ResetRedLedEmissive()
-{
-#pragma region Nullchecks
-	if (!LedRedMesh)
+	switch (LedColor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedRedMesh is nullptr"), *FString(__FUNCTION__))
-		return;
+	case ELedColor::Green:
+		// Set Emissive of Green Led
+		GreenLedDynamicMaterial->SetScalarParameterValue(FName("Emissive"), 2.f);
+	// Reset Emissive of Green Led after FlashTime
+		GetWorldTimerManager().SetTimer(GreenLedEmissiveTimerHandle, [this]
+		                                {
+			                                GreenLedDynamicMaterial->SetScalarParameterValue(FName("Emissive"), 0.f);
+		                                },
+		                                FlashTime,
+		                                false
+		);
+		break;
+	case ELedColor::Red:
+		// Set Emissive of Red Led
+		RedLedDynamicMaterial->SetScalarParameterValue(FName("Emissive"), 2.f);
+	// Reset Emissive of Red Led after FlashTime
+		GetWorldTimerManager().SetTimer(RedLedEmissiveTimerHandle, [this]
+		                                {
+			                                RedLedDynamicMaterial->SetScalarParameterValue(FName("Emissive"), 0.f);
+		                                },
+		                                FlashTime,
+		                                false
+		);
+		break;
 	}
-#pragma endregion
-
-	ResetLedEmissive(LedRedMesh);
-}
-
-void AERKeypad::ResetLedEmissive(UStaticMeshComponent* LedMesh)
-{
-#pragma region Nullchecks
-	if (!LedMaterial)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedMaterial is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!LedGreenMesh)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedGreenMesh is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!LedRedMesh)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedRedMesh is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	UMaterialInstanceDynamic* LedDynamicMaterial{UMaterialInstanceDynamic::Create(LedMaterial, this)};
-
-#pragma region Nullchecks
-	if (!LedDynamicMaterial)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LedDynamicMaterial is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	LedDynamicMaterial->SetScalarParameterValue(FName("Emissive"), 0.f);
-	LedMesh->SetMaterial(0, LedDynamicMaterial);
 }

@@ -39,6 +39,12 @@ struct FKeypadButtonArray
 	TArray<FKeypadButton> ButtonArray;
 };
 
+enum class ELedColor : uint8
+{
+	Green,
+	Red
+};
+
 class URectLightComponent;
 
 UCLASS()
@@ -98,12 +104,7 @@ private:
 	void CheckingPassword();
 	void CheckPassword();
 
-	void GreenLedFlash(const float FlashTime);
-	void RedLedFlash(const float FlashTime);
-
-	void ResetGreenLedEmissive();
-	void ResetRedLedEmissive();
-	void ResetLedEmissive(UStaticMeshComponent* LedMesh);
+	void LedFlash(const ELedColor LedColor, float FlashTime);
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Utility")
 	TObjectPtr<USceneComponent> PlayerLocationScene;
@@ -127,8 +128,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Password")
 	FString UserPassword;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Leds")
-	TObjectPtr<UMaterialInstance> LedMaterial;
+	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Leds")
+	TObjectPtr<UMaterialInstanceDynamic> GreenLedDynamicMaterial;
+	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Leds")
+	TObjectPtr<UMaterialInstanceDynamic> RedLedDynamicMaterial;
 
 	FTimerHandle GreenLedEmissiveTimerHandle;
 	FTimerHandle RedLedEmissiveTimerHandle;
@@ -197,5 +200,5 @@ private:
 	TObjectPtr<UStaticMeshComponent> LedRedMesh;
 
 #pragma endregion
-// TODO try to combine meshes and textures to lower the size
+	// TODO try to combine meshes and textures to lower the size
 };
