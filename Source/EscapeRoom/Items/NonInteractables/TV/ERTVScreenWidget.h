@@ -18,6 +18,9 @@ class ESCAPEROOM_API UERTVScreenWidget : public UUserWidget
 public:
 	virtual void NativePreConstruct() override;
 
+	UFUNCTION(BlueprintCallable)
+	void EnterSignToPassword(FString Sign);
+
 private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
 	TObjectPtr<UHorizontalBox> PasswordHBox;
@@ -40,12 +43,13 @@ private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
 	TObjectPtr<UCanvasPanel> SeventhPanel;
 
+	UPROPERTY(EditDefaultsOnly, Category="ER")
+	FString Password{"rabarbar"};
 	UPROPERTY(VisibleAnywhere, Category="ER")
-	FString Password;
+	FString UserPassword;
 
 	UPROPERTY(VisibleAnywhere, Category="ER")
 	TArray<UCanvasPanel*> HangmanPanelsArray;
-
 	UPROPERTY(VisibleAnywhere, Category="ER")
 	uint8 HangmanPanelsArrayIndex;
 

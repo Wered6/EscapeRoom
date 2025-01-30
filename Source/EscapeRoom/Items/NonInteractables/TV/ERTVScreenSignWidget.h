@@ -6,12 +6,15 @@
 #include "Blueprint/UserWidget.h"
 #include "ERTVScreenSignWidget.generated.h"
 
+class UERTVScreenWidget;
 class UTextBlock;
 
 UCLASS()
 class ESCAPEROOM_API UERTVScreenSignWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+	friend UERTVScreenWidget;
 
 public:
 	virtual void NativePreConstruct() override;
