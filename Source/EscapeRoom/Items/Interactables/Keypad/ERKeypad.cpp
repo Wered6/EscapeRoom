@@ -3,6 +3,7 @@
 
 #include "ERKeypad.h"
 #include "Camera/CameraComponent.h"
+#include "EscapeRoom/Components/ERKeyComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -81,6 +82,8 @@ AERKeypad::AERKeypad()
 	PlayerLocationScene = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerLocationScene"));
 	PlayerLocationScene->SetupAttachment(RootMesh);
 	PlayerLocationScene->SetRelativeLocation(FVector(0.f, -150.f, 30.f));
+
+	KeyComponent = CreateDefaultSubobject<UERKeyComponent>(TEXT("KeyComponent"));
 
 	OutlineMeshComponentPtr = RootMesh;
 }
@@ -364,7 +367,7 @@ void AERKeypad::CheckPassword()
 
 	if (Password == UserPassword)
 	{
-		UnlockLockedItems();
+		KeyComponent->UnlockLockedItems();
 		LedFlash(ELedColor::Green, LedLongFlashTime);
 		EnterDefaultMode();
 		DisableInteraction();

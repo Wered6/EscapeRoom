@@ -9,7 +9,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "EscapeRoom/HUD/ERHUD.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
-#include "EscapeRoom/Items/Interactables/KeyItems/Keypad/ERKeypadInteface.h"
+#include "EscapeRoom/Items/Interactables/Keypad/ERKeypadInteface.h"
 #include "EscapeRoom/PlayerController/ERPlayerController.h"
 
 AERCharacter::AERCharacter()

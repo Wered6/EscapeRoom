@@ -2,11 +2,14 @@
 
 
 #include "ERCabinetDoor.h"
+#include "EscapeRoom/Components/ERLockComponent.h"
 
 
 AERCabinetDoor::AERCabinetDoor()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	LockComponent = CreateDefaultSubobject<UERLockComponent>(TEXT("LockComponent"));
 
 	OutlineMeshComponentPtr = RootMesh;
 }

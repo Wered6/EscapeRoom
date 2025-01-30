@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "ERKeypadInteface.h"
-#include "EscapeRoom/Items/Interactables/KeyItems/ERKeyItem.h"
+#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "ERKeypad.generated.h"
 
+class URectLightComponent;
+class UERKeyComponent;
 
 USTRUCT(BlueprintType)
 struct FKeypadButton
@@ -45,10 +47,8 @@ enum class ELedColor : uint8
 	Red
 };
 
-class URectLightComponent;
-
 UCLASS()
-class ESCAPEROOM_API AERKeypad : public AERKeyItem, public IERKeypadInterface
+class ESCAPEROOM_API AERKeypad : public AERInteractableActor, public IERKeypadInterface
 {
 	GENERATED_BODY()
 
@@ -157,6 +157,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
 	uint8 BlinkLoops{5};
 
+	UPROPERTY(VisibleAnywhere, Category="ER|Key")
+	TObjectPtr<UERKeyComponent> KeyComponent;
+
 #pragma region Meshes
 
 private:
@@ -184,6 +187,7 @@ private:
 	TObjectPtr<UStaticMeshComponent> ButtonZeroMesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> ButtonOKMesh;
+
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> ScrewL1Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")

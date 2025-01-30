@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/KeyItems/ERKeyItem.h"
+#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "ERKey.generated.h"
 
+class UERKeyComponent;
+
 UCLASS()
-class ESCAPEROOM_API AERKey : public AERKeyItem
+class ESCAPEROOM_API AERKey : public AERInteractableActor
 {
 	GENERATED_BODY()
 
@@ -18,4 +20,8 @@ public:
 	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor in KeyItem)
 	 */
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
+
+private:
+	UPROPERTY(VisibleAnywhere, Category="ER|Components")
+	TObjectPtr<UERKeyComponent> KeyComponent;
 };

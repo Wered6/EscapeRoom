@@ -14,16 +14,16 @@ AERInteractableActor::AERInteractableActor()
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
+	InteractArea = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractArea"));
+	InteractArea->SetupAttachment(RootMesh);
+	InteractArea->SetCollisionProfileName(TEXT("InteractArea"));
+
 	InteractWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractKeyWidget"));
-	InteractWidget->SetupAttachment(RootMesh);
+	InteractWidget->SetupAttachment(InteractArea);
 	InteractWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	InteractWidget->SetDrawAtDesiredSize(true);
 	// At start it's hidden because we want to see it only when player is near enough
 	InteractWidget->SetVisibility(false);
-
-	InteractArea = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractArea"));
-	InteractArea->SetupAttachment(RootMesh);
-	InteractArea->SetCollisionProfileName(TEXT("InteractArea"));
 }
 
 void AERInteractableActor::InteractStart_Implementation(AActor* OtherInstigator)

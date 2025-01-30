@@ -3,6 +3,9 @@
 
 #include "ERDoor.h"
 
+#include "Components/BoxComponent.h"
+#include "EscapeRoom/Components/ERLockComponent.h"
+
 
 AERDoor::AERDoor()
 {
@@ -12,9 +15,13 @@ AERDoor::AERDoor()
 	DoorMesh->SetupAttachment(RootMesh);
 	DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
+	InteractArea->SetupAttachment(DoorMesh);
+
 	HandleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HandleMesh"));
 	HandleMesh->SetupAttachment(DoorMesh);
 	HandleMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+	LockComponent = CreateDefaultSubobject<UERLockComponent>(TEXT("LockComponent"));
 
 	OutlineMeshComponentPtr = HandleMesh;
 }
