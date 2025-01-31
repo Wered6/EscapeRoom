@@ -2,6 +2,8 @@
 
 
 #include "ERTV.h"
+
+#include "ERTVScreenWidget.h"
 #include "FileMediaSource.h"
 #include "MediaPlayer.h"
 #include "Components/WidgetComponent.h"
@@ -52,6 +54,21 @@ void AERTV::BeginPlay()
 	// Comment out only for tests
 	// FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowWidgetOnScreen);
 	// FilmMediaPlayer->OpenSource(FilmMediaSource);
+}
+
+void AERTV::EnterSignToPassword(const FString& Sign) const
+{
+	UERTVScreenWidget* ScreenWidget{Cast<UERTVScreenWidget>(TVScreenWidget->GetWidget())};
+
+#pragma region Nullchecks
+	if (!ScreenWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ScreenWidget is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	ScreenWidget->EnterSignToPassword(Sign);
 }
 
 // ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst

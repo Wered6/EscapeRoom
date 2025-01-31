@@ -32,6 +32,6 @@ public:
 	}
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="ER|Lock")
+	UPROPERTY(EditAnywhere, Category="ER|Lock")
 	bool bLocked{true};
 };

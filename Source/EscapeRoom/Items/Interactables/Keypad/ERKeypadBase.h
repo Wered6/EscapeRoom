@@ -150,6 +150,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
 	uint8 NumberOfBlinks{5};
 
+	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
+	float ButtonDepth{3.f};
+
 #pragma region Meshes
 
 private:

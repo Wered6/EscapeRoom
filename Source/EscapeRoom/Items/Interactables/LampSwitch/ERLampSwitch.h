@@ -17,10 +17,10 @@ public:
 	AERLampSwitch();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|LampSwitch|Mesh")
 	TObjectPtr<UStaticMeshComponent> SwitchMesh;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="ER|Pick Actor")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="ER|LampSwitch")
 	TObjectPtr<AERCeilingLamp> Lamp;
 	// TODO add sound click switch
 };

@@ -109,7 +109,7 @@ void AERKeypadBase::KeypadMove_Implementation(const FVector2D& MovementVector)
 		return;
 	}
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		Button2DArrayX += MovementVector.X;
 		// Wrap limit 0 - 2
@@ -386,12 +386,12 @@ void AERKeypadBase::LedBlinking()
 		GetWorldTimerManager().ClearTimer(LedBlinkTimerHandle);
 		LedBlinkLoopCounter = 0;
 
+		bCanNavigate = true;
+
 		// Delegate
 		if (OnEndLedBlinking.IsBound())
 		{
 			OnEndLedBlinking.Execute();
-
-			bCanNavigate = true;
 		}
 	}
 }

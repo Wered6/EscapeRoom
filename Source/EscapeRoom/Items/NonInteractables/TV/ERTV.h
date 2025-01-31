@@ -23,6 +23,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	void EnterSignToPassword(const FString& Sign) const;
+
 private:
 	// It's callable only for tests
 	UFUNCTION(BlueprintCallable)

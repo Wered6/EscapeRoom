@@ -37,7 +37,7 @@ void UERTVScreenWidget::NativePreConstruct()
 	UserPassword = FString::ChrN(Password.Len(), TEXT('_'));
 }
 
-void UERTVScreenWidget::EnterSignToPassword(const FString Sign)
+void UERTVScreenWidget::EnterSignToPassword(const FString& Sign)
 {
 #pragma region Nullchecks
 	if (!EnteredSign)

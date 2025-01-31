@@ -12,21 +12,9 @@ AERCeilingLamp::AERCeilingLamp()
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
-	LightLeft = CreateDefaultSubobject<URectLightComponent>(TEXT("LightDownLeft"));
-	LightLeft->SetupAttachment(RootMesh);
-	LightLeft->SetRelativeLocation(FVector(0.f, -3.f, -30.f));
-	LightLeft->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	LightLeft->SetIntensity(5000.f);
-	LightLeft->SetIntensityUnits(ELightUnits::Unitless);
-	LightLeft->SetSourceWidth(3.f);
-	LightLeft->SetSourceHeight(120.f);
-	LightLeft->SetBarnDoorAngle(90.f);
-	LightLeft->SetBarnDoorLength(10.f);
-	LightLeft->SetVisibility(false);
-
-	LightRight = CreateDefaultSubobject<URectLightComponent>(TEXT("LightDownRight"));
+	LightRight = CreateDefaultSubobject<URectLightComponent>(TEXT("LightRight"));
 	LightRight->SetupAttachment(RootMesh);
-	LightRight->SetRelativeLocation(FVector(0.f, 3.f, -30.f));
+	LightRight->SetRelativeLocation(FVector(0.f, -3.f, -30.f));
 	LightRight->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 	LightRight->SetIntensity(5000.f);
 	LightRight->SetIntensityUnits(ELightUnits::Unitless);
@@ -36,11 +24,23 @@ AERCeilingLamp::AERCeilingLamp()
 	LightRight->SetBarnDoorLength(10.f);
 	LightRight->SetVisibility(false);
 
-	HelpLight = CreateDefaultSubobject<URectLightComponent>(TEXT("LightUp"));
+	LightLeft = CreateDefaultSubobject<URectLightComponent>(TEXT("LightLeft"));
+	LightLeft->SetupAttachment(RootMesh);
+	LightLeft->SetRelativeLocation(FVector(0.f, 3.f, -30.f));
+	LightLeft->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
+	LightLeft->SetIntensity(5000.f);
+	LightLeft->SetIntensityUnits(ELightUnits::Unitless);
+	LightLeft->SetSourceWidth(3.f);
+	LightLeft->SetSourceHeight(120.f);
+	LightLeft->SetBarnDoorAngle(90.f);
+	LightLeft->SetBarnDoorLength(10.f);
+	LightLeft->SetVisibility(false);
+
+	HelpLight = CreateDefaultSubobject<URectLightComponent>(TEXT("HelpLight"));
 	HelpLight->SetupAttachment(RootMesh);
-	HelpLight->SetRelativeLocation(FVector(0.f, 0.f, -81.f));
+	HelpLight->SetRelativeLocation(FVector(0.f, 0.f, -120.f));
 	HelpLight->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
-	HelpLight->SetIntensity(1000.f);
+	HelpLight->SetIntensity(500.f);
 	HelpLight->SetIntensityUnits(ELightUnits::Unitless);
 	HelpLight->SetSourceWidth(10.f);
 	HelpLight->SetSourceHeight(120.f);
@@ -50,9 +50,27 @@ AERCeilingLamp::AERCeilingLamp()
 	HelpLight->SetVisibility(false);
 }
 
+void AERCeilingLamp::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	LightDynMat = RootMesh->CreateDynamicMaterialInstance(0);
+	LightRight->SetVisibility(bLightOn);
+	LightLeft->SetVisibility(bLightOn);
+	HelpLight->SetVisibility(bLightOn);
+	UpdateLightsEmissive();
+}
+
 void AERCeilingLamp::TurnLights() const
 {
-	LightLeft->ToggleVisibility();
 	LightRight->ToggleVisibility();
+	LightLeft->ToggleVisibility();
 	HelpLight->ToggleVisibility();
+	UpdateLightsEmissive();
+}
+
+void AERCeilingLamp::UpdateLightsEmissive() const
+{
+	LightDynMat->SetScalarParameterValue(FName("EmissiveLeft"), LightRight->IsVisible() ? 20.f : 0.f);
+	LightDynMat->SetScalarParameterValue(FName("EmissiveRight"), LightLeft->IsVisible() ? 20.f : 0.f);
 }

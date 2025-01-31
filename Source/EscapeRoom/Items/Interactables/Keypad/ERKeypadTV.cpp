@@ -2,6 +2,7 @@
 
 
 #include "ERKeypadTV.h"
+#include "EscapeRoom/Items/NonInteractables/TV/ERTV.h"
 
 
 AERKeypadTV::AERKeypadTV()
@@ -9,7 +10,48 @@ AERKeypadTV::AERKeypadTV()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AERKeypadTV::BeginPlay()
+void AERKeypadTV::KeypadButtonPressed_Implementation()
 {
-	Super::BeginPlay();
+#pragma region Nullchecks
+	if (!TV)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TV is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	Super::KeypadButtonPressed_Implementation();
+
+	// All buttons except DEL and OK
+	if (SelectedButton.Value < 10)
+	{
+		Sign <<= 1;
+		Sign |= SelectedButton.Value;
+	}
+	// DEL/OK
+	else
+	{
+		// DEL
+		if (SelectedButton.Value == 10)
+		{
+			Sign >>= 1;
+		}
+		// OK
+		else if (SelectedButton.Value == 20)
+		{
+			// Limit between alphabet
+			if (Sign < 65 || (Sign > 90 && Sign < 96) || Sign > 122)
+			{
+				// 0b00111111 = '?' sign
+				Sign = 0b00111111;
+			}
+			const TCHAR TempChar{Sign};
+			TV->EnterSignToPassword(FString(1, &TempChar));
+			// Reset to 0
+			Sign = 0b00000000;
+			// TODO OnEndLedBlinking check letter
+			// Long red led on fail letter
+			// Long Green led of success letter
+		}
+	}
 }
