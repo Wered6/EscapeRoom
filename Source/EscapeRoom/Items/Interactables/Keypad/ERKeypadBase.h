@@ -74,11 +74,11 @@ public:
 	/**
 	 * Overriding KeypadAcceptButtonPressed function from ERKeypadInterface
 	 */
-	virtual void KeypadAcceptButtonPressed_Implementation() override;
+	virtual void KeypadButtonPressed_Implementation() override;
 	/**
 	 * Overriding KeypadAcceptButtonReleased function from ERKeypadInterface
 	 */
-	virtual void KeypadAcceptButtonReleased_Implementation() override;
+	virtual void KeypadButtonReleased_Implementation() override;
 	/**
 	 * Overriding KeypadExit function from ERKeypadInterface
 	 */

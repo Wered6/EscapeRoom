@@ -93,12 +93,12 @@ protected:
 	/**
 	 * Call for keypad accept button pressed action
 	 */
-	void KeypadAcceptButtonPressed();
+	void KeypadButtonPressed();
 
 	/**
 	 * Call for keypad accept button released action
 	 */
-	void KeypadAcceptButtonReleased();
+	void KeypadButtonReleased();
 
 	/**
 	 * Call for keypad exit action
@@ -152,7 +152,7 @@ private:
 	 * Keypad Accept Input Action
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
-	TObjectPtr<UInputAction> KeypadAcceptAction;
+	TObjectPtr<UInputAction> KeypadButtonAction;
 
 	/**
 	 * Keypad exit Input Action

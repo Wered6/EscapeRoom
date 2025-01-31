@@ -109,9 +109,9 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadMoveAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!KeypadAcceptAction)
+	if (!KeypadButtonAction)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadAcceptAction is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadButtonAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 	if (!KeypadExitAction)
@@ -150,10 +150,10 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(KeypadMoveAction, ETriggerEvent::Triggered, this, &AERCharacter::KeypadMove);
 
 	// Keypad Accept button pressed
-	EnhancedInputComponent->BindAction(KeypadAcceptAction, ETriggerEvent::Started, this, &AERCharacter::KeypadAcceptButtonPressed);
+	EnhancedInputComponent->BindAction(KeypadButtonAction, ETriggerEvent::Started, this, &AERCharacter::KeypadButtonPressed);
 
 	// Keypad Accept button released
-	EnhancedInputComponent->BindAction(KeypadAcceptAction, ETriggerEvent::Completed, this, &AERCharacter::KeypadAcceptButtonReleased);
+	EnhancedInputComponent->BindAction(KeypadButtonAction, ETriggerEvent::Completed, this, &AERCharacter::KeypadButtonReleased);
 
 	// Keypad Exit
 	EnhancedInputComponent->BindAction(KeypadExitAction, ETriggerEvent::Started, this, &AERCharacter::KeypadExit);
@@ -294,7 +294,7 @@ void AERCharacter::KeypadMove(const FInputActionValue& Value)
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void AERCharacter::KeypadAcceptButtonPressed()
+void AERCharacter::KeypadButtonPressed()
 {
 #pragma region Nullchecks
 	if (!InteractableActor)
@@ -307,12 +307,12 @@ void AERCharacter::KeypadAcceptButtonPressed()
 	// If interactable actor has keypad interface fire keypad move function
 	if (InteractableActor->Implements<UERKeypadInterface>())
 	{
-		IERKeypadInterface::Execute_KeypadAcceptButtonPressed(InteractableActor);
+		IERKeypadInterface::Execute_KeypadButtonPressed(InteractableActor);
 	}
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void AERCharacter::KeypadAcceptButtonReleased()
+void AERCharacter::KeypadButtonReleased()
 {
 #pragma region Nullchecks
 	if (!InteractableActor)
@@ -325,7 +325,7 @@ void AERCharacter::KeypadAcceptButtonReleased()
 	// If interactable actor has keypad interface fire keypad move function
 	if (InteractableActor->Implements<UERKeypadInterface>())
 	{
-		IERKeypadInterface::Execute_KeypadAcceptButtonReleased(InteractableActor);
+		IERKeypadInterface::Execute_KeypadButtonReleased(InteractableActor);
 	}
 }
 

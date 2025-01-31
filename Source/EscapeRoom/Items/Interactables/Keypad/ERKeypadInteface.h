@@ -21,10 +21,10 @@ public:
 	void KeypadMove(const FVector2D& MovementVector);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Keypad")
-	void KeypadAcceptButtonPressed();
+	void KeypadButtonPressed();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Keypad")
-	void KeypadAcceptButtonReleased();
+	void KeypadButtonReleased();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Keypad")
 	void KeypadExit();

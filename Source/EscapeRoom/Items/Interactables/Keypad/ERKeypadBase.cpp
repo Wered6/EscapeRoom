@@ -129,7 +129,7 @@ void AERKeypadBase::KeypadMove_Implementation(const FVector2D& MovementVector)
 	UpdateSelectedButton();
 }
 
-void AERKeypadBase::KeypadAcceptButtonPressed_Implementation()
+void AERKeypadBase::KeypadButtonPressed_Implementation()
 {
 	bCanNavigate = false;
 
@@ -157,7 +157,7 @@ void AERKeypadBase::KeypadAcceptButtonPressed_Implementation()
 	// TODO add sound for clicking
 }
 
-void AERKeypadBase::KeypadAcceptButtonReleased_Implementation()
+void AERKeypadBase::KeypadButtonReleased_Implementation()
 {
 	// If button is OK, do not allow to navigate, navigate will reset after blinking led ends
 	bCanNavigate = SelectedButton.Value != 20;

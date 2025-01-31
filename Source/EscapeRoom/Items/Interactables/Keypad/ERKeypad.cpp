@@ -17,9 +17,9 @@ void AERKeypad::BeginPlay()
 	OnEndLedBlinking.BindUObject(this, &AERKeypad::CheckPassword);
 }
 
-void AERKeypad::KeypadAcceptButtonPressed_Implementation()
+void AERKeypad::KeypadButtonPressed_Implementation()
 {
-	Super::KeypadAcceptButtonPressed_Implementation();
+	Super::KeypadButtonPressed_Implementation();
 
 	// All buttons except DEL and OK
 	if (SelectedButton.Value < 10)

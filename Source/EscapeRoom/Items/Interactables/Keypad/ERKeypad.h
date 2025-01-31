@@ -23,7 +23,7 @@ public:
 	/**
 	 * Overriding KeypadAcceptButtonPressed function from ERKeypadInterface
 	 */
-	virtual void KeypadAcceptButtonPressed_Implementation() override;
+	virtual void KeypadButtonPressed_Implementation() override;
 
 private:
 	void CheckPassword();
