@@ -2,7 +2,6 @@
 
 
 #include "ERTV.h"
-
 #include "ERTVScreenWidget.h"
 #include "FileMediaSource.h"
 #include "MediaPlayer.h"
@@ -19,11 +18,11 @@ AERTV::AERTV()
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
-	TVScreenWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TVScreenWidget"));
-	TVScreenWidget->SetupAttachment(RootMesh);
+	TVScreenWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TVScreenWidgetComp"));
+	TVScreenWidgetComp->SetupAttachment(RootMesh);
 	// Hide widget from screen in scene
-	TVScreenWidget->SetRelativeLocation(FVector(0.f, 0.f, 1000.f));
-	TVScreenWidget->SetDrawSize(FVector2D(1440.f, 1440.f));
+	TVScreenWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, 1000.f));
+	TVScreenWidgetComp->SetDrawSize(FVector2D(1440.f, 1440.f));
 
 	FilmSound = CreateDefaultSubobject<UMediaSoundComponent>(TEXT("FilmSound"));
 	FilmSound->SetupAttachment(RootMesh);
@@ -38,18 +37,17 @@ void AERTV::BeginPlay()
 {
 	Super::BeginPlay();
 
+	TVScreenWidget = Cast<UERTVScreenWidget>(TVScreenWidgetComp->GetWidget());
+
 #pragma region Nullchecks
-	if (!FilmMediaPlayer)
+	if (!TVScreenWidget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|FilmMediaPlayer is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!FilmMediaSource)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|FilmMediaSource is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
+
+	TVScreenWidget->Password = Password;
 
 	// Comment out only for tests
 	// FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowWidgetOnScreen);
@@ -58,7 +56,7 @@ void AERTV::BeginPlay()
 
 void AERTV::EnterSignToPassword(const FString& Sign) const
 {
-	UERTVScreenWidget* ScreenWidget{Cast<UERTVScreenWidget>(TVScreenWidget->GetWidget())};
+	UERTVScreenWidget* ScreenWidget{Cast<UERTVScreenWidget>(TVScreenWidgetComp->GetWidget())};
 
 #pragma region Nullchecks
 	if (!ScreenWidget)
@@ -82,17 +80,17 @@ void AERTV::ShowWidgetOnScreen()
 		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!TVScreenWidget)
+	if (!TVScreenWidgetComp)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!TVScreenWidget->GetRenderTarget())
+	if (!TVScreenWidgetComp->GetRenderTarget())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget->GetRenderTarget() is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	DynamicMaterial->SetTextureParameterValue(FName("Texture"), TVScreenWidget->GetRenderTarget());
+	DynamicMaterial->SetTextureParameterValue(FName("Texture"), TVScreenWidgetComp->GetRenderTarget());
 }

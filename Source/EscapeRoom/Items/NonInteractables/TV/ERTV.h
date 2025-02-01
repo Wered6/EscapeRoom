@@ -31,11 +31,12 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void ShowWidgetOnScreen();
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> RootMesh;
-
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Widget")
-	TObjectPtr<UWidgetComponent> TVScreenWidget;
+	UPROPERTY(EditAnywhere, Category="ER|TV|Hangman")
+	FString Password{};
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Hangman")
+	TObjectPtr<UWidgetComponent> TVScreenWidgetComp;
+	UPROPERTY(VisibleAnywhere, Category="ER|TV|Hangman")
+	TObjectPtr<UERTVScreenWidget> TVScreenWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Film")
 	TObjectPtr<UMediaSoundComponent> FilmSound;
@@ -43,4 +44,7 @@ private:
 	TObjectPtr<UMediaPlayer> FilmMediaPlayer;
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Film")
 	TObjectPtr<UFileMediaSource> FilmMediaSource;
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Mesh")
+	TObjectPtr<UStaticMeshComponent> RootMesh;
 };

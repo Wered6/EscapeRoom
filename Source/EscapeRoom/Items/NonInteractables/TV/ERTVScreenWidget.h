@@ -6,14 +6,19 @@
 #include "Blueprint/UserWidget.h"
 #include "ERTVScreenWidget.generated.h"
 
+class AERTV;
 class UCanvasPanel;
 class UERTVScreenSignWidget;
 class UHorizontalBox;
+
+DECLARE_DELEGATE()
 
 UCLASS()
 class ESCAPEROOM_API UERTVScreenWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+	friend AERTV;
 
 public:
 	virtual void NativePreConstruct() override;
@@ -42,8 +47,8 @@ private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
 	TObjectPtr<UCanvasPanel> SeventhPanel;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER")
-	FString Password{"rabarbar"};
+	UPROPERTY(VisibleAnywhere, Category="ER")
+	FString Password{};
 	UPROPERTY(VisibleAnywhere, Category="ER")
 	FString UserPassword;
 

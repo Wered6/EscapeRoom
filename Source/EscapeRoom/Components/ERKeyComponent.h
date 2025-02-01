@@ -32,7 +32,6 @@ private:
 
 	/**
 	 * Use for simple "many keys - one locked item"
-	 * Tags overrides LockedItems
 	 */
 	UPROPERTY(EditInstanceOnly, Category="ER|Key")
 	TArray<AActor*> LockedItems;

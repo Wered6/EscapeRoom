@@ -90,13 +90,18 @@ protected:
 
 	void LedFlash(const ELedColor LedColor, float FlashTime);
 
+	UFUNCTION(BlueprintImplementableEvent, Category="ER|Keypad|Button")
+	void PlayButtonAnimation();
+	UFUNCTION(BlueprintImplementableEvent, Category="ER|Keypad|Button")
+	void ReverseButtonAnimation();
+
 	/**
 	 * 0 - 9 is the same
 	 * DEL is 10, OK is 20
 	 */
 	TArray<FKeypadButtonArray> Button2DArray;
 	bool bCanNavigate{true};
-
+	bool bCanPressButton{true};
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
 	FKeypadButton SelectedButton;
 
@@ -151,7 +156,7 @@ private:
 	uint8 NumberOfBlinks{5};
 
 	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
-	float ButtonDepth{3.f};
+	float ButtonDepth{4.f};
 
 #pragma region Meshes
 

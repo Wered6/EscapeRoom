@@ -131,7 +131,14 @@ void AERKeypadBase::KeypadMove_Implementation(const FVector2D& MovementVector)
 
 void AERKeypadBase::KeypadButtonPressed_Implementation()
 {
+	// TODO think about not blocking movement and pressing but maybe just dont do logic and flash and long sound on red led to show error
+	if (!bCanPressButton)
+	{
+		return;
+	}
+
 	bCanNavigate = false;
+	bCanPressButton = false;
 
 	// All buttons except DEL and OK
 	if (SelectedButton.Value < 10)
@@ -153,14 +160,21 @@ void AERKeypadBase::KeypadButtonPressed_Implementation()
 		}
 	}
 
+	PlayButtonAnimation();
+
 	UE_LOG(LogTemp, Warning, TEXT("KeypadAcceptButtonPressed"))
 	// TODO add sound for clicking
 }
 
 void AERKeypadBase::KeypadButtonReleased_Implementation()
 {
-	// If button is OK, do not allow to navigate, navigate will reset after blinking led ends
+	// If button is OK, do not allow to navigate or press buttons
+	// Navigate and pressing will reset after blinking led ends in StartLedBlinking()
 	bCanNavigate = SelectedButton.Value != 20;
+	bCanPressButton = SelectedButton.Value != 20;
+
+	ReverseButtonAnimation();
+
 	UE_LOG(LogTemp, Warning, TEXT("KeypadAcceptButtonReleased"))
 }
 
@@ -387,6 +401,7 @@ void AERKeypadBase::LedBlinking()
 		LedBlinkLoopCounter = 0;
 
 		bCanNavigate = true;
+		bCanPressButton = true;
 
 		// Delegate
 		if (OnEndLedBlinking.IsBound())

@@ -46,7 +46,7 @@ AERCeilingLamp::AERCeilingLamp()
 	HelpLight->SetSourceHeight(120.f);
 	HelpLight->SetBarnDoorAngle(90.f);
 	HelpLight->SetBarnDoorLength(15.f);
-	HelpLight->SetCastShadows(false);
+	HelpLight->SetCastShadows(true);
 	HelpLight->SetVisibility(false);
 }
 
