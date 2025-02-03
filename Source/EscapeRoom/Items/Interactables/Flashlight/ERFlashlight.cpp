@@ -33,8 +33,9 @@ AERFlashlight::AERFlashlight()
 	SpotLight->SetOuterConeAngle(FOVSceneCapture / 2);
 	SpotLightGlow->SetOuterConeAngle(FOVSceneCapture / 2);
 
+	RootMesh->CastShadow = false;
+
 	OutlineMeshComponentPtr = RootMesh;
-	// TODO think what to do with shadow of flashlight
 }
 
 void AERFlashlight::BeginPlay()

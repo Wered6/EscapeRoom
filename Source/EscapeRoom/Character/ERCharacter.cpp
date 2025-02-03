@@ -62,10 +62,7 @@ void AERCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (bCanCheckInteraction)
-	{
-		PerformInteractionCheck();
-	}
+	PerformInteractionCheck();
 }
 
 void AERCharacter::ResetCameraTransform() const
@@ -372,6 +369,11 @@ void AERCharacter::SetIndicatorVisibility(const bool bVisible) const
 
 void AERCharacter::PerformInteractionCheck()
 {
+	if (!bCanCheckInteraction)
+	{
+		return;
+	}
+
 #pragma region Nullchecks
 	if (!PlayerController)
 	{
@@ -391,55 +393,104 @@ void AERCharacter::PerformInteractionCheck()
 
 	// Perform the line trace
 	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(
-		HitResult,
-		Start,
-		End,
-		ECC_Visibility
-	);
+	const bool bHit{
+		GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			Start,
+			End,
+			ECC_Visibility
+		)
+	};
 
-	// Check if the hit actor implements the interact interface
-	if (HitResult.GetActor())
+	// If nothing was hit, reset interaction and return
+	if (!bHit)
 	{
-		AActor* HitActor{HitResult.GetActor()};
-		UPrimitiveComponent* HitComponent{HitResult.GetComponent()};
-		// If hit actor same as interactable actor early return
-		if (HitComponent == InteractableHitComponent)
-		{
-			return;
-		}
-		// Else if interactable actor is already set and we aren't pointing at him, hide interaction UI of current interactable actor
-		if (InteractableActor)
-		{
-			// No check for implement because we can always interact with interactable actor
-			IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
-		}
-
-		// If HitActor implements interact interface and hit component has collision profile name "InteractArea" show interaction UI
-		if (HitActor->Implements<UERInteractInterface>() && HitComponent->GetCollisionProfileName() == FName("InteractArea"))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit interactable actor: %s"), *HitActor->GetName())
-			IERInteractInterface::Execute_DisplayInteractionUI(HitActor, true);
-			InteractableActor = HitActor;
-			InteractableHitComponent = HitComponent;
-		}
-		// Else set InteractableActor and InteractableHitComponent to nullptr
-		else
-		{
-			InteractableActor = nullptr;
-			InteractableHitComponent = nullptr;
-			UE_LOG(LogTemp, Warning, TEXT("Hit object doesn't implement interact interface"))
-		}
-	}
-	// If we hit nothing after hitting interactable actor, hide interaction UI of current interactable actor
-	else if (InteractableActor)
-	{
-		// No check for implement because we can always interact with interactable actor
-		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
-		InteractableActor = nullptr;
-		InteractableHitComponent = nullptr;
+		ClearInteraction();
 		UE_LOG(LogTemp, Warning, TEXT("No object hit"))
+		return;
 	}
+
+	AActor* HitActor{HitResult.GetActor()};
+	UPrimitiveComponent* HitComponent{HitResult.GetComponent()};
+
+	// If hitting the same interactable component, do nothing and return
+	if (HitComponent == InteractableHitComponent)
+	{
+		return;
+	}
+
+	// If previously interacting with something else, hide its UI
+	if (InteractableActor)
+	{
+		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
+	}
+
+	// Check if the hit actor implements the interact interface and has correct collision
+	if (HitActor->Implements<UERInteractInterface>() && HitComponent->GetCollisionProfileName() == FName("InteractArea"))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit interactable actor: %s"), *HitActor->GetName())
+		IERInteractInterface::Execute_DisplayInteractionUI(HitActor, true);
+		InteractableActor = HitActor;
+		InteractableHitComponent = HitComponent;
+	}
+	else
+	{
+		ClearInteraction();
+		UE_LOG(LogTemp, Warning, TEXT("Hit object doesn't implement interact interface or has wrong collision profile name"))
+	}
+
+	// // Check if the hit actor implements the interact interface
+	// if (HitResult.GetActor())
+	// {
+	// 	AActor* HitActor{HitResult.GetActor()};
+	// 	UPrimitiveComponent* HitComponent{HitResult.GetComponent()};
+	// 	// If hit component same as interactable hit component early return
+	// 	if (HitComponent == InteractableHitComponent)
+	// 	{
+	// 		return;
+	// 	}
+	// 	// Else if interactable actor is already set and we aren't pointing at him, hide interaction UI of current interactable actor
+	// 	if (InteractableActor)
+	// 	{
+	// 		// No check for implement because we can always interact with interactable actor
+	// 		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
+	// 	}
+	//
+	// 	// If HitActor implements interact interface and hit component has collision profile name "InteractArea" show interaction UI
+	// 	if (HitActor->Implements<UERInteractInterface>() && HitComponent->GetCollisionProfileName() == FName("InteractArea"))
+	// 	{
+	// 		UE_LOG(LogTemp, Warning, TEXT("Hit interactable actor: %s"), *HitActor->GetName())
+	// 		IERInteractInterface::Execute_DisplayInteractionUI(HitActor, true);
+	// 		InteractableActor = HitActor;
+	// 		InteractableHitComponent = HitComponent;
+	// 	}
+	// 	// Else set InteractableActor and InteractableHitComponent to nullptr
+	// 	else
+	// 	{
+	// 		InteractableActor = nullptr;
+	// 		InteractableHitComponent = nullptr;
+	// 		UE_LOG(LogTemp, Warning, TEXT("Hit object doesn't implement interact interface"))
+	// 	}
+	// }
+	// // If we hit nothing after hitting interactable actor, hide interaction UI of current interactable actor
+	// else if (InteractableActor)
+	// {
+	// 	// No check for implement because we can always interact with interactable actor
+	// 	IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
+	// 	InteractableActor = nullptr;
+	// 	InteractableHitComponent = nullptr;
+	// 	UE_LOG(LogTemp, Warning, TEXT("No object hit"))
+	// }
+}
+
+void AERCharacter::ClearInteraction()
+{
+	if (InteractableActor)
+	{
+		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
+	}
+	InteractableActor = nullptr;
+	InteractableHitComponent = nullptr;
 }
 
 void AERCharacter::EquipFlashlight(AERFlashlight* Flashlight)

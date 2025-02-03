@@ -165,6 +165,9 @@ private:
 #pragma region Interact
 
 public:
+	/**
+	 * Stops performing interaction check but InteractableActor stays set
+	 */
 	FORCEINLINE void SetCanCheckInteraction(const bool bValue)
 	{
 		bCanCheckInteraction = bValue;
@@ -174,6 +177,7 @@ public:
 
 private:
 	void PerformInteractionCheck();
+	void ClearInteraction();
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	TObjectPtr<AActor> InteractableActor;
