@@ -55,12 +55,4 @@ private:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
 	TObjectPtr<UWidgetComponent> InteractWidget;
-
-	/**
-	 * Material for outlining item when pointing at it
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
-	TObjectPtr<UMaterialInterface> OutlineMaterial;
-
-	// TODO consider adding name of items and shows them when player is near enough
 };

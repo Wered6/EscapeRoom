@@ -246,7 +246,8 @@ void AERKeypadBase::EnterDefaultMode() const
 	Character->EnterDefaultInputMode();
 	Character->SetCanCheckInteraction(true);
 	Character->SetIndicatorVisibility(true);
-	SelectedButton.Mesh->SetOverlayMaterial(nullptr);
+	SelectedButton.Mesh->SetRenderCustomDepth(false);
+	SelectedButton.Mesh->SetCustomDepthStencilValue(0);
 }
 
 void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
@@ -378,11 +379,13 @@ void AERKeypadBase::UpdateSelectedButton()
 	// Reset outline button if button is already selected
 	if (SelectedButton.Mesh)
 	{
-		SelectedButton.Mesh->SetOverlayMaterial(nullptr);
+		SelectedButton.Mesh->SetRenderCustomDepth(false);
+		SelectedButton.Mesh->SetCustomDepthStencilValue(0);
 	}
 
 	SelectedButton = Button2DArray[Button2DArrayY].ButtonArray[Button2DArrayX];
-	SelectedButton.Mesh->SetOverlayMaterial(OutlineButtonMat);
+	SelectedButton.Mesh->SetRenderCustomDepth(true);
+	SelectedButton.Mesh->SetCustomDepthStencilValue(1);
 }
 
 void AERKeypadBase::StartLedBlinking()

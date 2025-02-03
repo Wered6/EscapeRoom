@@ -44,16 +44,12 @@ void AERInteractableActor::DisplayInteractionUI_Implementation(const bool bShowI
 		UE_LOG(LogTemp, Warning, TEXT("%s|OutlineMesh is nullptr. Set it in C++, in constructor."), *FString(__FUNCTION__))
 		return;
 	}
-	if (!OutlineMaterial)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|OutlineMaterial is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 #pragma endregion
 
 	InteractWidget->SetVisibility(bShowInteract);
 
-	OutlineMeshComponentPtr->SetOverlayMaterial(bShowInteract ? OutlineMaterial : nullptr);
+	OutlineMeshComponentPtr->SetRenderCustomDepth(bShowInteract);
+	OutlineMeshComponentPtr->SetCustomDepthStencilValue(bShowInteract);
 }
 
 void AERInteractableActor::DisableInteraction() const
