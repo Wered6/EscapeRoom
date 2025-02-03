@@ -71,6 +71,6 @@ void AERCeilingLamp::TurnLights() const
 
 void AERCeilingLamp::UpdateLightsEmissive() const
 {
-	LightDynMat->SetScalarParameterValue(FName("EmissiveLeft"), LightRight->IsVisible() ? 20.f : 0.f);
-	LightDynMat->SetScalarParameterValue(FName("EmissiveRight"), LightLeft->IsVisible() ? 20.f : 0.f);
+	LightDynMat->SetScalarParameterValue(FName("EmissiveLeft"), LightRight->IsVisible() ? EmissiveStrength : 0.f);
+	LightDynMat->SetScalarParameterValue(FName("EmissiveRight"), LightLeft->IsVisible() ? EmissiveStrength : 0.f);
 }

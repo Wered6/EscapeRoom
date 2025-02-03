@@ -23,9 +23,12 @@ class ESCAPEROOM_API UERTVScreenWidget : public UUserWidget
 public:
 	virtual void NativePreConstruct() override;
 
-	void EnterSignToPassword(const FString& Sign);
+	bool EnterSignToPassword(const FString& Sign);
 
 private:
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
+	TObjectPtr<UERTVScreenSignWidget> BravoWidget;
+
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
 	TObjectPtr<UHorizontalBox> PasswordHBox;
 

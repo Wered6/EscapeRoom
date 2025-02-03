@@ -28,6 +28,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="ER|CeilingLamp|Light")
 	bool bLightOn{false};
+	UPROPERTY(EditAnywhere, Category="ER|CeilingLamp|Light")
+	float EmissiveStrength{20.f};
 
 	UPROPERTY(VisibleAnywhere, Category="ER|CeilingLamp|Light")
 	TObjectPtr<UMaterialInstanceDynamic> LightDynMat;

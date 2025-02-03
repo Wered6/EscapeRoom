@@ -16,10 +16,17 @@ class ESCAPEROOM_API AERKeypadTV : public AERKeypadBase
 public:
 	AERKeypadTV();
 
+protected:
+	virtual void BeginPlay() override;
+
 public:
 	virtual void KeypadButtonPressed_Implementation() override;
 
+	void SendSignPasswordToTV();
+
 private:
+	void ExitAndDisableInteraction() const;
+
 	UPROPERTY(EditInstanceOnly, Category="ER|KeypadTV")
 	TObjectPtr<AERTV> TV;
 

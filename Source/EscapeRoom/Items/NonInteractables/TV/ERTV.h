@@ -6,11 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "ERTV.generated.h"
 
+class UERKeyComponent;
 class UFileMediaSource;
 class UMediaPlayer;
 class UMediaSoundComponent;
 class UERTVScreenWidget;
 class UWidgetComponent;
+
+DECLARE_DELEGATE(FOnCorrectPassword)
 
 UCLASS()
 class ESCAPEROOM_API AERTV : public AActor
@@ -24,12 +27,14 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void EnterSignToPassword(const FString& Sign) const;
+	bool EnterSignToPassword(const FString& Sign) const;
+
+	FOnCorrectPassword OnCorrectPassword;
 
 private:
 	// It's callable only for tests
 	UFUNCTION(BlueprintCallable)
-	void ShowWidgetOnScreen();
+	void ShowHangmanWidgetOnScreen();
 
 	UPROPERTY(EditAnywhere, Category="ER|TV|Hangman")
 	FString Password{};
@@ -37,6 +42,9 @@ private:
 	TObjectPtr<UWidgetComponent> TVScreenWidgetComp;
 	UPROPERTY(VisibleAnywhere, Category="ER|TV|Hangman")
 	TObjectPtr<UERTVScreenWidget> TVScreenWidget;
+
+	UPROPERTY(VisibleAnywhere, Category="ER|TV|Components")
+	TObjectPtr<UERKeyComponent> KeyComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Film")
 	TObjectPtr<UMediaSoundComponent> FilmSound;

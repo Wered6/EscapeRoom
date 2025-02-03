@@ -57,7 +57,6 @@ void AERKeypad::CheckPassword()
 		LedFlash(ELedColor::Green, LedLongFlashTime);
 		EnterDefaultMode();
 		DisableInteraction();
-		SelectedButton.Mesh->SetOverlayMaterial(nullptr);
 	}
 	else
 	{

@@ -2,11 +2,13 @@
 
 
 #include "ERTV.h"
+#include "ERTVScreenSignWidget.h"
 #include "ERTVScreenWidget.h"
 #include "FileMediaSource.h"
 #include "MediaPlayer.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/TextureRenderTarget2D.h"
+#include "EscapeRoom/Components/ERKeyComponent.h"
 #include "Runtime/MediaAssets/Public/MediaSoundComponent.h"
 
 
@@ -31,6 +33,8 @@ AERTV::AERTV()
 	FSoundAttenuationSettings AttenuationSettings;
 	AttenuationSettings.FalloffDistance = 400.f;
 	FilmSound->AttenuationOverrides = AttenuationSettings;
+
+	KeyComponent = CreateDefaultSubobject<UERKeyComponent>(TEXT("KeyComponent"));
 }
 
 void AERTV::BeginPlay()
@@ -54,23 +58,37 @@ void AERTV::BeginPlay()
 	// FilmMediaPlayer->OpenSource(FilmMediaSource);
 }
 
-void AERTV::EnterSignToPassword(const FString& Sign) const
+bool AERTV::EnterSignToPassword(const FString& Sign) const
 {
-	UERTVScreenWidget* ScreenWidget{Cast<UERTVScreenWidget>(TVScreenWidgetComp->GetWidget())};
-
 #pragma region Nullchecks
-	if (!ScreenWidget)
+	if (!TVScreenWidget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|ScreenWidget is nullptr"), *FString(__FUNCTION__))
-		return;
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
+		return false;
+	}
+	if (!KeyComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|KeyComponent is nullptr"), *FString(__FUNCTION__))
+		return false;
 	}
 #pragma endregion
 
-	ScreenWidget->EnterSignToPassword(Sign);
+	const bool CorrectSign{TVScreenWidget->EnterSignToPassword(Sign)};
+	if (TVScreenWidget->Password == TVScreenWidget->UserPassword)
+	{
+		KeyComponent->UnlockLockedItems();
+		if (OnCorrectPassword.IsBound())
+		{
+			OnCorrectPassword.Execute();
+			TVScreenWidget->BravoWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+
+	return CorrectSign;
 }
 
 // ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
-void AERTV::ShowWidgetOnScreen()
+void AERTV::ShowHangmanWidgetOnScreen()
 {
 	UMaterialInstanceDynamic* DynamicMaterial{RootMesh->CreateDynamicMaterialInstance(1)};
 

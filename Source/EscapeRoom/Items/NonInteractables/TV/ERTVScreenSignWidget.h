@@ -36,7 +36,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", Transient, meta=(BindWidgetAnim, AllowPrivateAccess=true))
 	TObjectPtr<UWidgetAnimation> BlinkAnimation;
 
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="ER", meta=(ExposeOnSpawn=true, AllowPrivateAccess=true))
 	FString Text;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="ER", meta=(ExposeOnSpawn=true, AllowPrivateAccess=true))

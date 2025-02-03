@@ -37,20 +37,19 @@ void UERTVScreenWidget::NativePreConstruct()
 	UserPassword = FString::ChrN(Password.Len(), TEXT('_'));
 }
 
-void UERTVScreenWidget::EnterSignToPassword(const FString& Sign)
+bool UERTVScreenWidget::EnterSignToPassword(const FString& Sign)
 {
 #pragma region Nullchecks
 	if (!EnteredSign)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|EnteredSign is nullptr"), *FString(__FUNCTION__))
-		return;
+		return false;
 	}
 #pragma endregion
 
 	EnteredSign->UpdateText(Sign.ToLower());
 
 	bool bCorrectSign{false};
-
 	const TCHAR SignChar{Sign.ToLower()[0]};
 
 	for (int i = 0; i < Password.Len(); ++i)
@@ -65,7 +64,7 @@ void UERTVScreenWidget::EnterSignToPassword(const FString& Sign)
 			if (!TVScreenSignWidget)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenSignWidget is nullptr"), *FString(__FUNCTION__))
-				return;
+				return false;
 			}
 #pragma endregion
 
@@ -77,24 +76,16 @@ void UERTVScreenWidget::EnterSignToPassword(const FString& Sign)
 
 	if (bCorrectSign)
 	{
-		if (Password == UserPassword)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("CorrectPassword"))
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("WrongPassword"))
-		}
+		return true;
 	}
-	else
+	if (HangmanPanelsArrayIndex < HangmanPanelsArray.Num())
 	{
-		if (HangmanPanelsArrayIndex < HangmanPanelsArray.Num())
-		{
-			HangmanPanelsArray[HangmanPanelsArrayIndex++]->SetVisibility(ESlateVisibility::Visible);
-		}
-		if (HangmanPanelsArrayIndex >= HangmanPanelsArray.Num())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("you lost"))
-		}
+		HangmanPanelsArray[HangmanPanelsArrayIndex++]->SetVisibility(ESlateVisibility::Visible);
 	}
+	if (HangmanPanelsArrayIndex >= HangmanPanelsArray.Num())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("you lost"))
+		// TODO implement lost situation
+	}
+	return false;
 }

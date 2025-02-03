@@ -183,7 +183,6 @@ void AERKeypadBase::KeypadExit_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("KeypadExit"))
 	EnterDefaultMode();
 	Execute_DisplayInteractionUI(this, true);
-	SelectedButton.Mesh->SetOverlayMaterial(nullptr);
 }
 
 void AERKeypadBase::EnterKeypadMode()
@@ -235,6 +234,11 @@ void AERKeypadBase::EnterDefaultMode() const
 		UE_LOG(LogTemp, Warning, TEXT("%s|Character is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!SelectedButton.Mesh)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|SelectedButton.Mesh is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	Character->ResetCameraTransform();
@@ -242,6 +246,7 @@ void AERKeypadBase::EnterDefaultMode() const
 	Character->EnterDefaultInputMode();
 	Character->SetCanCheckInteraction(true);
 	Character->SetIndicatorVisibility(true);
+	SelectedButton.Mesh->SetOverlayMaterial(nullptr);
 }
 
 void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
