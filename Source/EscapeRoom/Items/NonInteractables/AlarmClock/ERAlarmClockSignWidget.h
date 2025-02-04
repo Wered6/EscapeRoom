@@ -4,17 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ERTVScreenSignWidget.generated.h"
+#include "ERAlarmClockSignWidget.generated.h"
 
-class UERTVScreenWidget;
 class UTextBlock;
 
 UCLASS()
-class ESCAPEROOM_API UERTVScreenSignWidget : public UUserWidget
+class ESCAPEROOM_API UERAlarmClockSignWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
-	friend UERTVScreenWidget;
 
 public:
 	virtual void NativePreConstruct() override;
@@ -24,17 +21,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void UpdateFont(UObject* NewFontFamily, const float NewFontSize) const;
 
-	UFUNCTION(BlueprintCallable, Category="ER")
-	void PlayBlinkAnimation();
-	UFUNCTION(BlueprintCallable, Category="ER")
-	void StopBlinkAnimation();
-
 private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
 	TObjectPtr<UTextBlock> Sign;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", Transient, meta=(BindWidgetAnim, AllowPrivateAccess=true))
-	TObjectPtr<UWidgetAnimation> BlinkAnimation;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="ER", meta=(ExposeOnSpawn=true, AllowPrivateAccess=true))
 	FString Text;
@@ -42,6 +31,4 @@ private:
 	TObjectPtr<UObject> FontFamily;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="ER", meta=(ExposeOnSpawn=true, AllowPrivateAccess=true))
 	float FontSize;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="ER", meta=(ExposeOnSpawn=true, AllowPrivateAccess=true))
-	bool bBlinkFromStart{false};
 };

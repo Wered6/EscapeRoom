@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ERTV.generated.h"
 
+class AERAlarmClock;
 class UERKeyComponent;
 class UFileMediaSource;
 class UMediaPlayer;
@@ -32,9 +33,14 @@ public:
 	FOnCorrectPassword OnCorrectPassword;
 
 private:
-	// It's callable only for tests
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
+	void StartAlarmClock();
+
+	UFUNCTION()
 	void ShowHangmanWidgetOnScreen();
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Alarm")
+	TObjectPtr<AERAlarmClock> AlarmClock;
 
 	UPROPERTY(EditAnywhere, Category="ER|TV|Hangman")
 	FString Password{};

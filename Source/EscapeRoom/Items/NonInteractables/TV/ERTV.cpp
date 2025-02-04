@@ -9,6 +9,7 @@
 #include "Components/WidgetComponent.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
+#include "EscapeRoom/Items/NonInteractables/AlarmClock/ERAlarmClock.h"
 #include "Runtime/MediaAssets/Public/MediaSoundComponent.h"
 
 
@@ -18,7 +19,7 @@ AERTV::AERTV()
 
 	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
 	SetRootComponent(RootMesh);
-	RootMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	RootMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
 	TVScreenWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TVScreenWidgetComp"));
 	TVScreenWidgetComp->SetupAttachment(RootMesh);
@@ -41,6 +42,7 @@ void AERTV::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// TODO Try do it in PostInitializeComponents function
 	TVScreenWidget = Cast<UERTVScreenWidget>(TVScreenWidgetComp->GetWidget());
 
 #pragma region Nullchecks
@@ -53,9 +55,10 @@ void AERTV::BeginPlay()
 
 	TVScreenWidget->Password = Password;
 
-	// Comment out only for tests
-	// FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowWidgetOnScreen);
-	// FilmMediaPlayer->OpenSource(FilmMediaSource);
+	// TODO on end start alarmclock timer
+	FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowHangmanWidgetOnScreen);
+	FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::StartAlarmClock);
+	FilmMediaPlayer->OpenSource(FilmMediaSource);
 }
 
 bool AERTV::EnterSignToPassword(const FString& Sign) const
@@ -87,7 +90,22 @@ bool AERTV::EnterSignToPassword(const FString& Sign) const
 	return CorrectSign;
 }
 
-// ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AERTV::StartAlarmClock()
+{
+#pragma region Nullchecks
+	if (!AlarmClock)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|AlarmClock is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	AlarmClock->ShowClock();
+	UE_LOG(LogTemp, Warning, TEXT("AlarmClock started"))
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
 void AERTV::ShowHangmanWidgetOnScreen()
 {
 	UMaterialInstanceDynamic* DynamicMaterial{RootMesh->CreateDynamicMaterialInstance(1)};
