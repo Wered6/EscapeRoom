@@ -21,14 +21,23 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void PostInitializeComponents() override;
+	virtual void Tick(float DeltaSeconds) override;
 
-	void ShowClock() const;
+public:
+	void StartClock();
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="ER|AlarmClock|Time")
+	UPROPERTY(EditAnywhere, Category="ER|AlarmClock|Time")
+	uint8 Minutes{};
+	UPROPERTY(EditAnywhere, Category="ER|AlarmClock|Time")
+	uint8 Seconds{};
+	float Timer{};
+	bool bTimerOver{false};
+	bool bStartTimer{false};
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|AlarmClock|Widget")
 	TObjectPtr<UWidgetComponent> AlarmClockWidgetComp;
-	UPROPERTY(VisibleAnywhere, Category="ER|AlarmClock|Time")
+	UPROPERTY(VisibleAnywhere, Category="ER|AlarmClock|Widget")
 	TObjectPtr<UERAlarmClockWidget> AlarmClockScreenWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|AlarmClock|Mesh")

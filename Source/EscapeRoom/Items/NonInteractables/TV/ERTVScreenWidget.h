@@ -53,7 +53,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="ER")
 	FString Password{};
 	UPROPERTY(VisibleAnywhere, Category="ER")
-	FString UserPassword;
+	FString UserPassword{};
 
 	UPROPERTY(VisibleAnywhere, Category="ER")
 	TArray<UCanvasPanel*> HangmanPanelsArray;

@@ -44,19 +44,20 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="ER|TV|Hangman")
 	FString Password{};
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Hangman")
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Widget")
 	TObjectPtr<UWidgetComponent> TVScreenWidgetComp;
-	UPROPERTY(VisibleAnywhere, Category="ER|TV|Hangman")
+	UPROPERTY(VisibleAnywhere, Category="ER|TV|Widget")
 	TObjectPtr<UERTVScreenWidget> TVScreenWidget;
 
 	UPROPERTY(VisibleAnywhere, Category="ER|TV|Components")
 	TObjectPtr<UERKeyComponent> KeyComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Film")
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
 	TObjectPtr<UMediaSoundComponent> FilmSound;
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Film")
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
 	TObjectPtr<UMediaPlayer> FilmMediaPlayer;
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Film")
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
 	TObjectPtr<UFileMediaSource> FilmMediaSource;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Mesh")

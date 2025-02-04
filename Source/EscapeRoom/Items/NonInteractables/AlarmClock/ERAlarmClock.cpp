@@ -9,7 +9,7 @@
 
 AERAlarmClock::AERAlarmClock()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
 	SetRootComponent(RootMesh);
@@ -24,17 +24,51 @@ AERAlarmClock::AERAlarmClock()
 void AERAlarmClock::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-
-void AERAlarmClock::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
 
 	AlarmClockScreenWidget = Cast<UERAlarmClockWidget>(AlarmClockWidgetComp->GetWidget());
+
+#pragma region Nullchecks
+	if (!AlarmClockScreenWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|AlarmClockScreenWidget is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	AlarmClockScreenWidget->MinutesInit = Minutes;
+	AlarmClockScreenWidget->SecondsInit = Seconds;
 }
 
-void AERAlarmClock::ShowClock() const
+void AERAlarmClock::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (!bTimerOver && bStartTimer)
+	{
+		Timer += DeltaSeconds;
+		if (Timer >= 1.f)
+		{
+			Timer -= 1.f;
+			if (Seconds == 0)
+			{
+				Minutes--;
+				Seconds = 59;
+			}
+			else
+			{
+				Seconds--;
+			}
+			AlarmClockScreenWidget->UpdateTime(Minutes, Seconds);
+			if (Minutes == 0 && Seconds == 0)
+			{
+				bTimerOver = true;
+				// TODO Create OnTimerOvert delegate
+			}
+		}
+	}
+}
+
+void AERAlarmClock::StartClock()
 {
 	UMaterialInstanceDynamic* DynamicMaterial{RootMesh->CreateDynamicMaterialInstance(0)};
 
@@ -57,4 +91,6 @@ void AERAlarmClock::ShowClock() const
 #pragma endregion
 
 	DynamicMaterial->SetTextureParameterValue(FName("Texture"), AlarmClockWidgetComp->GetRenderTarget());
+
+	bStartTimer = true;
 }

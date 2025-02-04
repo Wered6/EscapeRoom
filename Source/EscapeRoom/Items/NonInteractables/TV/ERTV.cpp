@@ -42,7 +42,6 @@ void AERTV::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// TODO Try do it in PostInitializeComponents function
 	TVScreenWidget = Cast<UERTVScreenWidget>(TVScreenWidgetComp->GetWidget());
 
 #pragma region Nullchecks
@@ -51,11 +50,15 @@ void AERTV::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!FilmMediaPlayer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|FilmMediaPlayer is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	TVScreenWidget->Password = Password;
 
-	// TODO on end start alarmclock timer
 	FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowHangmanWidgetOnScreen);
 	FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::StartAlarmClock);
 	FilmMediaPlayer->OpenSource(FilmMediaSource);
@@ -101,8 +104,7 @@ void AERTV::StartAlarmClock()
 	}
 #pragma endregion
 
-	AlarmClock->ShowClock();
-	UE_LOG(LogTemp, Warning, TEXT("AlarmClock started"))
+	AlarmClock->StartClock();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
