@@ -1,0 +1,13 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "ERStartMenuWidget.generated.h"
+
+UCLASS()
+class ESCAPEROOM_API UERStartMenuWidget : public UUserWidget
+{
+	GENERATED_BODY()
+};

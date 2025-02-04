@@ -62,7 +62,7 @@ void AERAlarmClock::Tick(float DeltaSeconds)
 			if (Minutes == 0 && Seconds == 0)
 			{
 				bTimerOver = true;
-				// TODO Create OnTimerOvert delegate
+				// TODO Create OnTimerOver delegate
 			}
 		}
 	}
