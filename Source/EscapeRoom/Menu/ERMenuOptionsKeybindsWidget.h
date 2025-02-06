@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ERMenuButtonTextWidget.generated.h"
+#include "ERMenuOptionsKeybindsWidget.generated.h"
 
 UCLASS()
-class ESCAPEROOM_API UERMenuButtonTextWidget : public UUserWidget
+class ESCAPEROOM_API UERMenuOptionsKeybindsWidget : public UUserWidget
 {
 	GENERATED_BODY()
 };
