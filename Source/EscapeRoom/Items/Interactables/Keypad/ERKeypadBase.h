@@ -137,9 +137,6 @@ private:
 	int8 Button2DArrayX{2};
 	int8 Button2DArrayY{3};
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Button")
-	TObjectPtr<UMaterialInterface> OutlineButtonMat;
-
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Leds")
 	TObjectPtr<UMaterialInstanceDynamic> GreenLedDynMat;
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Leds")

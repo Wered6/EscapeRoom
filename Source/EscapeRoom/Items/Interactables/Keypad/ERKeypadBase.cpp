@@ -357,14 +357,6 @@ void AERKeypadBase::LookAtKeypad() const
 
 void AERKeypadBase::UpdateSelectedButton()
 {
-#pragma region Nullchecks
-	if (!OutlineButtonMat)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|OutlineButtonMat is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
 	if (!Button2DArray.IsValidIndex(Button2DArrayY))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|Button2DArrayY is not valid index"), *FString(__FUNCTION__))
