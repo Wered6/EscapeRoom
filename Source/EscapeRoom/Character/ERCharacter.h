@@ -164,6 +164,7 @@ private:
 
 #pragma region Interact
 
+	// TODO make InteractComponent
 public:
 	/**
 	 * Stops performing interaction check but InteractableActor stays set

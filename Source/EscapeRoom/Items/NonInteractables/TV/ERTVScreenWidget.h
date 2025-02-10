@@ -35,6 +35,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
 	TObjectPtr<UERTVScreenSignWidget> EnteredSign;
 
+	// TODO change those panel into Overlays
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
 	TObjectPtr<UCanvasPanel> FirstPanel;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER", meta=(BindWidget, AllowPrivateAccess=true))
