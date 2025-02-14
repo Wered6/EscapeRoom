@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "ERCharacter.generated.h"
 
+struct FUVGlassData;
 class AERPlayerController;
 struct FInputActionValue;
 class AERFlashlight;
@@ -85,7 +86,7 @@ protected:
 	/**
 	 * Call for Gameplay change color flashlight action
 	 */
-	void FlashlightChangeColorButtonPressed();
+	void UseFlashlight();
 
 	/**
 	 * Call for Gameplay interact action
@@ -210,9 +211,15 @@ public:
 
 	void EquipFlashlight(AERFlashlight* Flashlight);
 
+	void CollectUVGlass(const FUVGlassData& UVGlassData);
+
 private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")
 	TObjectPtr<AERFlashlight> EquippedFlashlight;
+
+	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")
+	TArray<FUVGlassData> CollectedUVGlasses;
+	uint8 CollectedUVGlassesIndex{};
 
 #pragma endregion
 };

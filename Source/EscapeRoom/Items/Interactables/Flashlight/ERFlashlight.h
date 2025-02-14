@@ -3,35 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ERUVGlass.h"
 #include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "ERFlashlight.generated.h"
 
 class USpotLightComponent;
-class UWidgetComponent;
-class USphereComponent;
-
-UENUM(BlueprintType)
-enum class EUltraVioletColor : uint8
-{
-	EVC_Off UMETA(DisplayName = "OFF"),
-	EVC_White UMETA(DisplayName = "WHITE"),
-	EVC_Red UMETA(DisplayName = "RED"),
-	EVC_Green UMETA(DisplayName = "GREEN"),
-	EVC_Blue UMETA(DisplayName = "BLUE")
-};
-
-USTRUCT(BlueprintType)
-struct FFlashLightColors
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	FLinearColor BaseLight{};
-	UPROPERTY(EditDefaultsOnly)
-	FLinearColor GlowLight{};
-	UPROPERTY(EditDefaultsOnly)
-	float UltraVioletValue{};
-};
 
 UCLASS()
 class ESCAPEROOM_API AERFlashlight : public AERInteractableActor
@@ -45,12 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void SwitchToNextColor();
+	void TurnOn() const;
+	void TurnOff() const;
 
-	FORCEINLINE EUltraVioletColor GetCurrentColor() const
-	{
-		return CurrentColor;
-	}
+	void SetUltraVioletColor(const FUVGlassData& UVGlassData);
 
 	/**
 	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
@@ -58,9 +32,6 @@ public:
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
 
 private:
-	UFUNCTION(BlueprintCallable, Category="ER|Flashlight|UV")
-	void SetUltraVioletColor(EUltraVioletColor UltraVioletColor);
-
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
 	TObjectPtr<USceneCaptureComponent2D> SceneCapture;
 
@@ -72,15 +43,5 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV|DynamicMaterial")
 	TObjectPtr<UMaterialInstance> PostProcessMask;
-
-	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV")
-	FFlashLightColors FlashLightColorRed{};
-	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV")
-	FFlashLightColors FlashLightColorGreen{};
-	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV")
-	FFlashLightColors FlashLightColorBlue{};
-
-	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
-	EUltraVioletColor CurrentColor{EUltraVioletColor::EVC_Off};
 	// TODO add light mask to look like flashlight
 };

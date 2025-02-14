@@ -32,6 +32,8 @@ AERCharacter::AERCharacter()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-4.f, 0.f, -150.f));
+
+	CollectedUVGlasses.Add(FUVGlassData{FLinearColor(FColor::White), FLinearColor(FColor::White), 0.f});
 }
 
 void AERCharacter::BeginPlay()
@@ -141,7 +143,7 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AERCharacter::Look);
 
 	// Gameplay Flashlight change color
-	EnhancedInputComponent->BindAction(FlashlightChangeColorAction, ETriggerEvent::Started, this, &AERCharacter::FlashlightChangeColorButtonPressed);
+	EnhancedInputComponent->BindAction(FlashlightChangeColorAction, ETriggerEvent::Started, this, &AERCharacter::UseFlashlight);
 
 	// Gameplay Interact
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AERCharacter::Interact);
@@ -277,23 +279,23 @@ void AERCharacter::Look(const FInputActionValue& Value)
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void AERCharacter::FlashlightChangeColorButtonPressed()
+void AERCharacter::UseFlashlight()
 {
 	if (!EquippedFlashlight)
 	{
 		return;
 	}
 
-	EquippedFlashlight->SwitchToNextColor();
-#pragma region Nullchecks
-	if (!PlayerController)
+	if (CollectedUVGlasses.IsValidIndex(CollectedUVGlassesIndex))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
+		EquippedFlashlight->TurnOn();
+		EquippedFlashlight->SetUltraVioletColor(CollectedUVGlasses[CollectedUVGlassesIndex++]);
 	}
-#pragma endregion
-
-	PlayerController->OutlineUltraVioletColor(EquippedFlashlight->GetCurrentColor());
+	else
+	{
+		EquippedFlashlight->TurnOff();
+		CollectedUVGlassesIndex = 0;
+	}
 }
 
 void AERCharacter::Interact()
@@ -492,22 +494,7 @@ void AERCharacter::ClearInteraction()
 void AERCharacter::EquipFlashlight(AERFlashlight* Flashlight)
 {
 	EquippedFlashlight = Flashlight;
-
-#pragma region Nullchecks
-	if (!EquippedFlashlight)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|EquippedFlashlight is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
 	EquippedFlashlight->SetOwner(this);
-	PlayerController->AddToViewportFlashlightWidget();
 
 	const USkeletalMeshSocket* HandSocket{Mesh1P->GetSocketByName(FName("RightHandSocket"))};
 
@@ -520,4 +507,9 @@ void AERCharacter::EquipFlashlight(AERFlashlight* Flashlight)
 #pragma endregion
 
 	HandSocket->AttachActor(EquippedFlashlight, Mesh1P);
+}
+
+void AERCharacter::CollectUVGlass(const FUVGlassData& UVGlassData)
+{
+	CollectedUVGlasses.Add(UVGlassData);
 }

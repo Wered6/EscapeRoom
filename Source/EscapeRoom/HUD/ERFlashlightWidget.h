@@ -16,7 +16,7 @@ class ESCAPEROOM_API UERFlashlightWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void OutlineUltraVioletColor(const EUltraVioletColor UltraVioletColor) const;
+	// void OutlineUltraVioletColor(const EUltraVioletColor UltraVioletColor) const;
 
 private:
 	void OutlineIcon(UImage* Icon, const bool bOutline = true) const;

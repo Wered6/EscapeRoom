@@ -63,27 +63,16 @@ void AERFlashlight::BeginPlay()
 	// TODO using metal isn't good, find something else
 }
 
-void AERFlashlight::SwitchToNextColor()
+void AERFlashlight::TurnOn() const
 {
-	switch (CurrentColor)
-	{
-	case EUltraVioletColor::EVC_Off:
-		SetUltraVioletColor(EUltraVioletColor::EVC_White);
-		break;
-	case EUltraVioletColor::EVC_White:
-		SetUltraVioletColor(EUltraVioletColor::EVC_Red);
-		break;
-	case EUltraVioletColor::EVC_Red:
-		SetUltraVioletColor(EUltraVioletColor::EVC_Green);
-		break;
-	case EUltraVioletColor::EVC_Green:
-		SetUltraVioletColor(EUltraVioletColor::EVC_Blue);
-		break;
-	case EUltraVioletColor::EVC_Blue:
-		SetUltraVioletColor(EUltraVioletColor::EVC_Off);
-		break;
-	}
-	// TODO Add click sound
+	SpotLight->SetVisibility(true);
+	SpotLightGlow->SetVisibility(true);
+}
+
+void AERFlashlight::TurnOff() const
+{
+	SpotLight->SetVisibility(false);
+	SpotLightGlow->SetVisibility(false);
 }
 
 void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
@@ -105,8 +94,7 @@ void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 	RootMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-// TODO try const on UltraVioletColor
-void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
+void AERFlashlight::SetUltraVioletColor(const FUVGlassData& UVGlassData)
 {
 #pragma region Nullchecks
 	if (!SpotLight)
@@ -138,43 +126,10 @@ void AERFlashlight::SetUltraVioletColor(EUltraVioletColor UltraVioletColor)
 	}
 #pragma endregion
 
-	float UltraVioletValue{0.f};
-	switch (UltraVioletColor)
-	{
-	case EUltraVioletColor::EVC_Off:
-		SpotLight->SetVisibility(false);
-		SpotLightGlow->SetVisibility(false);
-		CurrentColor = EUltraVioletColor::EVC_Off;
-		break;
-	case EUltraVioletColor::EVC_White:
-		SpotLight->SetVisibility(true);
-		SpotLightGlow->SetVisibility(true);
-		UltraVioletValue = 0.f;
-		SpotLight->SetLightColor(FLinearColor(FColor::White));
-		SpotLightGlow->SetLightColor(FLinearColor(FColor::White));
-		CurrentColor = EUltraVioletColor::EVC_White;
-		break;
-	case EUltraVioletColor::EVC_Red:
-		UltraVioletValue = FlashLightColorRed.UltraVioletValue;
-		SpotLight->SetLightColor(FlashLightColorRed.BaseLight);
-		SpotLightGlow->SetLightColor(FlashLightColorRed.GlowLight);
-		CurrentColor = EUltraVioletColor::EVC_Red;
-		break;
-	case EUltraVioletColor::EVC_Green:
-		UltraVioletValue = FlashLightColorGreen.UltraVioletValue;
-		SpotLight->SetLightColor(FlashLightColorGreen.BaseLight);
-		SpotLightGlow->SetLightColor(FlashLightColorGreen.GlowLight);
-		CurrentColor = EUltraVioletColor::EVC_Green;
-		break;
-	case EUltraVioletColor::EVC_Blue:
-		UltraVioletValue = FlashLightColorBlue.UltraVioletValue;
-		SpotLight->SetLightColor(FlashLightColorBlue.BaseLight);
-		SpotLightGlow->SetLightColor(FlashLightColorBlue.GlowLight);
-		CurrentColor = EUltraVioletColor::EVC_Blue;
-		break;
-	}
+	SpotLight->SetLightColor(UVGlassData.BaseLight);
+	SpotLightGlow->SetLightColor(UVGlassData.GlowLight);
 
-	DynamicMaterial->SetScalarParameterValue(FName("UltraViolet"), UltraVioletValue);
+	DynamicMaterial->SetScalarParameterValue(FName("UltraViolet"), UVGlassData.UltraVioletValue);
 
 	// Update the postprocess settings with the dynamic material
 	SceneCapture->PostProcessSettings.WeightedBlendables.Array[0] = FWeightedBlendable(1.f, DynamicMaterial);
