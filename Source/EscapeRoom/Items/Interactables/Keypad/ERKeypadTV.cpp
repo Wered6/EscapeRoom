@@ -77,6 +77,6 @@ void AERKeypadTV::SendSignPasswordToTV()
 
 void AERKeypadTV::ExitAndDisableInteraction() const
 {
-	EnterDefaultMode();
+	ExitKeypadMode();
 	DisableInteraction();
 }

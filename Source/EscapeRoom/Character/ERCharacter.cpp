@@ -55,7 +55,7 @@ void AERCharacter::NotifyControllerChanged()
 
 	PlayerController = Cast<AERPlayerController>(Controller);
 
-	EnterDefaultInputMode();
+	EnterGameplayAndMenuInputMode();
 }
 
 void AERCharacter::Tick(float DeltaSeconds)
@@ -131,16 +131,19 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	}
 #pragma endregion
 
-	// Default Moving
+	// Menu Pause
+	EnhancedInputComponent->BindAction(PauseMenu, ETriggerEvent::Started, this, &AERCharacter::TriggerPauseMenu);
+
+	// Gameplay Moving
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AERCharacter::Move);
 
-	// Default Looking
+	// Gameplay Looking
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AERCharacter::Look);
 
-	// Default Flashlight change color
+	// Gameplay Flashlight change color
 	EnhancedInputComponent->BindAction(FlashlightChangeColorAction, ETriggerEvent::Started, this, &AERCharacter::FlashlightChangeColorButtonPressed);
 
-	// Default Interact
+	// Gameplay Interact
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AERCharacter::Interact);
 
 	// Keypad Moving
@@ -156,10 +159,10 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(KeypadExitAction, ETriggerEvent::Started, this, &AERCharacter::KeypadExit);
 }
 
-void AERCharacter::EnterDefaultInputMode() const
+void AERCharacter::EnterGameplayAndMenuInputMode() const
 {
 #pragma region Nullchecks
-	if (!DefaultMappingContext)
+	if (!GameplayMappingContext)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
 		return;
@@ -181,16 +184,21 @@ void AERCharacter::EnterDefaultInputMode() const
 	}
 #pragma endregion
 
-	Subsystem->ClearAllMappings();
-	Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	Subsystem->AddMappingContext(MenuMappingContext, 0);
+	Subsystem->AddMappingContext(GameplayMappingContext, 0);
 }
 
 void AERCharacter::EnterKeypadInputMode() const
 {
 #pragma region Nullchecks
+	if (!GameplayMappingContext)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|GameplayMappingContext is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 	if (!KeypadMappingContext)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadMappingContext is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 	if (!PlayerController)
@@ -210,8 +218,42 @@ void AERCharacter::EnterKeypadInputMode() const
 	}
 #pragma endregion
 
-	Subsystem->ClearAllMappings();
+	Subsystem->RemoveMappingContext(GameplayMappingContext);
 	Subsystem->AddMappingContext(KeypadMappingContext, 0);
+}
+
+void AERCharacter::ExitKeypadInputMode() const
+{
+#pragma region Nullchecks
+	if (!KeypadMappingContext)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadMappingContext is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!GameplayMappingContext)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|GameplayMappingContext is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
+
+#pragma region Nullchecks
+	if (!Subsystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	Subsystem->RemoveMappingContext(KeypadMappingContext);
+	Subsystem->AddMappingContext(GameplayMappingContext, 0);
 }
 
 void AERCharacter::Move(const FInputActionValue& Value)

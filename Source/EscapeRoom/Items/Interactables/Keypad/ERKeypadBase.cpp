@@ -181,7 +181,7 @@ void AERKeypadBase::KeypadButtonReleased_Implementation()
 void AERKeypadBase::KeypadExit_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("KeypadExit"))
-	EnterDefaultMode();
+	ExitKeypadMode();
 	Execute_DisplayInteractionUI(this, true);
 }
 
@@ -207,7 +207,7 @@ void AERKeypadBase::EnterKeypadMode()
 	}
 #pragma endregion
 
-	// IMC_Default off IMC_Keypad on
+	// IMC_Gameplay off IMC_Keypad on
 	Character->EnterKeypadInputMode();
 	// No perform interaction check in Character so InteractableActor is set as Keypad
 	Character->SetCanCheckInteraction(false);
@@ -216,7 +216,7 @@ void AERKeypadBase::EnterKeypadMode()
 	Execute_DisplayInteractionUI(this, false);
 }
 
-void AERKeypadBase::EnterDefaultMode() const
+void AERKeypadBase::ExitKeypadMode() const
 {
 #pragma region Nullchecks
 	if (!InteractInstigator)
@@ -242,8 +242,8 @@ void AERKeypadBase::EnterDefaultMode() const
 #pragma endregion
 
 	Character->ResetCameraTransform();
-	// IMD_Default on IMC_Keypad off
-	Character->EnterDefaultInputMode();
+	// IMC_Gameplay on IMC_Keypad off
+	Character->ExitKeypadInputMode();
 	Character->SetCanCheckInteraction(true);
 	Character->SetIndicatorVisibility(true);
 	SelectedButton.Mesh->SetRenderCustomDepth(false);

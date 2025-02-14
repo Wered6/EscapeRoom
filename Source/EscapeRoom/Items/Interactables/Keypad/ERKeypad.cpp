@@ -55,7 +55,7 @@ void AERKeypad::CheckPassword()
 	{
 		KeyComponent->UnlockLockedItems();
 		LedFlash(ELedColor::Green, LedLongFlashTime);
-		EnterDefaultMode();
+		ExitKeypadMode();
 		DisableInteraction();
 	}
 	else

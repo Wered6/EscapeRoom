@@ -61,27 +61,34 @@ private:
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void EnterDefaultInputMode() const;
+	void EnterGameplayAndMenuInputMode() const;
 	void EnterKeypadInputMode() const;
+	void ExitKeypadInputMode() const;
 
 protected:
 	/**
-	 * Call for default movement action
+	 * Call for Pause action
+	 */
+	UFUNCTION(BlueprintImplementableEvent)
+	void TriggerPauseMenu();
+
+	/**
+	 * Call for Gameplay movement action
 	 */
 	void Move(const FInputActionValue& Value);
 
 	/**
-	 * Call for default looking action
+	 * Call for Gameplay looking action
 	 */
 	void Look(const FInputActionValue& Value);
 
 	/**
-	 * Call for default change color flashlight action
+	 * Call for Gameplay change color flashlight action
 	 */
 	void FlashlightChangeColorButtonPressed();
 
 	/**
-	 * Call for default interact action
+	 * Call for Gameplay interact action
 	 */
 	void Interact();
 
@@ -106,54 +113,49 @@ protected:
 	void KeypadExit();
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Menu")
+	TObjectPtr<UInputMappingContext> MenuMappingContext;
 	/**
-	 * Default Mapping Context
+	 * Pause Input Action
 	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
-	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Menu")
+	TObjectPtr<UInputAction> PauseMenu;
 
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
+	TObjectPtr<UInputMappingContext> GameplayMappingContext;
 	/**
-	 * Default Move Input Action
+	 * Gameplay Move Input Action
 	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
 	TObjectPtr<UInputAction> MoveAction;
-
 	/**
-	 * Default Look Input Action
+	 * Gameplay Look Input Action
 	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
 	TObjectPtr<UInputAction> LookAction;
-
 	/**
-	 * Default Flashlight Change Color Input Action
+	 * Gameplay Flashlight Change Color Input Action
 	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
 	TObjectPtr<UInputAction> FlashlightChangeColorAction;
-
 	/**
-	 * Default Interact Input Action
+	 * Gameplay Interact Input Action
 	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Default")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
 	TObjectPtr<UInputAction> InteractAction;
 
-	/**
-	 * Keypad Mapping Context
-	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
 	TObjectPtr<UInputMappingContext> KeypadMappingContext;
-
 	/**
 	 * Keypad Move Input Action
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
 	TObjectPtr<UInputAction> KeypadMoveAction;
-
 	/**
 	 * Keypad Accept Input Action
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
 	TObjectPtr<UInputAction> KeypadButtonAction;
-
 	/**
 	 * Keypad exit Input Action
 	 */

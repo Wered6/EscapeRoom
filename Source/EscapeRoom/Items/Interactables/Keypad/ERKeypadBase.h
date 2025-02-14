@@ -86,7 +86,7 @@ public:
 
 protected:
 	void EnterKeypadMode();
-	void EnterDefaultMode() const;
+	void ExitKeypadMode() const;
 
 	void LedFlash(const ELedColor LedColor, float FlashTime);
 
