@@ -65,16 +65,31 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="ER|TV|Screen")
 	TObjectPtr<UMaterialInstanceDynamic> ScreenDynMat;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
-	TObjectPtr<UMediaSoundComponent> IntroSound;
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
-	TObjectPtr<UMediaPlayer> IntroMediaPlayer;
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
-	TObjectPtr<UFileMediaSource> IntroMediaSource;
-
 	UPROPERTY(VisibleAnywhere, Category="ER|TV|Components")
 	TObjectPtr<UERKeyComponent> KeyComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Mesh")
 	TObjectPtr<UStaticMeshComponent> RootMesh;
+
+#pragma region Movies
+
+private:
+	UFUNCTION()
+	void OpenIntro2();
+	UFUNCTION()
+	void OpenNoSignal();
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	TObjectPtr<UMediaPlayer> TVMediaPlayer;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	TObjectPtr<UFileMediaSource> Intro1MediaSource;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	TObjectPtr<UFileMediaSource> Intro2MediaSource;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	TObjectPtr<UFileMediaSource> NoSignalMediaSource;
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Sound")
+	TObjectPtr<UMediaSoundComponent> TVSound;
+
+#pragma endregion
 };
