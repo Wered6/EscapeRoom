@@ -165,6 +165,8 @@ private:
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Light")
 	TObjectPtr<URectLightComponent> HelpLight;
 
+	// TODO convert all logic beside keypad sending which key was pressed to anything that uses keypad
+
 #pragma region Meshes
 
 private:
