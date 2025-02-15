@@ -7,6 +7,7 @@
 #include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "ERKeypadBase.generated.h"
 
+class URectLightComponent;
 USTRUCT(BlueprintType)
 struct FKeypadButton
 {
@@ -129,6 +130,12 @@ private:
 	void LedBlinking();
 
 	/**
+	 * If true look at rotation at keypad, if false look in front of
+	 */
+	UPROPERTY(EditAnywhere, Category="ER|Keypad|Utility")
+	bool bLookDirectlyAtKeypad{true};
+
+	/**
 	 * Player location scene from which player will look at Keypad after interacting with it
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Utility")
@@ -155,31 +162,34 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
 	float ButtonDepth{4.f};
 
+	UPROPERTY(EditAnywhere, Category="ER|Keypad|Light")
+	TObjectPtr<URectLightComponent> HelpLight;
+
 #pragma region Meshes
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonOneMesh;
+	TObjectPtr<UStaticMeshComponent> Button0Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonTwoMesh;
+	TObjectPtr<UStaticMeshComponent> Button1Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonThreeMesh;
+	TObjectPtr<UStaticMeshComponent> Button2Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonFourMesh;
+	TObjectPtr<UStaticMeshComponent> Button3Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonFiveMesh;
+	TObjectPtr<UStaticMeshComponent> Button4Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonSixMesh;
+	TObjectPtr<UStaticMeshComponent> Button5Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonSevenMesh;
+	TObjectPtr<UStaticMeshComponent> Button6Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonEightMesh;
+	TObjectPtr<UStaticMeshComponent> Button7Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonNineMesh;
+	TObjectPtr<UStaticMeshComponent> Button8Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonDelMesh;
+	TObjectPtr<UStaticMeshComponent> Button9Mesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> ButtonZeroMesh;
+	TObjectPtr<UStaticMeshComponent> ButtonDELMesh;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> ButtonOKMesh;
 

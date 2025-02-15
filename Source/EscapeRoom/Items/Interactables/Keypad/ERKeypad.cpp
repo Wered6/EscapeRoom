@@ -44,9 +44,6 @@ void AERKeypad::KeypadButtonPressed_Implementation()
 			// In parent here is StartLedBlinking, if you want to do something after OK, bind to OnEndLedBlinking
 		}
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("KeypadAcceptButtonPressed"))
-	// TODO add sound for clicking
 }
 
 void AERKeypad::CheckPassword()

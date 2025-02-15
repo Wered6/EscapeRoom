@@ -3,6 +3,7 @@
 
 #include "ERKeypadBase.h"
 #include "Camera/CameraComponent.h"
+#include "Components/RectLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -15,39 +16,39 @@ AERKeypadBase::AERKeypadBase()
 	RootMesh->SetCollisionProfileName("NoCollision");
 
 	// Buttons
-	ButtonOneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonOneMesh"));
-	ButtonOneMesh->SetCollisionProfileName("NoCollision");
-	ButtonOneMesh->SetupAttachment(RootMesh);
-	ButtonTwoMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonTwoMesh"));
-	ButtonTwoMesh->SetCollisionProfileName("NoCollision");
-	ButtonTwoMesh->SetupAttachment(RootMesh);
-	ButtonThreeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonThreeMesh"));
-	ButtonThreeMesh->SetCollisionProfileName("NoCollision");
-	ButtonThreeMesh->SetupAttachment(RootMesh);
-	ButtonFourMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonFourMesh"));
-	ButtonFourMesh->SetCollisionProfileName("NoCollision");
-	ButtonFourMesh->SetupAttachment(RootMesh);
-	ButtonFiveMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonFiveMesh"));
-	ButtonFiveMesh->SetCollisionProfileName("NoCollision");
-	ButtonFiveMesh->SetupAttachment(RootMesh);
-	ButtonSixMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonSixMesh"));
-	ButtonSixMesh->SetCollisionProfileName("NoCollision");
-	ButtonSixMesh->SetupAttachment(RootMesh);
-	ButtonSevenMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonSevenMesh"));
-	ButtonSevenMesh->SetCollisionProfileName("NoCollision");
-	ButtonSevenMesh->SetupAttachment(RootMesh);
-	ButtonEightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonEightMesh"));
-	ButtonEightMesh->SetCollisionProfileName("NoCollision");
-	ButtonEightMesh->SetupAttachment(RootMesh);
-	ButtonNineMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonNineMesh"));
-	ButtonNineMesh->SetCollisionProfileName("NoCollision");
-	ButtonNineMesh->SetupAttachment(RootMesh);
-	ButtonDelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonDelMesh"));
-	ButtonDelMesh->SetCollisionProfileName("NoCollision");
-	ButtonDelMesh->SetupAttachment(RootMesh);
-	ButtonZeroMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonZeroMesh"));
-	ButtonZeroMesh->SetCollisionProfileName("NoCollision");
-	ButtonZeroMesh->SetupAttachment(RootMesh);
+	Button0Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button0Mesh"));
+	Button0Mesh->SetCollisionProfileName("NoCollision");
+	Button0Mesh->SetupAttachment(RootMesh);
+	Button1Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button1Mesh"));
+	Button1Mesh->SetCollisionProfileName("NoCollision");
+	Button1Mesh->SetupAttachment(RootMesh);
+	Button2Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button2Mesh"));
+	Button2Mesh->SetCollisionProfileName("NoCollision");
+	Button2Mesh->SetupAttachment(RootMesh);
+	Button3Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button3Mesh"));
+	Button3Mesh->SetCollisionProfileName("NoCollision");
+	Button3Mesh->SetupAttachment(RootMesh);
+	Button4Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button4Mesh"));
+	Button4Mesh->SetCollisionProfileName("NoCollision");
+	Button4Mesh->SetupAttachment(RootMesh);
+	Button5Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button5Mesh"));
+	Button5Mesh->SetCollisionProfileName("NoCollision");
+	Button5Mesh->SetupAttachment(RootMesh);
+	Button6Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button6Mesh"));
+	Button6Mesh->SetCollisionProfileName("NoCollision");
+	Button6Mesh->SetupAttachment(RootMesh);
+	Button7Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button7Mesh"));
+	Button7Mesh->SetCollisionProfileName("NoCollision");
+	Button7Mesh->SetupAttachment(RootMesh);
+	Button8Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button8Mesh"));
+	Button8Mesh->SetCollisionProfileName("NoCollision");
+	Button8Mesh->SetupAttachment(RootMesh);
+	Button9Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button9Mesh"));
+	Button9Mesh->SetCollisionProfileName("NoCollision");
+	Button9Mesh->SetupAttachment(RootMesh);
+	ButtonDELMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonDELMesh"));
+	ButtonDELMesh->SetCollisionProfileName("NoCollision");
+	ButtonDELMesh->SetupAttachment(RootMesh);
 	ButtonOKMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonOKMesh"));
 	ButtonOKMesh->SetCollisionProfileName("NoCollision");
 	ButtonOKMesh->SetupAttachment(RootMesh);
@@ -79,6 +80,17 @@ AERKeypadBase::AERKeypadBase()
 	PlayerLocationScene = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerLocation"));
 	PlayerLocationScene->SetupAttachment(RootMesh);
 	PlayerLocationScene->SetRelativeLocation(FVector(0.f, -150.f, 30.f));
+
+	HelpLight = CreateDefaultSubobject<URectLightComponent>(TEXT("HelpLight"));
+	HelpLight->SetupAttachment(RootMesh);
+	HelpLight->SetRelativeLocation(FVector(0.f, 0.f, 70.f));
+	HelpLight->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
+	HelpLight->SetIntensityUnits(ELightUnits::Unitless);
+	HelpLight->SetIntensity(5.f);
+	HelpLight->SetAttenuationRadius(20.f);
+	HelpLight->SetSourceWidth(8.f);
+	HelpLight->SetSourceHeight(4.f);
+	HelpLight->SetBarnDoorLength(1.f);
 
 	OutlineMeshComponentPtr = RootMesh;
 }
@@ -164,6 +176,7 @@ void AERKeypadBase::KeypadButtonPressed_Implementation()
 
 	UE_LOG(LogTemp, Warning, TEXT("KeypadAcceptButtonPressed"))
 	// TODO add sound for clicking
+	// TODO add think about delegates for number DEL and OK
 }
 
 void AERKeypadBase::KeypadButtonReleased_Implementation()
@@ -297,10 +310,10 @@ void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
 
 void AERKeypadBase::PopulateButton2DArray()
 {
-	FKeypadButton Button1{ButtonOneMesh, 1}, Button2{ButtonTwoMesh, 2}, Button3{ButtonThreeMesh, 3};
-	FKeypadButton Button4{ButtonFourMesh, 4}, Button5{ButtonFiveMesh, 5}, Button6{ButtonSixMesh, 6};
-	FKeypadButton Button7{ButtonSevenMesh, 7}, Button8{ButtonEightMesh, 8}, Button9{ButtonNineMesh, 9};
-	FKeypadButton ButtonDEL{ButtonDelMesh, 10}, Button0{ButtonZeroMesh, 0}, ButtonOK{ButtonOKMesh, 20};
+	FKeypadButton Button1{Button1Mesh, 1}, Button2{Button2Mesh, 2}, Button3{Button3Mesh, 3};
+	FKeypadButton Button4{Button4Mesh, 4}, Button5{Button5Mesh, 5}, Button6{Button6Mesh, 6};
+	FKeypadButton Button7{Button7Mesh, 7}, Button8{Button8Mesh, 8}, Button9{Button9Mesh, 9};
+	FKeypadButton ButtonDEL{ButtonDELMesh, 10}, Button0{Button0Mesh, 0}, ButtonOK{ButtonOKMesh, 20};
 
 	FKeypadButtonArray FirstRowButtons{Button1, Button2, Button3};
 	FKeypadButtonArray SecondRowButtons{Button4, Button5, Button6};
@@ -349,9 +362,18 @@ void AERKeypadBase::LookAtKeypad() const
 	PlayerLocationXY.Z = InteractInstigator->GetActorLocation().Z;
 	InteractInstigator->SetActorLocation(PlayerLocationXY);
 
-	// Set camera rotation so player will look ay keypad
+	// Depends on bLookDirectlyAtKeypad look at keypad or in front of you
 	const FVector LookAtVector{GetActorLocation()};
-	const FRotator CameraRotation{UKismetMathLibrary::FindLookAtRotation(PlayerCamera->GetComponentLocation(), LookAtVector)};
+	FRotator CameraRotation;
+	if (bLookDirectlyAtKeypad)
+	{
+		CameraRotation = UKismetMathLibrary::FindLookAtRotation(PlayerCamera->GetComponentLocation(), LookAtVector);
+	}
+	else
+	{
+		CameraRotation = PlayerLocationScene->GetForwardVector().Rotation();
+		CameraRotation.Yaw += 90.f;
+	}
 	PlayerController->SetControlRotation(CameraRotation);
 }
 

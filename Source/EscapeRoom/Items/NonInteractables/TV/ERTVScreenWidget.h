@@ -11,8 +11,7 @@ class UCanvasPanel;
 class UERTVScreenSignWidget;
 class UHorizontalBox;
 
-DECLARE_DELEGATE()
-
+// TODO rename it to TVHangmanScreenWidget
 UCLASS()
 class ESCAPEROOM_API UERTVScreenWidget : public UUserWidget
 {
