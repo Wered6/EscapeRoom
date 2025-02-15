@@ -152,24 +152,28 @@ void AERKeypadBase::KeypadButtonPressed_Implementation()
 	bCanNavigate = false;
 	bCanPressButton = false;
 
-	// All buttons except DEL and OK
-	if (SelectedButton.Value < 10)
+	OnKeypadButtonPressed.Broadcast(SelectedButton.KeypadButtonValue, SelectedButton.Value);
+
+	switch (SelectedButton.KeypadButtonValue)
 	{
+	case EKeypadButtonValue::Zero:
+	case EKeypadButtonValue::One:
+	case EKeypadButtonValue::Two:
+	case EKeypadButtonValue::Three:
+	case EKeypadButtonValue::Four:
+	case EKeypadButtonValue::Five:
+	case EKeypadButtonValue::Six:
+	case EKeypadButtonValue::Seven:
+	case EKeypadButtonValue::Eight:
+	case EKeypadButtonValue::Nine:
 		LedFlash(ELedColor::Green, LedShortFlashTime);
-	}
-	// DEL/OK
-	else
-	{
-		// If DEL
-		if (SelectedButton.Value == 10)
-		{
-			LedFlash(ELedColor::Red, LedShortFlashTime);
-		}
-		// If OK
-		else if (SelectedButton.Value == 20)
-		{
-			StartLedBlinking();
-		}
+		break;
+	case EKeypadButtonValue::DEL:
+		LedFlash(ELedColor::Red, LedShortFlashTime);
+		break;
+	case EKeypadButtonValue::OK:
+		StartProcessing();
+		break;
 	}
 
 	PlayButtonAnimation();
@@ -183,12 +187,12 @@ void AERKeypadBase::KeypadButtonReleased_Implementation()
 {
 	// If button is OK, do not allow to navigate or press buttons
 	// Navigate and pressing will reset after blinking led ends in StartLedBlinking()
-	bCanNavigate = SelectedButton.Value != 20;
-	bCanPressButton = SelectedButton.Value != 20;
+	bCanNavigate = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
+	bCanPressButton = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
 
 	ReverseButtonAnimation();
 
-	UE_LOG(LogTemp, Warning, TEXT("KeypadAcceptButtonReleased"))
+	UE_LOG(LogTemp, Warning, TEXT("KeypadButtonReleased"))
 }
 
 void AERKeypadBase::KeypadExit_Implementation()
@@ -310,10 +314,10 @@ void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
 
 void AERKeypadBase::PopulateButton2DArray()
 {
-	FKeypadButton Button1{Button1Mesh, 1}, Button2{Button2Mesh, 2}, Button3{Button3Mesh, 3};
-	FKeypadButton Button4{Button4Mesh, 4}, Button5{Button5Mesh, 5}, Button6{Button6Mesh, 6};
-	FKeypadButton Button7{Button7Mesh, 7}, Button8{Button8Mesh, 8}, Button9{Button9Mesh, 9};
-	FKeypadButton ButtonDEL{ButtonDELMesh, 10}, Button0{Button0Mesh, 0}, ButtonOK{ButtonOKMesh, 20};
+	FKeypadButton Button1{Button1Mesh, 1, EKeypadButtonValue::One}, Button2{Button2Mesh, 2, EKeypadButtonValue::Two}, Button3{Button3Mesh, 3, EKeypadButtonValue::Three};
+	FKeypadButton Button4{Button4Mesh, 4, EKeypadButtonValue::Four}, Button5{Button5Mesh, 5, EKeypadButtonValue::Five}, Button6{Button6Mesh, 6, EKeypadButtonValue::Six};
+	FKeypadButton Button7{Button7Mesh, 7, EKeypadButtonValue::Seven}, Button8{Button8Mesh, 8, EKeypadButtonValue::Eight}, Button9{Button9Mesh, 9, EKeypadButtonValue::Nine};
+	FKeypadButton ButtonDEL{ButtonDELMesh, 10, EKeypadButtonValue::DEL}, Button0{Button0Mesh, 0, EKeypadButtonValue::Zero}, ButtonOK{ButtonOKMesh, 20, EKeypadButtonValue::OK};
 
 	FKeypadButtonArray FirstRowButtons{Button1, Button2, Button3};
 	FKeypadButtonArray SecondRowButtons{Button4, Button5, Button6};
@@ -402,7 +406,7 @@ void AERKeypadBase::UpdateSelectedButton()
 	SelectedButton.Mesh->SetCustomDepthStencilValue(1);
 }
 
-void AERKeypadBase::StartLedBlinking()
+void AERKeypadBase::StartProcessing()
 {
 	GetWorldTimerManager().SetTimer(LedBlinkTimerHandle, this, &AERKeypadBase::LedBlinking, LedBlinkInterval, true, 0.f);
 }
@@ -426,9 +430,9 @@ void AERKeypadBase::LedBlinking()
 		bCanPressButton = true;
 
 		// Delegate
-		if (OnEndLedBlinking.IsBound())
+		if (OnFinishProcessing.IsBound())
 		{
-			OnEndLedBlinking.Execute();
+			OnFinishProcessing.Execute();
 		}
 	}
 }

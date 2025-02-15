@@ -8,3 +8,8 @@ AERKeypadConverter::AERKeypadConverter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
+
+void AERKeypadConverter::BeginPlay()
+{
+	Super::BeginPlay();
+}

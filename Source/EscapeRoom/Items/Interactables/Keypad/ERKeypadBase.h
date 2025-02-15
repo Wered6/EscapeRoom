@@ -8,6 +8,24 @@
 #include "ERKeypadBase.generated.h"
 
 class URectLightComponent;
+
+UENUM(BlueprintType)
+enum class EKeypadButtonValue : uint8
+{
+	Zero,
+	One,
+	Two,
+	Three,
+	Four,
+	Five,
+	Six,
+	Seven,
+	Eight,
+	Nine,
+	DEL,
+	OK
+};
+
 USTRUCT(BlueprintType)
 struct FKeypadButton
 {
@@ -17,6 +35,8 @@ struct FKeypadButton
 	TObjectPtr<UStaticMeshComponent> Mesh;
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
 	uint8 Value{};
+	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
+	EKeypadButtonValue KeypadButtonValue;
 };
 
 USTRUCT()
@@ -49,7 +69,8 @@ enum class ELedColor : uint8
 	Red
 };
 
-DECLARE_DELEGATE(FOnEndLedBlinking)
+DECLARE_DELEGATE(FOnFinishProcessing)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonValue, uint8)
 
 UCLASS()
 class ESCAPEROOM_API AERKeypadBase : public AERInteractableActor, public IERKeypadInterface
@@ -103,7 +124,7 @@ protected:
 	TArray<FKeypadButtonArray> Button2DArray;
 	bool bCanNavigate{true};
 	bool bCanPressButton{true};
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
+	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button")
 	FKeypadButton SelectedButton;
 
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
@@ -111,7 +132,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
 	float LedLongFlashTime{1.f};
 
-	FOnEndLedBlinking OnEndLedBlinking;
+	FOnFinishProcessing OnFinishProcessing;
 
 private:
 	void PopulateButton2DArray();
@@ -126,7 +147,7 @@ private:
 	 */
 	void UpdateSelectedButton();
 
-	void StartLedBlinking();
+	void StartProcessing();
 	void LedBlinking();
 
 	/**
@@ -161,6 +182,8 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
 	float ButtonDepth{4.f};
+
+	FOnKeypadButtonPressed OnKeypadButtonPressed;
 
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Light")
 	TObjectPtr<URectLightComponent> HelpLight;

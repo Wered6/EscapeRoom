@@ -23,7 +23,7 @@ void AERKeypadTV::BeginPlay()
 #pragma endregion
 
 	TV->OnCorrectPassword.BindUObject(this, &AERKeypadTV::ExitAndDisableInteraction);
-	OnEndLedBlinking.BindUObject(this, &AERKeypadTV::SendSignPasswordToTV);
+	OnFinishProcessing.BindUObject(this, &AERKeypadTV::SendSignPasswordToTV);
 }
 
 void AERKeypadTV::KeypadButtonPressed_Implementation()
@@ -38,30 +38,32 @@ void AERKeypadTV::KeypadButtonPressed_Implementation()
 
 	Super::KeypadButtonPressed_Implementation();
 
-	// All buttons except DEL and OK
-	if (SelectedButton.Value < 10)
+	switch (SelectedButton.KeypadButtonValue)
 	{
+	case EKeypadButtonValue::Zero:
+	case EKeypadButtonValue::One:
+	case EKeypadButtonValue::Two:
+	case EKeypadButtonValue::Three:
+	case EKeypadButtonValue::Four:
+	case EKeypadButtonValue::Five:
+	case EKeypadButtonValue::Six:
+	case EKeypadButtonValue::Seven:
+	case EKeypadButtonValue::Eight:
+	case EKeypadButtonValue::Nine:
 		Sign <<= 1;
 		Sign |= SelectedButton.Value;
-	}
-	// DEL/OK
-	else
-	{
-		// DEL
-		if (SelectedButton.Value == 10)
+		break;
+	case EKeypadButtonValue::DEL:
+		Sign >>= 1;
+		break;
+	case EKeypadButtonValue::OK:
+		// Limit between a-z A-Z
+		if (Sign < 65 || (Sign > 90 && Sign < 96) || Sign > 122)
 		{
-			Sign >>= 1;
+			// 0b00111111 = '?' sign
+			Sign = 0b00111111;
 		}
-		// OK
-		else if (SelectedButton.Value == 20)
-		{
-			// Limit between a-z A-Z
-			if (Sign < 65 || (Sign > 90 && Sign < 96) || Sign > 122)
-			{
-				// 0b00111111 = '?' sign
-				Sign = 0b00111111;
-			}
-		}
+		break;
 	}
 }
 

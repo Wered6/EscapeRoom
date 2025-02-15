@@ -14,35 +14,37 @@ void AERKeypad::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnEndLedBlinking.BindUObject(this, &AERKeypad::CheckPassword);
+	OnFinishProcessing.BindUObject(this, &AERKeypad::CheckPassword);
 }
 
 void AERKeypad::KeypadButtonPressed_Implementation()
 {
 	Super::KeypadButtonPressed_Implementation();
 
-	// All buttons except DEL and OK
-	if (SelectedButton.Value < 10)
+	switch (SelectedButton.KeypadButtonValue)
 	{
+	case EKeypadButtonValue::Zero:
+	case EKeypadButtonValue::One:
+	case EKeypadButtonValue::Two:
+	case EKeypadButtonValue::Three:
+	case EKeypadButtonValue::Four:
+	case EKeypadButtonValue::Five:
+	case EKeypadButtonValue::Six:
+	case EKeypadButtonValue::Seven:
+	case EKeypadButtonValue::Eight:
+	case EKeypadButtonValue::Nine:
 		UserPassword = UserPassword + FString::FromInt(SelectedButton.Value);
-	}
-	// DEL/OK
-	else
-	{
-		// If DEL
-		if (SelectedButton.Value == 10)
+		break;
+	case EKeypadButtonValue::DEL:
+		if (!UserPassword.IsEmpty())
 		{
-			if (!UserPassword.IsEmpty())
-			{
-				UserPassword = UserPassword.LeftChop(1);
-			}
+			UserPassword = UserPassword.LeftChop(1);
 		}
-		// If OK
-		else if (SelectedButton.Value == 20)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("UserPassword: %s"), *UserPassword)
-			// In parent here is StartLedBlinking, if you want to do something after OK, bind to OnEndLedBlinking
-		}
+		break;
+	case EKeypadButtonValue::OK:
+		UE_LOG(LogTemp, Warning, TEXT("UserPassword: %s"), *UserPassword)
+	// In parent here is StartLedBlinking, if you want to do something after OK, bind to OnEndLedBlinking
+		break;
 	}
 }
 

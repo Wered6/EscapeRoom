@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ERTV.generated.h"
 
+class UERTVConverterScreenWidget;
 class AERAlarmClock;
 class UERKeyComponent;
 class UFileMediaSource;
@@ -39,26 +40,36 @@ private:
 	UFUNCTION()
 	void ShowHangmanWidgetOnScreen();
 
+	UFUNCTION()
+	void ShowConverterWidgetOnScreen();
+
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Alarm")
 	TObjectPtr<AERAlarmClock> AlarmClock;
 
 	UPROPERTY(EditAnywhere, Category="ER|TV|Hangman")
 	FString Password{};
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Hangman")
+	TObjectPtr<UWidgetComponent> HangmanWidgetComp;
+	UPROPERTY(VisibleAnywhere, Category="ER|TV|Hangman")
+	TObjectPtr<UERTVScreenWidget> HangmanWidget;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Widget")
-	TObjectPtr<UWidgetComponent> TVScreenWidgetComp;
-	UPROPERTY(VisibleAnywhere, Category="ER|TV|Widget")
-	TObjectPtr<UERTVScreenWidget> TVScreenWidget;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Converter")
+	TObjectPtr<UWidgetComponent> ConverterWidgetComp;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Converter")
+	TObjectPtr<UERTVConverterScreenWidget> ConverterWidget;
+
+	UPROPERTY(VisibleAnywhere, Category="ER|TV|Screen")
+	TObjectPtr<UMaterialInstanceDynamic> ScreenDynMat;
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	TObjectPtr<UMediaSoundComponent> IntroSound;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	TObjectPtr<UMediaPlayer> IntroMediaPlayer;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	TObjectPtr<UFileMediaSource> IntroMediaSource;
 
 	UPROPERTY(VisibleAnywhere, Category="ER|TV|Components")
 	TObjectPtr<UERKeyComponent> KeyComponent;
-
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
-	TObjectPtr<UMediaSoundComponent> FilmSound;
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
-	TObjectPtr<UMediaPlayer> FilmMediaPlayer;
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
-	TObjectPtr<UFileMediaSource> FilmMediaSource;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Mesh")
 	TObjectPtr<UStaticMeshComponent> RootMesh;

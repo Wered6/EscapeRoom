@@ -21,19 +21,25 @@ AERTV::AERTV()
 	SetRootComponent(RootMesh);
 	RootMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
-	TVScreenWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TVScreenWidgetComp"));
-	TVScreenWidgetComp->SetupAttachment(RootMesh);
+	HangmanWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HangmanWidgetComp"));
+	HangmanWidgetComp->SetupAttachment(RootMesh);
 	// Hide widget from screen in scene
-	TVScreenWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, 1000.f));
-	TVScreenWidgetComp->SetDrawSize(FVector2D(1440.f, 1440.f));
+	HangmanWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, 1000.f));
+	HangmanWidgetComp->SetDrawSize(FVector2D(1440.f, 1440.f));
 
-	FilmSound = CreateDefaultSubobject<UMediaSoundComponent>(TEXT("FilmSound"));
-	FilmSound->SetupAttachment(RootMesh);
-	FilmSound->bAllowSpatialization = true;
-	FilmSound->bOverrideAttenuation = true;
+	ConverterWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("ConverterWidgetComp"));
+	ConverterWidgetComp->SetupAttachment(RootMesh);
+	// Hide widget from screen in scene
+	ConverterWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, 1000.f));
+	ConverterWidgetComp->SetDrawSize(FVector2D(1440.f, 1440.f));
+
+	IntroSound = CreateDefaultSubobject<UMediaSoundComponent>(TEXT("FilmSound"));
+	IntroSound->SetupAttachment(RootMesh);
+	IntroSound->bAllowSpatialization = true;
+	IntroSound->bOverrideAttenuation = true;
 	FSoundAttenuationSettings AttenuationSettings;
 	AttenuationSettings.FalloffDistance = 400.f;
-	FilmSound->AttenuationOverrides = AttenuationSettings;
+	IntroSound->AttenuationOverrides = AttenuationSettings;
 
 	KeyComponent = CreateDefaultSubobject<UERKeyComponent>(TEXT("KeyComponent"));
 }
@@ -42,32 +48,35 @@ void AERTV::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TVScreenWidget = Cast<UERTVScreenWidget>(TVScreenWidgetComp->GetWidget());
+	HangmanWidget = Cast<UERTVScreenWidget>(HangmanWidgetComp->GetWidget());
+
+	ScreenDynMat = RootMesh->CreateDynamicMaterialInstance(1);
 
 #pragma region Nullchecks
-	if (!TVScreenWidget)
+	if (!HangmanWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!FilmMediaPlayer)
+	if (!IntroMediaPlayer)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|FilmMediaPlayer is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	TVScreenWidget->Password = Password;
+	HangmanWidget->Password = Password;
 
-	FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowHangmanWidgetOnScreen);
-	FilmMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::StartAlarmClock);
-	FilmMediaPlayer->OpenSource(FilmMediaSource);
+	// IntroMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowHangmanWidgetOnScreen);
+	IntroMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowConverterWidgetOnScreen);
+	IntroMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::StartAlarmClock);
+	IntroMediaPlayer->OpenSource(IntroMediaSource);
 }
 
 bool AERTV::EnterSignToPassword(const FString& Sign) const
 {
 #pragma region Nullchecks
-	if (!TVScreenWidget)
+	if (!HangmanWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
 		return false;
@@ -79,14 +88,14 @@ bool AERTV::EnterSignToPassword(const FString& Sign) const
 	}
 #pragma endregion
 
-	const bool CorrectSign{TVScreenWidget->EnterSignToPassword(Sign)};
-	if (TVScreenWidget->Password == TVScreenWidget->UserPassword)
+	const bool CorrectSign{HangmanWidget->EnterSignToPassword(Sign)};
+	if (HangmanWidget->Password == HangmanWidget->UserPassword)
 	{
 		KeyComponent->UnlockLockedItems();
 		if (OnCorrectPassword.IsBound())
 		{
 			OnCorrectPassword.Execute();
-			TVScreenWidget->BravoWidget->SetVisibility(ESlateVisibility::Visible);
+			HangmanWidget->BravoWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 
@@ -110,25 +119,47 @@ void AERTV::StartAlarmClock()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void AERTV::ShowHangmanWidgetOnScreen()
 {
-	UMaterialInstanceDynamic* DynamicMaterial{RootMesh->CreateDynamicMaterialInstance(1)};
-
 #pragma region Nullchecks
-	if (!DynamicMaterial)
+	if (!ScreenDynMat)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|DynamicMaterial is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!TVScreenWidgetComp)
+	if (!HangmanWidgetComp)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|HangmanWidgetComp is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!TVScreenWidgetComp->GetRenderTarget())
+	if (!HangmanWidgetComp->GetRenderTarget())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget->GetRenderTarget() is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|HangmanWidgetComp->GetRenderTarget() is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	DynamicMaterial->SetTextureParameterValue(FName("Texture"), TVScreenWidgetComp->GetRenderTarget());
+	ScreenDynMat->SetTextureParameterValue(FName("Texture"), HangmanWidgetComp->GetRenderTarget());
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AERTV::ShowConverterWidgetOnScreen()
+{
+#pragma region Nullchecks
+	if (!ScreenDynMat)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ScreenDynMat is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!ConverterWidgetComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ConverterWidgetComp is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!ConverterWidgetComp->GetRenderTarget())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ConverterWidgetComp->GetRenderTarget() is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	ScreenDynMat->SetTextureParameterValue(FName("Texture"), ConverterWidgetComp->GetRenderTarget());
 }

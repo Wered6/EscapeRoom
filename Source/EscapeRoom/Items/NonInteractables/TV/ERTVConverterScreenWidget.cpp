@@ -2,3 +2,8 @@
 
 
 #include "ERTVConverterScreenWidget.h"
+
+void UERTVConverterScreenWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}

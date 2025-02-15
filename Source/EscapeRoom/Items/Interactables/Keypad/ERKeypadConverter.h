@@ -13,4 +13,10 @@ class ESCAPEROOM_API AERKeypadConverter : public AERKeypadBase
 
 public:
 	AERKeypadConverter();
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+
 };
