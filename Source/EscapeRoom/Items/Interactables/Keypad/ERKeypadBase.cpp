@@ -172,7 +172,14 @@ void AERKeypadBase::KeypadButtonPressed_Implementation()
 		LedFlash(ELedColor::Red, LedShortFlashTime);
 		break;
 	case EKeypadButtonValue::OK:
-		StartProcessing();
+		if (bProcessing)
+		{
+			StartProcessing();
+		}
+		else
+		{
+			LedFlash(ELedColor::Green, LedShortFlashTime);
+		}
 		break;
 	}
 
@@ -187,8 +194,16 @@ void AERKeypadBase::KeypadButtonReleased_Implementation()
 {
 	// If button is OK, do not allow to navigate or press buttons
 	// Navigate and pressing will reset after blinking led ends in StartLedBlinking()
-	bCanNavigate = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
-	bCanPressButton = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
+	if (bProcessing)
+	{
+		bCanNavigate = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
+		bCanPressButton = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
+	}
+	else
+	{
+		bCanNavigate = true;
+		bCanPressButton = true;
+	}
 
 	ReverseButtonAnimation();
 
@@ -280,6 +295,26 @@ void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
 		UE_LOG(LogTemp, Warning, TEXT("%s|RedLedDynamicMaterial is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!ShortGreenLedSound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ShortGreenLedSound is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!ShortRedLedSound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ShortRedLedSound is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!LongGreenLedSound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|LongGreenLedSound is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!LongRedLedSound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|LongRedLedSound is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	switch (LedColor)
@@ -295,6 +330,7 @@ void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
 		                                FlashTime,
 		                                false
 		);
+		UGameplayStatics::PlaySoundAtLocation(this, FlashTime == LedLongFlashTime ? LongGreenLedSound : ShortGreenLedSound, GetActorLocation());
 		break;
 	case ELedColor::Red:
 		// Set Emissive of Red Led
@@ -307,6 +343,7 @@ void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
 		                                FlashTime,
 		                                false
 		);
+		UGameplayStatics::PlaySoundAtLocation(this, FlashTime == LedLongFlashTime ? LongRedLedSound : ShortRedLedSound, GetActorLocation());
 		break;
 	}
 	// TODO add sounds for led flash

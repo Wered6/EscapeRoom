@@ -34,7 +34,8 @@ public:
 	FOnCorrectHangmanPassword OnCorrectHangmanPassword;
 
 	void SendNumberToConverter(const uint8 Number) const;
-	void NextRGBField() const;
+	bool NextRGBField() const;
+	void ConvertRGBToHSV() const;
 
 private:
 	UFUNCTION()

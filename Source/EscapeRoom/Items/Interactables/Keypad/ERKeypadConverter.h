@@ -23,6 +23,8 @@ public:
 	virtual void KeypadButtonPressed_Implementation() override;
 
 private:
+	void Convert();
+
 	UPROPERTY(EditInstanceOnly, Category="ER|KeypadTV")
 	TObjectPtr<AERTV> TV;
 };

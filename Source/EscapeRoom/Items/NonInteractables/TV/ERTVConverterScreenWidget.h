@@ -18,7 +18,12 @@ public:
 	virtual void NativeConstruct() override;
 
 	void UpdateCurrentRGBArrayElement(const uint8 Number);
-	void NextRGBField();
+	/**
+	 *
+	 * @return Return if there is next RGB field
+	 */
+	bool NextRGBField();
+	void Convert() const;
 
 private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|RGB", meta=(BindWidget, AllowPrivateAccess=true))

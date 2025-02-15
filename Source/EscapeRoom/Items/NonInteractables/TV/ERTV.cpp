@@ -118,7 +118,7 @@ void AERTV::SendNumberToConverter(const uint8 Number) const
 	ConverterWidget->UpdateCurrentRGBArrayElement(Number);
 }
 
-void AERTV::NextRGBField() const
+bool AERTV::NextRGBField() const
 {
 #pragma region Nullchecks
 	if (!ConverterWidget)
@@ -127,7 +127,20 @@ void AERTV::NextRGBField() const
 	}
 #pragma endregion
 
-	ConverterWidget->NextRGBField();
+	return ConverterWidget->NextRGBField();
+}
+
+void AERTV::ConvertRGBToHSV() const
+{
+#pragma region Nullchecks
+	if (!ConverterWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ConverterWidget is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	ConverterWidget->Convert();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst

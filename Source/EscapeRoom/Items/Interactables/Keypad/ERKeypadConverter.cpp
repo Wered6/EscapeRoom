@@ -2,24 +2,25 @@
 
 
 #include "ERKeypadConverter.h"
-
 #include "EscapeRoom/Items/NonInteractables/TV/ERTV.h"
 
 
 AERKeypadConverter::AERKeypadConverter()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	bProcessing = false;
 }
 
 void AERKeypadConverter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnFinishProcessing.BindUObject(this, &AERKeypadConverter::Convert);
 }
 
 void AERKeypadConverter::KeypadButtonPressed_Implementation()
 {
-	Super::KeypadButtonPressed_Implementation();
-
 #pragma region Nullchecks
 	if (!TV)
 	{
@@ -45,7 +46,25 @@ void AERKeypadConverter::KeypadButtonPressed_Implementation()
 	case EKeypadButtonValue::DEL:
 		break;
 	case EKeypadButtonValue::OK:
-		TV->NextRGBField();
+		if (!TV->NextRGBField())
+		{
+			bProcessing = true;
+		}
 		break;
 	}
+
+	Super::KeypadButtonPressed_Implementation();
+}
+
+void AERKeypadConverter::Convert()
+{
+#pragma region Nullchecks
+	if (!TV)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TV is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	TV->ConvertRGBToHSV();
 }

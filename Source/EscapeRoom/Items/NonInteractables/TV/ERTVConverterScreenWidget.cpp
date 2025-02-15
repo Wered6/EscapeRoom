@@ -28,7 +28,7 @@ void UERTVConverterScreenWidget::UpdateCurrentRGBArrayElement(const uint8 Number
 	RGBArray[RGBArrayIndex]->UpdateText(TempNumber);
 }
 
-void UERTVConverterScreenWidget::NextRGBField()
+bool UERTVConverterScreenWidget::NextRGBField()
 {
 	RGBArray[RGBArrayIndex]->StopBlinkAnimation();
 	if (RGBArrayIndex < 2)
@@ -37,17 +37,22 @@ void UERTVConverterScreenWidget::NextRGBField()
 		TempNumber.Empty();
 		RGBArrayIndex++;
 		RGBArray[RGBArrayIndex]->PlayBlinkAnimation();
-	}
-	else
-	{
-		const FString RedString{RedValue->GetText().ToString()};
-		const FString GreenString{GreenValue->GetText().ToString()};
-		const FString BlueString{BlueValue->GetText().ToString()};
-		const FLinearColor RGBColor{FCString::Atof(*RedString) / 255, FCString::Atof(*GreenString) / 255, FCString::Atof(*BlueString) / 255};
-		const FLinearColor HSVColor{RGBColor.LinearRGBToHSV()};
 
-		HSVHue->UpdateText(FString::FromInt(HSVColor.R));
-		HSVSaturation->UpdateText(FString::FromInt(HSVColor.G * 100));
-		HSVValue->UpdateText(FString::FromInt(HSVColor.B * 100));
+		return true;
 	}
+
+	return false;
+}
+
+void UERTVConverterScreenWidget::Convert() const
+{
+	const FString RedString{RedValue->GetText().ToString()};
+	const FString GreenString{GreenValue->GetText().ToString()};
+	const FString BlueString{BlueValue->GetText().ToString()};
+	const FLinearColor RGBColor{FCString::Atof(*RedString) / 255, FCString::Atof(*GreenString) / 255, FCString::Atof(*BlueString) / 255};
+	const FLinearColor HSVColor{RGBColor.LinearRGBToHSV()};
+
+	HSVHue->UpdateText(FString::FromInt(HSVColor.R));
+	HSVSaturation->UpdateText(FString::FromInt(HSVColor.G * 100));
+	HSVValue->UpdateText(FString::FromInt(HSVColor.B * 100));
 }

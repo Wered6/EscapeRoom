@@ -69,6 +69,7 @@ enum class ELedColor : uint8
 	Red
 };
 
+// TODO make it multicast
 DECLARE_DELEGATE(FOnFinishProcessing)
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonValue, uint8)
 
@@ -124,6 +125,7 @@ protected:
 	TArray<FKeypadButtonArray> Button2DArray;
 	bool bCanNavigate{true};
 	bool bCanPressButton{true};
+	bool bProcessing{true};
 	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button")
 	FKeypadButton SelectedButton;
 
@@ -188,6 +190,20 @@ private:
 	TObjectPtr<URectLightComponent> HelpLight;
 
 	// TODO convert all logic beside keypad sending which key was pressed to anything that uses keypad
+
+#pragma region Audio
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Audio")
+	TObjectPtr<USoundBase> ShortGreenLedSound;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Audio")
+	TObjectPtr<USoundBase> ShortRedLedSound;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Audio")
+	TObjectPtr<USoundBase> LongGreenLedSound;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Audio")
+	TObjectPtr<USoundBase> LongRedLedSound;
+
+
+#pragma endregion
 
 #pragma region Meshes
 
