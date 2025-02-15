@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ERTVConverterScreenWidget.generated.h"
 
+class AERTV;
 class UERTVScreenSignWidget;
 
 UCLASS()
@@ -16,17 +17,29 @@ class ESCAPEROOM_API UERTVConverterScreenWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+	void UpdateCurrentRGBArrayElement(const uint8 Number);
+	void NextRGBField();
+
 private:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Default", meta=(BindWidget, AllowPrivateAccess=true))
-	TObjectPtr<UERTVScreenSignWidget> R;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Default", meta=(BindWidget, AllowPrivateAccess=true))
-	TObjectPtr<UERTVScreenSignWidget> G;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Default", meta=(BindWidget, AllowPrivateAccess=true))
-	TObjectPtr<UERTVScreenSignWidget> B;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Default", meta=(BindWidget, AllowPrivateAccess=true))
-	TObjectPtr<UERTVScreenSignWidget> H;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Default", meta=(BindWidget, AllowPrivateAccess=true))
-	TObjectPtr<UERTVScreenSignWidget> S;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Default", meta=(BindWidget, AllowPrivateAccess=true))
-	TObjectPtr<UERTVScreenSignWidget> V;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|RGB", meta=(BindWidget, AllowPrivateAccess=true))
+	TObjectPtr<UERTVScreenSignWidget> RedValue;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|RGB", meta=(BindWidget, AllowPrivateAccess=true))
+	TObjectPtr<UERTVScreenSignWidget> GreenValue;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|RGB", meta=(BindWidget, AllowPrivateAccess=true))
+	TObjectPtr<UERTVScreenSignWidget> BlueValue;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|HSV", meta=(BindWidget, AllowPrivateAccess=true))
+	TObjectPtr<UERTVScreenSignWidget> HSVHue;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|HSV", meta=(BindWidget, AllowPrivateAccess=true))
+	TObjectPtr<UERTVScreenSignWidget> HSVSaturation;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|HSV", meta=(BindWidget, AllowPrivateAccess=true))
+	TObjectPtr<UERTVScreenSignWidget> HSVValue;
+
+	uint8 CurrentTempNumberLen{};
+	uint8 MaxTempNumberLen{3};
+	FString TempNumber{};
+
+	UPROPERTY(VisibleAnywhere, Category="ER|RGB")
+	TArray<TObjectPtr<UERTVScreenSignWidget>> RGBArray;
+	UPROPERTY(VisibleAnywhere, Category="ER|RGB")
+	uint8 RGBArrayIndex{};
 };

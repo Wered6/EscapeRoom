@@ -132,6 +132,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Leds")
 	float LedLongFlashTime{1.f};
 
+	FOnKeypadButtonPressed OnKeypadButtonPressed;
 	FOnFinishProcessing OnFinishProcessing;
 
 private:
@@ -182,8 +183,6 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
 	float ButtonDepth{4.f};
-
-	FOnKeypadButtonPressed OnKeypadButtonPressed;
 
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Light")
 	TObjectPtr<URectLightComponent> HelpLight;

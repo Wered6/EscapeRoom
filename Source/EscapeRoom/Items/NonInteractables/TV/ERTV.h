@@ -15,7 +15,7 @@ class UMediaSoundComponent;
 class UERTVScreenWidget;
 class UWidgetComponent;
 
-DECLARE_DELEGATE(FOnCorrectPassword)
+DECLARE_DELEGATE(FOnCorrectHangmanPassword)
 
 UCLASS()
 class ESCAPEROOM_API AERTV : public AActor
@@ -29,9 +29,12 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	bool EnterSignToPassword(const FString& Sign) const;
+	bool EnterSignToHangman(const FString& Sign) const;
 
-	FOnCorrectPassword OnCorrectPassword;
+	FOnCorrectHangmanPassword OnCorrectHangmanPassword;
+
+	void SendNumberToConverter(const uint8 Number) const;
+	void NextRGBField() const;
 
 private:
 	UFUNCTION()

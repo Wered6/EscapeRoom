@@ -22,7 +22,7 @@ void AERKeypadTV::BeginPlay()
 	}
 #pragma endregion
 
-	TV->OnCorrectPassword.BindUObject(this, &AERKeypadTV::ExitAndDisableInteraction);
+	TV->OnCorrectHangmanPassword.BindUObject(this, &AERKeypadTV::ExitAndDisableInteraction);
 	OnFinishProcessing.BindUObject(this, &AERKeypadTV::SendSignPasswordToTV);
 }
 
@@ -70,7 +70,7 @@ void AERKeypadTV::KeypadButtonPressed_Implementation()
 void AERKeypadTV::SendSignPasswordToTV()
 {
 	const TCHAR TempChar{Sign};
-	const bool CorrectSign{TV->EnterSignToPassword(FString(1, &TempChar))};
+	const bool CorrectSign{TV->EnterSignToHangman(FString(1, &TempChar))};
 	// Reset Sign
 	Sign = 0b00000000;
 

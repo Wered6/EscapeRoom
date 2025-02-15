@@ -2,6 +2,8 @@
 
 
 #include "ERTV.h"
+
+#include "ERTVConverterScreenWidget.h"
 #include "ERTVScreenSignWidget.h"
 #include "ERTVScreenWidget.h"
 #include "FileMediaSource.h"
@@ -49,6 +51,7 @@ void AERTV::BeginPlay()
 	Super::BeginPlay();
 
 	HangmanWidget = Cast<UERTVScreenWidget>(HangmanWidgetComp->GetWidget());
+	ConverterWidget = Cast<UERTVConverterScreenWidget>(ConverterWidgetComp->GetWidget());
 
 	ScreenDynMat = RootMesh->CreateDynamicMaterialInstance(1);
 
@@ -73,7 +76,7 @@ void AERTV::BeginPlay()
 	IntroMediaPlayer->OpenSource(IntroMediaSource);
 }
 
-bool AERTV::EnterSignToPassword(const FString& Sign) const
+bool AERTV::EnterSignToHangman(const FString& Sign) const
 {
 #pragma region Nullchecks
 	if (!HangmanWidget)
@@ -92,14 +95,39 @@ bool AERTV::EnterSignToPassword(const FString& Sign) const
 	if (HangmanWidget->Password == HangmanWidget->UserPassword)
 	{
 		KeyComponent->UnlockLockedItems();
-		if (OnCorrectPassword.IsBound())
+		if (OnCorrectHangmanPassword.IsBound())
 		{
-			OnCorrectPassword.Execute();
+			OnCorrectHangmanPassword.Execute();
 			HangmanWidget->BravoWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 
 	return CorrectSign;
+}
+
+void AERTV::SendNumberToConverter(const uint8 Number) const
+{
+#pragma region Nullchecks
+	if (!ConverterWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ConverterWidget is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	ConverterWidget->UpdateCurrentRGBArrayElement(Number);
+}
+
+void AERTV::NextRGBField() const
+{
+#pragma region Nullchecks
+	if (!ConverterWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ConverterWidget is nullptr"), *FString(__FUNCTION__))
+	}
+#pragma endregion
+
+	ConverterWidget->NextRGBField();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst

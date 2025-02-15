@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "ERTVScreenSignWidget.generated.h"
 
+class UERTVConverterScreenWidget;
 class UERTVScreenWidget;
 class UTextBlock;
 
@@ -18,6 +20,11 @@ class ESCAPEROOM_API UERTVScreenSignWidget : public UUserWidget
 
 public:
 	virtual void NativePreConstruct() override;
+
+	FText GetText() const
+	{
+		return Sign->GetText();
+	}
 
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void UpdateText(const FString NewText) const;

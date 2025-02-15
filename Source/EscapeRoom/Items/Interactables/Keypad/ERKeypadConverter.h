@@ -6,6 +6,8 @@
 #include "ERKeypadBase.h"
 #include "ERKeypadConverter.generated.h"
 
+class AERTV;
+
 UCLASS()
 class ESCAPEROOM_API AERKeypadConverter : public AERKeypadBase
 {
@@ -17,6 +19,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
+public:
+	virtual void KeypadButtonPressed_Implementation() override;
 
+private:
+	UPROPERTY(EditInstanceOnly, Category="ER|KeypadTV")
+	TObjectPtr<AERTV> TV;
 };
