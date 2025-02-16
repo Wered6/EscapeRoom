@@ -9,6 +9,7 @@
 #include "MediaPlayer.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/TextureRenderTarget2D.h"
+#include "EscapeRoom/Character/ERCharacter.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
 #include "EscapeRoom/Items/NonInteractables/AlarmClock/ERAlarmClock.h"
 #include "GameFramework/Character.h"
@@ -255,8 +256,7 @@ void AERTV::OpenIntro2()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void AERTV::OpenNoSignal()
 {
-	ACharacter* Character{UGameplayStatics::GetPlayerCharacter(this, 0)};
-	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
+	AERCharacter* ERCharacter{Cast<AERCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0))};
 
 #pragma region Nullchecks
 	if (!TVMediaPlayer)
@@ -269,14 +269,9 @@ void AERTV::OpenNoSignal()
 		UE_LOG(LogTemp, Warning, TEXT("%s|NoSignalMediaSource is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!Character)
+	if (!ERCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Character is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|ERCharacter is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
@@ -285,5 +280,6 @@ void AERTV::OpenNoSignal()
 	TVMediaPlayer->OnEndReached.Clear();
 	TVMediaPlayer->SetLooping(true);
 
-	Character->EnableInput(PlayerController);
+	ERCharacter->SetLimitMovement(false);
+	ERCharacter->SetIndicatorVisibility(true);
 }

@@ -41,7 +41,8 @@ void AERCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CameraDefaultTransform = Camera1P->GetRelativeTransform();
-	DisableInput(PlayerController);
+
+	bLimitMovement = true;
 }
 
 void AERCharacter::NotifyControllerChanged()
@@ -66,6 +67,11 @@ void AERCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	PerformInteractionCheck();
+}
+
+void AERCharacter::SetLimitMovement(const bool bLimit)
+{
+	bLimitMovement = bLimit;
 }
 
 void AERCharacter::ResetCameraTransform() const
@@ -265,8 +271,11 @@ void AERCharacter::Move(const FInputActionValue& Value)
 	const FVector2D MovementVector{Value.Get<FVector2D>()};
 
 	// Add movement to character
-	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-	AddMovementInput(GetActorRightVector(), MovementVector.X);
+	if (!bLimitMovement)
+	{
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+		AddMovementInput(GetActorRightVector(), MovementVector.X);
+	}
 }
 
 void AERCharacter::Look(const FInputActionValue& Value)
@@ -275,8 +284,28 @@ void AERCharacter::Look(const FInputActionValue& Value)
 	const FVector2D LookAxisVector{Value.Get<FVector2D>()};
 
 	// Add rotation to controller
-	AddControllerYawInput(LookAxisVector.X);
 	AddControllerPitchInput(LookAxisVector.Y);
+
+	if (bLimitMovement)
+	{
+		const FRotator CurrentRotation{GetControlRotation()};
+		if (CurrentRotation.Yaw >= 275.f && CurrentRotation.Yaw <= 350.f)
+		{
+			AddControllerYawInput(LookAxisVector.X);
+		}
+		else if (CurrentRotation.Yaw <= 275.f && LookAxisVector.X > 0.f)
+		{
+			AddControllerYawInput(LookAxisVector.X);
+		}
+		else if (CurrentRotation.Yaw >= 350.f && LookAxisVector.X < 0.f)
+		{
+			AddControllerYawInput(LookAxisVector.X);
+		}
+	}
+	else
+	{
+		AddControllerYawInput(LookAxisVector.X);
+	}
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst

@@ -6,6 +6,8 @@
 void AERHUD::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bIndicatorVisibility = false;
 }
 
 void AERHUD::DrawHUD()

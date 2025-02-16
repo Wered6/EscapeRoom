@@ -30,7 +30,12 @@ protected:
 public:
 	virtual void Tick(float DeltaSeconds) override;
 
+public:
+	void SetLimitMovement(const bool bLimit);
+
 private:
+	bool bLimitMovement{};
+
 	/**
 	 * Pawn mesh: 1st person view (arms; seen only by self)
 	 */
