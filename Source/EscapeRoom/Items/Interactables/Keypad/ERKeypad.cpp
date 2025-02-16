@@ -43,7 +43,7 @@ void AERKeypad::KeypadButtonPressed_Implementation()
 		break;
 	case EKeypadButtonValue::OK:
 		UE_LOG(LogTemp, Warning, TEXT("UserPassword: %s"), *UserPassword)
-	// In parent here is StartLedBlinking, if you want to do something after OK, bind to OnEndLedBlinking
+	// In parent here is OnFinishProcessing, if you want to do something after OK, bind to OnFinishProcessing
 		break;
 	}
 }

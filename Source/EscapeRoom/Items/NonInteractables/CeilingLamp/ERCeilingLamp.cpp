@@ -16,7 +16,7 @@ AERCeilingLamp::AERCeilingLamp()
 	LightRight->SetupAttachment(RootMesh);
 	LightRight->SetRelativeLocation(FVector(0.f, -3.f, -30.f));
 	LightRight->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	LightRight->SetIntensity(1000.f);
+	LightRight->SetIntensity(500.f);
 	LightRight->SetIntensityUnits(ELightUnits::Unitless);
 	LightRight->SetSourceWidth(3.f);
 	LightRight->SetSourceHeight(120.f);
@@ -28,7 +28,7 @@ AERCeilingLamp::AERCeilingLamp()
 	LightLeft->SetupAttachment(RootMesh);
 	LightLeft->SetRelativeLocation(FVector(0.f, 3.f, -30.f));
 	LightLeft->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	LightLeft->SetIntensity(1000.f);
+	LightLeft->SetIntensity(500.f);
 	LightLeft->SetIntensityUnits(ELightUnits::Unitless);
 	LightLeft->SetSourceWidth(3.f);
 	LightLeft->SetSourceHeight(120.f);
@@ -40,7 +40,7 @@ AERCeilingLamp::AERCeilingLamp()
 	HelpLight->SetupAttachment(RootMesh);
 	HelpLight->SetRelativeLocation(FVector(0.f, 0.f, -120.f));
 	HelpLight->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
-	HelpLight->SetIntensity(500.f);
+	HelpLight->SetIntensity(200.f);
 	HelpLight->SetIntensityUnits(ELightUnits::Unitless);
 	HelpLight->SetSourceWidth(10.f);
 	HelpLight->SetSourceHeight(120.f);
