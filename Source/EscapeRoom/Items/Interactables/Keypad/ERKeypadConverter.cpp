@@ -56,6 +56,7 @@ void AERKeypadConverter::KeypadButtonPressed_Implementation()
 	Super::KeypadButtonPressed_Implementation();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void AERKeypadConverter::Convert()
 {
 #pragma region Nullchecks
@@ -67,4 +68,5 @@ void AERKeypadConverter::Convert()
 #pragma endregion
 
 	TV->ConvertRGBToHSV();
+	TV->ResetConverter();
 }

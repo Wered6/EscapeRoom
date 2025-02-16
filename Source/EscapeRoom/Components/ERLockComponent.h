@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "ERLockComponent.generated.h"
 
+DECLARE_DELEGATE(FOnUnlock)
+
 /**
  * Component for items/objects that can be locked and with possibility to unlock (Items which have ERKeyComponent)
  */
@@ -30,6 +32,8 @@ public:
 	{
 		return bLocked;
 	}
+
+	FOnUnlock OnUnlock;
 
 private:
 	UPROPERTY(EditAnywhere, Category="ER|Lock")

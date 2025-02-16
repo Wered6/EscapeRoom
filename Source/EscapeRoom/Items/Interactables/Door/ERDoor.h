@@ -17,6 +17,12 @@ public:
 	AERDoor();
 
 protected:
+	virtual void BeginPlay() override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category="ER|Audio")
+	TObjectPtr<USoundBase> UnlockSound;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> DoorMesh;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
@@ -24,4 +30,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Components")
 	TObjectPtr<UERLockComponent> LockComponent;
+
+private:
+	void PlayUnlockSound();
 };

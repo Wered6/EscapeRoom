@@ -8,6 +8,9 @@
 
 class UERKeyComponent;
 
+DECLARE_DELEGATE(FOnCorrectPassword)
+DECLARE_DELEGATE(FOnWrongPassword)
+
 UCLASS()
 class ESCAPEROOM_API AERKeypad : public AERKeypadBase
 {
@@ -24,6 +27,9 @@ public:
 	 * Overriding KeypadAcceptButtonPressed function from ERKeypadInterface
 	 */
 	virtual void KeypadButtonPressed_Implementation() override;
+
+	FOnCorrectPassword OnCorrectPassword;
+	FOnWrongPassword OnWrongPassword;
 
 private:
 	void CheckPassword();

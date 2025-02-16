@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "ERTV.generated.h"
 
+class UMediaTexture;
+class AERKeypad;
 class AERFlashlight;
 class UERTVConverterScreenWidget;
 class AERAlarmClock;
@@ -38,6 +40,7 @@ public:
 	void SendNumberToConverter(const uint8 Number) const;
 	bool NextRGBField() const;
 	void ConvertRGBToHSV() const;
+	void ResetConverter() const;
 
 private:
 	UFUNCTION()
@@ -48,6 +51,9 @@ private:
 
 	UFUNCTION()
 	void ShowConverterWidgetOnScreen();
+
+	UPROPERTY(EditInstanceOnly, Category="ER|TV|Keypad")
+	TObjectPtr<AERKeypad> Keypad;
 
 	UPROPERTY(EditInstanceOnly, Category="ER|TV|Flashlight")
 	TObjectPtr<AERFlashlight> Flashlight;
@@ -86,9 +92,15 @@ private:
 	void OpenIntro3();
 	UFUNCTION()
 	void OpenStage1();
+	UFUNCTION()
+	void OpenStage2();
+	UFUNCTION(BlueprintCallable)
+	void OpenToBeContinued();
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
 	TObjectPtr<UMediaPlayer> TVMediaPlayer;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
+	TObjectPtr<UMediaTexture> TVMediaTexture;
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
 	TObjectPtr<UFileMediaSource> Intro1MediaSource;
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
@@ -97,6 +109,10 @@ private:
 	TObjectPtr<UFileMediaSource> NoSignalMediaSource;
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Stage1")
 	TObjectPtr<UFileMediaSource> FlashlightClueMediaSource;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Stage2")
+	TObjectPtr<UFileMediaSource> PasswordClueMediaSource;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|TBC")
+	TObjectPtr<UFileMediaSource> ToBeContinuedMediaSource;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Sound")
 	TObjectPtr<UMediaSoundComponent> TVSound;

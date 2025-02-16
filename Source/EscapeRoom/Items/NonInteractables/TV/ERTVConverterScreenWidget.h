@@ -19,11 +19,11 @@ public:
 
 	void UpdateCurrentRGBArrayElement(const uint8 Number);
 	/**
-	 *
 	 * @return Return if there is next RGB field
 	 */
 	bool NextRGBField();
 	void Convert() const;
+	void ResetRGBArrayIndex();
 
 private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|RGB", meta=(BindWidget, AllowPrivateAccess=true))

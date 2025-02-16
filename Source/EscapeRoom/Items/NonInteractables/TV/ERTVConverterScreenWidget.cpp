@@ -56,3 +56,8 @@ void UERTVConverterScreenWidget::Convert() const
 	HSVSaturation->UpdateText(FString::FromInt(HSVColor.G * 100));
 	HSVValue->UpdateText(FString::FromInt(HSVColor.B * 100));
 }
+
+void UERTVConverterScreenWidget::ResetRGBArrayIndex()
+{
+	RGBArrayIndex = 0;
+}

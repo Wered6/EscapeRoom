@@ -16,6 +16,11 @@ void UERLockComponent::BeginPlay()
 
 void UERLockComponent::Unlock()
 {
+	if (OnUnlock.IsBound())
+	{
+		OnUnlock.Execute();
+	}
+
 	bLocked = false;
 }
 

@@ -7,11 +7,13 @@
 #include "ERTVScreenWidget.h"
 #include "FileMediaSource.h"
 #include "MediaPlayer.h"
+#include "MediaTexture.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
+#include "EscapeRoom/Items/Interactables/Keypad/ERKeypad.h"
 #include "EscapeRoom/Items/NonInteractables/AlarmClock/ERAlarmClock.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -79,6 +81,11 @@ void AERTV::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s|Flashlight is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!Keypad)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Keypad is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	HangmanWidget->Password = Password;
@@ -87,6 +94,7 @@ void AERTV::BeginPlay()
 	OpenIntro1();
 
 	Flashlight->OnFlashlightEquipped.BindUObject(this, &AERTV::OpenStage1);
+	Keypad->OnCorrectPassword.BindUObject(this, &AERTV::OpenStage2);
 }
 
 void AERTV::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -169,6 +177,19 @@ void AERTV::ConvertRGBToHSV() const
 #pragma endregion
 
 	ConverterWidget->Convert();
+}
+
+void AERTV::ResetConverter() const
+{
+#pragma region Nullchecks
+	if (!ConverterWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ConverterWidget is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	ConverterWidget->ResetRGBArrayIndex();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -319,4 +340,51 @@ void AERTV::OpenStage1()
 	TVMediaPlayer->OpenSource(FlashlightClueMediaSource);
 	TVMediaPlayer->OnEndReached.Clear();
 	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowConverterWidgetOnScreen);
+}
+
+void AERTV::OpenStage2()
+{
+#pragma region Nullchecks
+	if (!TVMediaPlayer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVMediaPlayer is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PasswordClueMediaSource)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PasswordClueMediaSource is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!TVMediaTexture)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVMediaTexture is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	ScreenDynMat->SetTextureParameterValue(FName("Texture"), TVMediaTexture);
+
+	TVMediaPlayer->OpenSource(PasswordClueMediaSource);
+	TVMediaPlayer->OnEndReached.Clear();
+	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowHangmanWidgetOnScreen);
+}
+
+void AERTV::OpenToBeContinued()
+{
+#pragma region Nullchecks
+	if (!TVMediaPlayer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVMediaPlayer is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!ToBeContinuedMediaSource)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ToBeContinuedMediaSource is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	ScreenDynMat->SetTextureParameterValue(FName("Texture"), TVMediaTexture);
+
+	TVMediaPlayer->OpenSource(ToBeContinuedMediaSource);
 }

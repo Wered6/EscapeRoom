@@ -56,10 +56,20 @@ void AERKeypad::CheckPassword()
 		LedFlash(ELedColor::Green, LedLongFlashTime);
 		ExitKeypadMode();
 		DisableInteraction();
+
+		if (OnCorrectPassword.IsBound())
+		{
+			OnCorrectPassword.Execute();
+		}
 	}
 	else
 	{
 		LedFlash(ELedColor::Red, LedLongFlashTime);
 		UserPassword.Empty();
+
+		if (OnWrongPassword.IsBound())
+		{
+			OnWrongPassword.Execute();
+		}
 	}
 }
