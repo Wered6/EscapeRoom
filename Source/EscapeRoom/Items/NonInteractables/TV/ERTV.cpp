@@ -2,7 +2,6 @@
 
 
 #include "ERTV.h"
-
 #include "ERTVConverterScreenWidget.h"
 #include "ERTVScreenSignWidget.h"
 #include "ERTVScreenWidget.h"
