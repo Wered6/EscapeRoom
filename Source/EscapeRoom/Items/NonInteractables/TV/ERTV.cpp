@@ -11,6 +11,8 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
 #include "EscapeRoom/Items/NonInteractables/AlarmClock/ERAlarmClock.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "Runtime/MediaAssets/Public/MediaSoundComponent.h"
 
 
@@ -82,6 +84,21 @@ void AERTV::BeginPlay()
 	TVSound->SetMediaPlayer(TVMediaPlayer);
 	TVMediaPlayer->OpenSource(Intro1MediaSource);
 	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::OpenIntro2);
+}
+
+void AERTV::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+#pragma region Nullchecks
+	if (!TVMediaPlayer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVMediaPlayer is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	TVMediaPlayer->SetLooping(false);
 }
 
 bool AERTV::EnterSignToHangman(const FString& Sign) const
@@ -238,6 +255,9 @@ void AERTV::OpenIntro2()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void AERTV::OpenNoSignal()
 {
+	ACharacter* Character{UGameplayStatics::GetPlayerCharacter(this, 0)};
+	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
+
 #pragma region Nullchecks
 	if (!TVMediaPlayer)
 	{
@@ -249,9 +269,21 @@ void AERTV::OpenNoSignal()
 		UE_LOG(LogTemp, Warning, TEXT("%s|NoSignalMediaSource is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!Character)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Character is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	TVMediaPlayer->OpenSource(NoSignalMediaSource);
 	TVMediaPlayer->OnEndReached.Clear();
 	TVMediaPlayer->SetLooping(true);
+
+	Character->EnableInput(PlayerController);
 }

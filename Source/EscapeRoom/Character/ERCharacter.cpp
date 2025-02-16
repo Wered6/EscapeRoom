@@ -41,6 +41,7 @@ void AERCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CameraDefaultTransform = Camera1P->GetRelativeTransform();
+	DisableInput(PlayerController);
 }
 
 void AERCharacter::NotifyControllerChanged()
