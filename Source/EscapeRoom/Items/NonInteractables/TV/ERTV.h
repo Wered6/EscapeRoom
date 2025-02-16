@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ERTV.generated.h"
 
+class AERFlashlight;
 class UERTVConverterScreenWidget;
 class AERAlarmClock;
 class UERKeyComponent;
@@ -48,7 +49,10 @@ private:
 	UFUNCTION()
 	void ShowConverterWidgetOnScreen();
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Alarm")
+	UPROPERTY(EditInstanceOnly, Category="ER|TV|Flashlight")
+	TObjectPtr<AERFlashlight> Flashlight;
+
+	UPROPERTY(EditInstanceOnly, Category="ER|TV|Alarm")
 	TObjectPtr<AERAlarmClock> AlarmClock;
 
 	UPROPERTY(EditAnywhere, Category="ER|TV|Hangman")
@@ -75,12 +79,15 @@ private:
 #pragma region Movies
 
 private:
+	void OpenIntro1();
 	UFUNCTION()
 	void OpenIntro2();
 	UFUNCTION()
-	void OpenNoSignal();
+	void OpenIntro3();
+	UFUNCTION()
+	void OpenStage1();
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
 	TObjectPtr<UMediaPlayer> TVMediaPlayer;
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
 	TObjectPtr<UFileMediaSource> Intro1MediaSource;
@@ -88,6 +95,8 @@ private:
 	TObjectPtr<UFileMediaSource> Intro2MediaSource;
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Intro")
 	TObjectPtr<UFileMediaSource> NoSignalMediaSource;
+	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Stage1")
+	TObjectPtr<UFileMediaSource> FlashlightClueMediaSource;
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media|Sound")
 	TObjectPtr<UMediaSoundComponent> TVSound;

@@ -9,6 +9,8 @@
 
 class USpotLightComponent;
 
+DECLARE_DELEGATE(FOnFlashlightEquipped)
+
 UCLASS()
 class ESCAPEROOM_API AERFlashlight : public AERInteractableActor
 {
@@ -30,6 +32,8 @@ public:
 	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
 	 */
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
+
+	FOnFlashlightEquipped OnFlashlightEquipped;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")

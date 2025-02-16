@@ -11,6 +11,7 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
+#include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 #include "EscapeRoom/Items/NonInteractables/AlarmClock/ERAlarmClock.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -63,11 +64,6 @@ void AERTV::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVScreenWidget is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!TVMediaPlayer)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|FilmMediaPlayer is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 	if (!Intro1MediaSource)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|Intro1MediaSource is nullptr"), *FString(__FUNCTION__))
@@ -78,13 +74,19 @@ void AERTV::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s|TVSound is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!Flashlight)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Flashlight is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	HangmanWidget->Password = Password;
 
 	TVSound->SetMediaPlayer(TVMediaPlayer);
-	TVMediaPlayer->OpenSource(Intro1MediaSource);
-	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::OpenIntro2);
+	OpenIntro1();
+
+	Flashlight->OnFlashlightEquipped.BindUObject(this, &AERTV::OpenStage1);
 }
 
 void AERTV::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -231,7 +233,20 @@ void AERTV::ShowConverterWidgetOnScreen()
 	ScreenDynMat->SetTextureParameterValue(FName("Texture"), ConverterWidgetComp->GetRenderTarget());
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
+void AERTV::OpenIntro1()
+{
+#pragma region Nullchecks
+	if (!TVMediaPlayer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVMediaPlayer is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	TVMediaPlayer->OpenSource(Intro1MediaSource);
+	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::OpenIntro2);
+}
+
 void AERTV::OpenIntro2()
 {
 #pragma region Nullchecks
@@ -249,12 +264,12 @@ void AERTV::OpenIntro2()
 
 	TVMediaPlayer->OpenSource(Intro2MediaSource);
 	TVMediaPlayer->OnEndReached.Clear();
-	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::OpenNoSignal);
+	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::OpenIntro3);
 	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::StartAlarmClock);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void AERTV::OpenNoSignal()
+void AERTV::OpenIntro3()
 {
 	AERCharacter* ERCharacter{Cast<AERCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0))};
 
@@ -282,4 +297,26 @@ void AERTV::OpenNoSignal()
 
 	ERCharacter->SetLimitMovement(false);
 	ERCharacter->SetIndicatorVisibility(true);
+	ERCharacter->SetCanCheckInteraction(true);
+}
+
+void AERTV::OpenStage1()
+{
+#pragma region Nullchecks
+	if (!TVMediaPlayer)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|TVMediaPlayer is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!FlashlightClueMediaSource)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Stage1MediaSource is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	TVMediaPlayer->SetLooping(false);
+	TVMediaPlayer->OpenSource(FlashlightClueMediaSource);
+	TVMediaPlayer->OnEndReached.Clear();
+	TVMediaPlayer->OnEndReached.AddDynamic(this, &AERTV::ShowConverterWidgetOnScreen);
 }

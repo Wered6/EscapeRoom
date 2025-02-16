@@ -43,6 +43,8 @@ void AERCharacter::BeginPlay()
 	CameraDefaultTransform = Camera1P->GetRelativeTransform();
 
 	bLimitMovement = true;
+	bCanCheckInteraction = false;
+	SetIndicatorVisibility(false);
 }
 
 void AERCharacter::NotifyControllerChanged()
@@ -289,7 +291,7 @@ void AERCharacter::Look(const FInputActionValue& Value)
 	if (bLimitMovement)
 	{
 		const FRotator CurrentRotation{GetControlRotation()};
-		if (CurrentRotation.Yaw >= 275.f && CurrentRotation.Yaw <= 350.f)
+		if (CurrentRotation.Yaw >= 275.f && CurrentRotation.Yaw <= 340.f)
 		{
 			AddControllerYawInput(LookAxisVector.X);
 		}
@@ -297,7 +299,7 @@ void AERCharacter::Look(const FInputActionValue& Value)
 		{
 			AddControllerYawInput(LookAxisVector.X);
 		}
-		else if (CurrentRotation.Yaw >= 350.f && LookAxisVector.X < 0.f)
+		else if (CurrentRotation.Yaw >= 340.f && LookAxisVector.X < 0.f)
 		{
 			AddControllerYawInput(LookAxisVector.X);
 		}

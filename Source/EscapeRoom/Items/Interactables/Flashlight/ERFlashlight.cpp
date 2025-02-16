@@ -92,6 +92,11 @@ void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	Character->EquipFlashlight(this);
 	RootMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (OnFlashlightEquipped.IsBound())
+	{
+		OnFlashlightEquipped.Execute();
+	}
 }
 
 void AERFlashlight::SetUltraVioletColor(const FUVGlassData& UVGlassData)
