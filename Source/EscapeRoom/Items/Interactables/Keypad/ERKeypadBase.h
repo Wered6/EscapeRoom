@@ -36,7 +36,7 @@ struct FKeypadButton
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
 	uint8 Value{};
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
-	EKeypadButtonValue KeypadButtonValue;
+	EKeypadButtonValue KeypadButtonValue{};
 };
 
 USTRUCT()
