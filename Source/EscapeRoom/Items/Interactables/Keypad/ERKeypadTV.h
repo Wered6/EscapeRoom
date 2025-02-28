@@ -20,9 +20,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void KeypadButtonPressed_Implementation() override;
-
 	void SendSignPasswordToTV();
+
+protected:
+	virtual void Navigate(const FInputActionValue& Value) override;
 
 private:
 	void ExitAndDisableInteraction() const;

@@ -26,17 +26,19 @@ void AERKeypadTV::BeginPlay()
 	OnFinishProcessing.BindUObject(this, &AERKeypadTV::SendSignPasswordToTV);
 }
 
-void AERKeypadTV::KeypadButtonPressed_Implementation()
+void AERKeypadTV::SendSignPasswordToTV()
 {
-#pragma region Nullchecks
-	if (!TV)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|TV is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
+	const TCHAR TempChar{Sign};
+	const bool CorrectSign{TV->EnterSignToHangman(FString(1, &TempChar))};
+	// Reset Sign
+	Sign = 0b00000000;
 
-	Super::KeypadButtonPressed_Implementation();
+	LedFlash(CorrectSign ? ELedColor::Green : ELedColor::Red, LedLongFlashTime);
+}
+
+void AERKeypadTV::Navigate(const FInputActionValue& Value)
+{
+	Super::Navigate(Value);
 
 	switch (SelectedButton.KeypadButtonValue)
 	{
@@ -65,16 +67,6 @@ void AERKeypadTV::KeypadButtonPressed_Implementation()
 		}
 		break;
 	}
-}
-
-void AERKeypadTV::SendSignPasswordToTV()
-{
-	const TCHAR TempChar{Sign};
-	const bool CorrectSign{TV->EnterSignToHangman(FString(1, &TempChar))};
-	// Reset Sign
-	Sign = 0b00000000;
-
-	LedFlash(CorrectSign ? ELedColor::Green : ELedColor::Red, LedLongFlashTime);
 }
 
 void AERKeypadTV::ExitAndDisableInteraction() const

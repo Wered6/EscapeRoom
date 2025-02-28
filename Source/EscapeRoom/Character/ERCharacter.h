@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "ERCharacter.generated.h"
 
+class UERInteractComponent;
 struct FUVGlassData;
 class AERPlayerController;
 struct FInputActionValue;
@@ -28,10 +29,9 @@ protected:
 	virtual void NotifyControllerChanged() override;
 
 public:
-	virtual void Tick(float DeltaSeconds) override;
-
-public:
 	void SetLimitMovement(const bool bLimit);
+
+	void SetIndicatorVisibility(const bool bVisible) const;
 
 private:
 	bool bLimitMovement{};
@@ -68,8 +68,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void EnterGameplayAndMenuInputMode() const;
-	void EnterKeypadInputMode() const;
-	void ExitKeypadInputMode() const;
+	void EnterGameplayInputMode() const;
+	void ExitGameplayInputMode() const;
 
 protected:
 	/**
@@ -92,31 +92,6 @@ protected:
 	 * Call for Gameplay change color flashlight action
 	 */
 	void UseFlashlight();
-
-	/**
-	 * Call for Gameplay interact action
-	 */
-	void Interact();
-
-	/**
-	 * Call for keypad move action
-	 */
-	void KeypadMove(const FInputActionValue& Value);
-
-	/**
-	 * Call for keypad accept button pressed action
-	 */
-	void KeypadButtonPressed();
-
-	/**
-	 * Call for keypad accept button released action
-	 */
-	void KeypadButtonReleased();
-
-	/**
-	 * Call for keypad exit action
-	 */
-	void KeypadExit();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Menu")
@@ -144,60 +119,6 @@ private:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
 	TObjectPtr<UInputAction> FlashlightChangeColorAction;
-	/**
-	 * Gameplay Interact Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
-	TObjectPtr<UInputAction> InteractAction;
-
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
-	TObjectPtr<UInputMappingContext> KeypadMappingContext;
-	/**
-	 * Keypad Move Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
-	TObjectPtr<UInputAction> KeypadMoveAction;
-	/**
-	 * Keypad Accept Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
-	TObjectPtr<UInputAction> KeypadButtonAction;
-	/**
-	 * Keypad exit Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Keypad")
-	TObjectPtr<UInputAction> KeypadExitAction;
-
-#pragma endregion
-
-#pragma region Interact
-
-	// TODO make InteractComponent
-public:
-	/**
-	 * Stops performing interaction check but InteractableActor stays set
-	 */
-	FORCEINLINE void SetCanCheckInteraction(const bool bValue)
-	{
-		bCanCheckInteraction = bValue;
-	}
-
-	void SetIndicatorVisibility(const bool bVisible) const;
-
-private:
-	void PerformInteractionCheck();
-	void ClearInteraction();
-
-	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
-	TObjectPtr<AActor> InteractableActor;
-	UPROPERTY()
-	TObjectPtr<UPrimitiveComponent> InteractableHitComponent;
-
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	float InteractionDistance{200.f};
-
-	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
-	bool bCanCheckInteraction{true};
 
 #pragma endregion
 
@@ -225,6 +146,20 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")
 	TArray<FUVGlassData> CollectedUVGlasses;
 	uint8 CollectedUVGlassesIndex{};
+
+#pragma endregion
+
+#pragma region Interact
+
+public:
+	FORCEINLINE UERInteractComponent* GetInteractComponent()
+	{
+		return InteractComponent;
+	}
+
+private:
+	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	TObjectPtr<UERInteractComponent> InteractComponent;
 
 #pragma endregion
 };

@@ -36,16 +36,8 @@ public:
 	}
 
 private:
-	// Call for interact action
-	void Interact();
-
 	void PerformInteractionCheck();
 	void ClearInteraction();
-
-	UPROPERTY(EditDefaultsOnly, Category="ER|Interact|Input")
-	TObjectPtr<UInputMappingContext> InteractMappingContext;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Interact|Input")
-	TObjectPtr<UInputAction> InteractAction;
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	TObjectPtr<AActor> InteractableActor;
@@ -60,4 +52,19 @@ private:
 	/** Character interact component belongs to */
 	UPROPERTY()
 	TObjectPtr<ACharacter> CharacterOwner;
+
+#pragma region Input
+
+private:
+	/**
+	* Call for interact action
+	*/
+	void Interact();
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|Interact|Input")
+	TObjectPtr<UInputMappingContext> InteractMappingContext;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Interact|Input")
+	TObjectPtr<UInputAction> InteractAction;
+
+#pragma endregion
 };

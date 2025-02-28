@@ -19,8 +19,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	virtual void KeypadButtonPressed_Implementation() override;
+protected:
+	virtual void Navigate(const FInputActionValue& Value) override;
 
 private:
 	void Convert();

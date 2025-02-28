@@ -19,7 +19,7 @@ void AERKeypadConverter::BeginPlay()
 	OnFinishProcessing.BindUObject(this, &AERKeypadConverter::Convert);
 }
 
-void AERKeypadConverter::KeypadButtonPressed_Implementation()
+void AERKeypadConverter::Navigate(const FInputActionValue& Value)
 {
 #pragma region Nullchecks
 	if (!TV)
@@ -53,7 +53,7 @@ void AERKeypadConverter::KeypadButtonPressed_Implementation()
 		break;
 	}
 
-	Super::KeypadButtonPressed_Implementation();
+	Super::Navigate(Value);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst

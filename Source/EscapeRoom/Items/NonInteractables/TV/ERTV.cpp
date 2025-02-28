@@ -11,6 +11,7 @@
 #include "Components/WidgetComponent.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "EscapeRoom/Character/ERCharacter.h"
+#include "EscapeRoom/Components/ERInteractComponent.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
 #include "EscapeRoom/Items/Interactables/Keypad/ERKeypad.h"
@@ -318,7 +319,7 @@ void AERTV::OpenIntro3()
 
 	ERCharacter->SetLimitMovement(false);
 	ERCharacter->SetIndicatorVisibility(true);
-	ERCharacter->SetCanCheckInteraction(true);
+	ERCharacter->GetInteractComponent()->SetCanCheckInteraction(true);
 }
 
 void AERTV::OpenStage1()

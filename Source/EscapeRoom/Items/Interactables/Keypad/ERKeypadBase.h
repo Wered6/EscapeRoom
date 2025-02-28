@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ERKeypadInteface.h"
 #include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
 #include "ERKeypadBase.generated.h"
 
+class UInputAction;
+class UInputMappingContext;
+struct FInputActionValue;
 class URectLightComponent;
 
 UENUM(BlueprintType)
@@ -74,7 +76,7 @@ DECLARE_DELEGATE(FOnFinishProcessing)
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonValue, uint8)
 
 UCLASS()
-class ESCAPEROOM_API AERKeypadBase : public AERInteractableActor, public IERKeypadInterface
+class ESCAPEROOM_API AERKeypadBase : public AERInteractableActor
 {
 	GENERATED_BODY()
 
@@ -89,23 +91,6 @@ public:
 	* Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor in KeyItem)
 	*/
 	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
-
-	/**
-	 * Overriding KeypadMove function from ERKeypadInterface
-	 */
-	virtual void KeypadMove_Implementation(const FVector2D& MovementVector) override;
-	/**
-	 * Overriding KeypadAcceptButtonPressed function from ERKeypadInterface
-	 */
-	virtual void KeypadButtonPressed_Implementation() override;
-	/**
-	 * Overriding KeypadAcceptButtonReleased function from ERKeypadInterface
-	 */
-	virtual void KeypadButtonReleased_Implementation() override;
-	/**
-	 * Overriding KeypadExit function from ERKeypadInterface
-	 */
-	virtual void KeypadExit_Implementation() override;
 
 protected:
 	void EnterKeypadMode();
@@ -165,8 +150,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Utility")
 	TObjectPtr<USceneComponent> PlayerLocationScene;
 
-	int8 Button2DArrayX{2};
-	int8 Button2DArrayY{3};
+	int8 Button2DArrayXIndex{2};
+	int8 Button2DArrayYIndex{3};
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Leds")
 	TObjectPtr<UMaterialInstanceDynamic> GreenLedDynMat;
@@ -190,6 +175,38 @@ private:
 	TObjectPtr<URectLightComponent> HelpLight;
 
 	// TODO convert all logic beside keypad sending which key was pressed to anything that uses keypad
+
+#pragma region Input
+
+protected:
+	/**
+	* Call for keypad move action
+	*/
+	virtual void Navigate(const FInputActionValue& Value);
+	/**
+	 * Call for keypad button pressed action
+	 */
+	virtual void ButtonPressed();
+	/**
+	 * Call for keypad button released action
+	 */
+	void ButtonReleased();
+	/**
+	 * Call for keypad exit action
+	 */
+	void Exit();
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
+	TObjectPtr<UInputMappingContext> KeypadMappingContext;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
+	TObjectPtr<UInputAction> KeypadNavigateAction;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
+	TObjectPtr<UInputAction> KeypadButtonAction;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
+	TObjectPtr<UInputAction> KeypadExitAction;
+
+#pragma endregion
 
 #pragma region Audio
 

@@ -23,13 +23,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	/**
-	 * Overriding KeypadAcceptButtonPressed function from ERKeypadInterface
-	 */
-	virtual void KeypadButtonPressed_Implementation() override;
-
 	FOnCorrectPassword OnCorrectPassword;
 	FOnWrongPassword OnWrongPassword;
+
+protected:
+	virtual void ButtonPressed() override;
 
 private:
 	void CheckPassword();

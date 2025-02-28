@@ -17,9 +17,9 @@ void AERKeypad::BeginPlay()
 	OnFinishProcessing.BindUObject(this, &AERKeypad::CheckPassword);
 }
 
-void AERKeypad::KeypadButtonPressed_Implementation()
+void AERKeypad::ButtonPressed()
 {
-	Super::KeypadButtonPressed_Implementation();
+	Super::ButtonPressed();
 
 	switch (SelectedButton.KeypadButtonValue)
 	{
