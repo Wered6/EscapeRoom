@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
+#include "EscapeRoom/Items/Interactables/ERInteractablePawnBase.h"
 #include "ERKeypadBase.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
 class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
@@ -76,7 +78,7 @@ DECLARE_DELEGATE(FOnFinishProcessing)
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonValue, uint8)
 
 UCLASS()
-class ESCAPEROOM_API AERKeypadBase : public AERInteractableActor
+class ESCAPEROOM_API AERKeypadBase : public AERInteractablePawnBase
 {
 	GENERATED_BODY()
 
@@ -126,29 +128,12 @@ private:
 	void PopulateButton2DArray();
 
 	/**
-	* Adjust Player and it's Camera location and rotation so it looks at keypad.
-	*/
-	void LookAtKeypad() const;
-
-	/**
 	 * Updates SelectedButton variable (struct containing mesh and value of button) and outline it's mesh
 	 */
 	void UpdateSelectedButton();
 
 	void StartProcessing();
 	void LedBlinking();
-
-	/**
-	 * If true look at rotation at keypad, if false look in front of
-	 */
-	UPROPERTY(EditAnywhere, Category="ER|Keypad|Utility")
-	bool bLookDirectlyAtKeypad{true};
-
-	/**
-	 * Player location scene from which player will look at Keypad after interacting with it
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Utility")
-	TObjectPtr<USceneComponent> PlayerLocationScene;
 
 	int8 Button2DArrayXIndex{2};
 	int8 Button2DArrayYIndex{3};
@@ -169,14 +154,26 @@ private:
 	uint8 NumberOfBlinks{5};
 
 	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
-	float ButtonDepth{4.f};
+	float ButtonDepthScale{4.f};
 
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Light")
 	TObjectPtr<URectLightComponent> HelpLight;
 
 	// TODO convert all logic beside keypad sending which key was pressed to anything that uses keypad
 
+#pragma region Camera
+
+	UPROPERTY(VisibleAnywhere, Category="ER|Camera")
+	TObjectPtr<USpringArmComponent> SpringArm;
+	UPROPERTY(VisibleAnywhere, Category="ER|Camera")
+	TObjectPtr<UCameraComponent> Camera;
+
+#pragma endregion
+
 #pragma region Input
+
+public:
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
 	/**
@@ -200,11 +197,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
 	TObjectPtr<UInputMappingContext> KeypadMappingContext;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
-	TObjectPtr<UInputAction> KeypadNavigateAction;
+	TObjectPtr<UInputAction> NavigateAction;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
-	TObjectPtr<UInputAction> KeypadButtonAction;
+	TObjectPtr<UInputAction> ButtonAction;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Input")
-	TObjectPtr<UInputAction> KeypadExitAction;
+	TObjectPtr<UInputAction> ExitAction;
 
 #pragma endregion
 

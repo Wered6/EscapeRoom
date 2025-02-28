@@ -92,7 +92,8 @@ void AERTV::BeginPlay()
 	HangmanWidget->Password = Password;
 
 	TVSound->SetMediaPlayer(TVMediaPlayer);
-	OpenIntro1();
+	// Uncomment after debugging
+	// OpenIntro1();
 
 	Flashlight->OnFlashlightEquipped.BindUObject(this, &AERTV::OpenStage1);
 	Keypad->OnCorrectPassword.BindUObject(this, &AERTV::OpenStage2);

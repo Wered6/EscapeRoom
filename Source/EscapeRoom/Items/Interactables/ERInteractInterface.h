@@ -13,7 +13,7 @@ class UERInteractInterface : public UInterface
 };
 
 /**
- * Remember to use call to parent in blueprint if u want functionality from C++ and blueprints
+ * Remember: Use call to parent in blueprint if u want functionality from C++ and blueprints
  */
 class IERInteractInterface
 {

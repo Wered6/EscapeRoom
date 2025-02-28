@@ -2,7 +2,6 @@
 
 
 #include "ERKeypadBase.h"
-
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
@@ -10,8 +9,8 @@
 #include "Components/RectLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "EscapeRoom/Components/ERInteractComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
 
 AERKeypadBase::AERKeypadBase()
@@ -82,9 +81,14 @@ AERKeypadBase::AERKeypadBase()
 	RedLedMesh->SetCollisionProfileName("NoCollision");
 	RedLedMesh->SetupAttachment(RootMesh);
 
-	PlayerLocationScene = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerLocation"));
-	PlayerLocationScene->SetupAttachment(RootMesh);
-	PlayerLocationScene->SetRelativeLocation(FVector(0.f, -150.f, 30.f));
+	// Camera
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootMesh);
+	SpringArm->TargetArmLength = 50.f;
+	SpringArm->bDoCollisionTest = false;
+	SpringArm->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	HelpLight = CreateDefaultSubobject<URectLightComponent>(TEXT("HelpLight"));
 	HelpLight->SetupAttachment(RootMesh);
@@ -115,43 +119,24 @@ void AERKeypadBase::InteractStart_Implementation(AActor* OtherInstigator)
 	Super::InteractStart_Implementation(OtherInstigator);
 
 	EnterKeypadMode();
-
-	UpdateSelectedButton();
 }
 
 void AERKeypadBase::EnterKeypadMode()
 {
+	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
+
 #pragma region Nullchecks
-	if (!InteractInstigator)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractInstigator is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 	if (!KeypadMappingContext)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadMappingContext is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!KeypadNavigateAction)
+	if (!PlayerController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadMoveAction is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!KeypadButtonAction)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadButtonAction is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!KeypadExitAction)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadExitAction is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
-
-#pragma region Nullchecks
 	if (!Character)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|Character is nullptr"), *FString(__FUNCTION__))
@@ -159,18 +144,7 @@ void AERKeypadBase::EnterKeypadMode()
 	}
 #pragma endregion
 
-	const APlayerController* PlayerController{Character->GetController<APlayerController>()};
-
-#pragma region Nullchecks
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
 	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
-	UEnhancedInputComponent* EnhancedInputComponent{Cast<UEnhancedInputComponent>(PlayerController->InputComponent)};
 
 #pragma region Nullchecks
 	if (!Subsystem)
@@ -178,66 +152,37 @@ void AERKeypadBase::EnterKeypadMode()
 		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-	if (!EnhancedInputComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|EnhancedInputComponent is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 #pragma endregion
 
-	Subsystem->AddMappingContext(KeypadMappingContext, 0);
-	EnhancedInputComponent->BindAction(KeypadNavigateAction, ETriggerEvent::Triggered, this, &AERKeypadBase::Navigate);
-	EnhancedInputComponent->BindAction(KeypadButtonAction, ETriggerEvent::Started, this, &AERKeypadBase::ButtonPressed);
-	EnhancedInputComponent->BindAction(KeypadButtonAction, ETriggerEvent::Completed, this, &AERKeypadBase::ButtonReleased);
-	EnhancedInputComponent->BindAction(KeypadExitAction, ETriggerEvent::Triggered, this, &AERKeypadBase::Exit);
+	Subsystem->AddMappingContext(KeypadMappingContext, 1);
 
-	LookAtKeypad();
-
-	// IMC_Gameplay off
-	Character->ExitGameplayInputMode();
-	// No perform interaction check in Character so InteractableActor is set as Keypad
 	Character->GetInteractComponent()->SetCanCheckInteraction(false);
 	Character->SetIndicatorVisibility(false);
-	// Turn off Widget and Outline but keep InteractableActor set as Keypad
 	Execute_DisplayInteractionUI(this, false);
+	PlayerController->Possess(this);
+
+	UpdateSelectedButton();
 }
 
 void AERKeypadBase::ExitKeypadMode() const
 {
+	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
+
 #pragma region Nullchecks
-	if (!InteractInstigator)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractInstigator is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
 	if (!KeypadMappingContext)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|KeypadMappingContext is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-#pragma endregion
-
-	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
-
-#pragma region Nullchecks
-	if (!Character)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Character is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!SelectedButton.Mesh)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|SelectedButton.Mesh is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	const APlayerController* PlayerController{Character->GetController<APlayerController>()};
-
-#pragma region Nullchecks
 	if (!PlayerController)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!Character)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Character is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
@@ -254,11 +199,10 @@ void AERKeypadBase::ExitKeypadMode() const
 
 	Subsystem->RemoveMappingContext(KeypadMappingContext);
 
-	Character->ResetCameraTransform();
-	// IMC_Gameplay on
-	Character->EnterGameplayInputMode();
-	Character->GetInteractComponent()->SetCanCheckInteraction(false);
+	Character->GetInteractComponent()->SetCanCheckInteraction(true);
 	Character->SetIndicatorVisibility(true);
+	PlayerController->Possess(Cast<APawn>(InteractInstigator));
+
 	SelectedButton.Mesh->SetRenderCustomDepth(false);
 	SelectedButton.Mesh->SetCustomDepthStencilValue(0);
 }
@@ -348,57 +292,6 @@ void AERKeypadBase::PopulateButton2DArray()
 	Button2DArray.Add(FourthRowButtons);
 }
 
-void AERKeypadBase::LookAtKeypad() const
-{
-#pragma region Nullchecks
-	if (!InteractInstigator)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractInstigator is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!PlayerLocationScene)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerLocationScene is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	const UCameraComponent* PlayerCamera{Cast<UCameraComponent>(InteractInstigator->GetComponentByClass(UCameraComponent::StaticClass()))};
-	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
-
-#pragma region Nullchecks
-	if (!PlayerCamera)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerCamera is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	// Set player location XY of PlayerLocationScene XY
-	FVector PlayerLocationXY{PlayerLocationScene->GetComponentLocation()};
-	PlayerLocationXY.Z = InteractInstigator->GetActorLocation().Z;
-	InteractInstigator->SetActorLocation(PlayerLocationXY);
-
-	// Depends on bLookDirectlyAtKeypad look at keypad or in front of you
-	const FVector LookAtVector{GetActorLocation()};
-	FRotator CameraRotation;
-	if (bLookDirectlyAtKeypad)
-	{
-		CameraRotation = UKismetMathLibrary::FindLookAtRotation(PlayerCamera->GetComponentLocation(), LookAtVector);
-	}
-	else
-	{
-		CameraRotation = PlayerLocationScene->GetForwardVector().Rotation();
-		CameraRotation.Yaw += 90.f;
-	}
-	PlayerController->SetControlRotation(CameraRotation);
-}
-
 void AERKeypadBase::UpdateSelectedButton()
 {
 	if (!Button2DArray.IsValidIndex(Button2DArrayYIndex))
@@ -453,6 +346,41 @@ void AERKeypadBase::LedBlinking()
 			OnFinishProcessing.Execute();
 		}
 	}
+}
+
+void AERKeypadBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UEnhancedInputComponent* EnhancedInputComponent{Cast<UEnhancedInputComponent>(PlayerInputComponent)};
+
+#pragma region Nullchecks
+	if (!NavigateAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|NavigateAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!ButtonAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ButtonAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!ExitAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ExitAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!EnhancedInputComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|EnhancedInputComponent is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AERKeypadBase::Navigate);
+	EnhancedInputComponent->BindAction(ButtonAction, ETriggerEvent::Started, this, &AERKeypadBase::ButtonPressed);
+	EnhancedInputComponent->BindAction(ButtonAction, ETriggerEvent::Completed, this, &AERKeypadBase::ButtonReleased);
+	EnhancedInputComponent->BindAction(ExitAction, ETriggerEvent::Triggered, this, &AERKeypadBase::Exit);
 }
 
 void AERKeypadBase::Navigate(const FInputActionValue& Value)

@@ -26,7 +26,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void NotifyControllerChanged() override;
 
 public:
 	void SetLimitMovement(const bool bLimit);
@@ -47,9 +46,6 @@ private:
 
 #pragma region Camera
 
-public:
-	void ResetCameraTransform() const;
-
 private:
 	/**
 	 * First person camera
@@ -57,27 +53,14 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ER|Camera", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UCameraComponent> Camera1P;
 
-	UPROPERTY(VisibleAnywhere, Category="ER|Camera")
-	FTransform CameraDefaultTransform;
-
 #pragma endregion
 
 #pragma region Input
 
 public:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	void EnterGameplayAndMenuInputMode() const;
-	void EnterGameplayInputMode() const;
-	void ExitGameplayInputMode() const;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
-	/**
-	 * Call for Pause action
-	 */
-	UFUNCTION(BlueprintImplementableEvent)
-	void TriggerPauseMenu();
-
 	/**
 	 * Call for Gameplay movement action
 	 */
@@ -94,14 +77,6 @@ protected:
 	void UseFlashlight();
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Menu")
-	TObjectPtr<UInputMappingContext> MenuMappingContext;
-	/**
-	 * Pause Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Menu")
-	TObjectPtr<UInputAction> PauseMenu;
-
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
 	TObjectPtr<UInputMappingContext> GameplayMappingContext;
 	/**

@@ -43,29 +43,37 @@ void AERCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CameraDefaultTransform = Camera1P->GetRelativeTransform();
-
-	// Intro with TV
-	bLimitMovement = true;
-	InteractComponent->SetCanCheckInteraction(false);
-	SetIndicatorVisibility(false);
-}
-
-void AERCharacter::NotifyControllerChanged()
-{
-	Super::NotifyControllerChanged();
+	PlayerController = Cast<AERPlayerController>(Controller);
 
 #pragma region Nullchecks
-	if (!Controller)
+	if (!GameplayMappingContext)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Controller is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	PlayerController = Cast<AERPlayerController>(Controller);
+	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
 
-	EnterGameplayAndMenuInputMode();
+#pragma region Nullchecks
+	if (!Subsystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	Subsystem->AddMappingContext(GameplayMappingContext, 0);
+
+	// Intro with TV, uncomment after debugging
+	// bLimitMovement = true;
+	// InteractComponent->SetCanCheckInteraction(false);
+	// SetIndicatorVisibility(false);
 }
 
 void AERCharacter::SetLimitMovement(const bool bLimit)
@@ -96,21 +104,12 @@ void AERCharacter::SetIndicatorVisibility(const bool bVisible) const
 	HUD->SetIndicatorVisibility(bVisible);
 }
 
-void AERCharacter::ResetCameraTransform() const
-{
-#pragma region Nullchecks
-	if (!Camera1P)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Camera1P is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	Camera1P->SetRelativeTransform(CameraDefaultTransform);
-}
-
 void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UEnhancedInputComponent* EnhancedInputComponent{Cast<UEnhancedInputComponent>(PlayerInputComponent)};
+
 #pragma region Nullchecks
 	if (!MoveAction)
 	{
@@ -127,14 +126,6 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		UE_LOG(LogTemp, Warning, TEXT("%s|FlashlightAction is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
-#pragma endregion
-
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	// Set up action bindings
-	UEnhancedInputComponent* EnhancedInputComponent{Cast<UEnhancedInputComponent>(PlayerInputComponent)};
-
-#pragma region Nullchecks
 	if (!EnhancedInputComponent)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|EnhancedInputComponent is nullptr"), *FString(__FUNCTION__))
@@ -142,102 +133,9 @@ void AERCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	}
 #pragma endregion
 
-	// Menu Pause
-	EnhancedInputComponent->BindAction(PauseMenu, ETriggerEvent::Started, this, &AERCharacter::TriggerPauseMenu);
-
-	// Gameplay Moving
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AERCharacter::Move);
-
-	// Gameplay Looking
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AERCharacter::Look);
-
-	// Gameplay Flashlight change color
 	EnhancedInputComponent->BindAction(FlashlightChangeColorAction, ETriggerEvent::Started, this, &AERCharacter::UseFlashlight);
-}
-
-void AERCharacter::EnterGameplayAndMenuInputMode() const
-{
-#pragma region Nullchecks
-	if (!GameplayMappingContext)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
-
-#pragma region Nullchecks
-	if (!Subsystem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	Subsystem->AddMappingContext(MenuMappingContext, 0);
-	Subsystem->AddMappingContext(GameplayMappingContext, 0);
-}
-
-void AERCharacter::EnterGameplayInputMode() const
-{
-#pragma region Nullchecks
-	if (!GameplayMappingContext)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|GameplayMappingContext is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
-
-#pragma region Nullchecks
-	if (!Subsystem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	Subsystem->AddMappingContext(GameplayMappingContext, 0);
-}
-
-void AERCharacter::ExitGameplayInputMode() const
-{
-#pragma region Nullchecks
-	if (!GameplayMappingContext)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|GameplayMappingContext is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|PlayerController is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	UEnhancedInputLocalPlayerSubsystem* Subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())};
-
-#pragma region Nullchecks
-	if (!Subsystem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|Subsystem is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	Subsystem->RemoveMappingContext(GameplayMappingContext);
 }
 
 void AERCharacter::Move(const FInputActionValue& Value)
