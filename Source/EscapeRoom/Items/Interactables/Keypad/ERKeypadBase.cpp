@@ -469,10 +469,10 @@ void AERKeypadBase::ButtonReleased()
 {
 	// If button is OK, do not allow to navigate or press buttons
 	// Navigate and pressing will reset after blinking led ends in StartLedBlinking()
-	if (bProcessing)
+	if (bProcessing && SelectedButton.KeypadButtonValue == EKeypadButtonValue::OK)
 	{
-		bCanNavigate = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
-		bCanPressButton = SelectedButton.KeypadButtonValue != EKeypadButtonValue::OK;
+		bCanNavigate = false;
+		bCanPressButton = false;
 	}
 	else
 	{
