@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "ERKeypadBase.h"
-#include "ERKeypadTV.generated.h"
+#include "ERKeypadHangman.generated.h"
 
 class AERTV;
 
 UCLASS()
-class ESCAPEROOM_API AERKeypadTV : public AERKeypadBase
+class ESCAPEROOM_API AERKeypadHangman : public AERKeypadBase
 {
 	GENERATED_BODY()
 
 public:
-	AERKeypadTV();
+	AERKeypadHangman();
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,12 +23,12 @@ public:
 	void SendSignPasswordToTV();
 
 protected:
-	virtual void Navigate(const FInputActionValue& Value) override;
+	virtual void ButtonPressed() override;
 
 private:
 	void ExitAndDisableInteraction() const;
 
-	UPROPERTY(EditInstanceOnly, Category="ER|KeypadTV")
+	UPROPERTY(EditInstanceOnly, Category="ER|KeypadHangman")
 	TObjectPtr<AERTV> TV;
 
 	uint8 Sign{};

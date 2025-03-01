@@ -71,9 +71,9 @@ void AERCharacter::BeginPlay()
 	Subsystem->AddMappingContext(GameplayMappingContext, 0);
 
 	// Intro with TV, uncomment after debugging
-	// bLimitMovement = true;
-	// InteractComponent->SetCanCheckInteraction(false);
-	// SetIndicatorVisibility(false);
+	bLimitMovement = true;
+	InteractComponent->SetCanCheckInteraction(false);
+	SetIndicatorVisibility(false);
 }
 
 void AERCharacter::SetLimitMovement(const bool bLimit)

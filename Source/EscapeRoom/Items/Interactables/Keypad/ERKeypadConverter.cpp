@@ -19,7 +19,7 @@ void AERKeypadConverter::BeginPlay()
 	OnFinishProcessing.BindUObject(this, &AERKeypadConverter::Convert);
 }
 
-void AERKeypadConverter::Navigate(const FInputActionValue& Value)
+void AERKeypadConverter::ButtonPressed()
 {
 #pragma region Nullchecks
 	if (!TV)
@@ -29,31 +29,22 @@ void AERKeypadConverter::Navigate(const FInputActionValue& Value)
 	}
 #pragma endregion
 
-	switch (SelectedButton.KeypadButtonValue)
+	if (SelectedButton.Name == EKeypadButtonName::OK)
 	{
-	case EKeypadButtonValue::Zero:
-	case EKeypadButtonValue::One:
-	case EKeypadButtonValue::Two:
-	case EKeypadButtonValue::Three:
-	case EKeypadButtonValue::Four:
-	case EKeypadButtonValue::Five:
-	case EKeypadButtonValue::Six:
-	case EKeypadButtonValue::Seven:
-	case EKeypadButtonValue::Eight:
-	case EKeypadButtonValue::Nine:
-		TV->SendNumberToConverter(SelectedButton.Value);
-		break;
-	case EKeypadButtonValue::DEL:
-		break;
-	case EKeypadButtonValue::OK:
 		if (!TV->NextRGBField())
 		{
 			bProcessing = true;
 		}
-		break;
+	}
+	else if (SelectedButton.Name == EKeypadButtonName::DEL)
+	{
+	}
+	else
+	{
+		TV->SendNumberToConverter(SelectedButton.Value);
 	}
 
-	Super::Navigate(Value);
+	Super::ButtonPressed();
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -69,4 +60,6 @@ void AERKeypadConverter::Convert()
 
 	TV->ConvertRGBToHSV();
 	TV->ResetConverter();
+
+	bProcessing = false;
 }

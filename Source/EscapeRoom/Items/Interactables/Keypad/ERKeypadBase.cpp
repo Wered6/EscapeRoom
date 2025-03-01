@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/RectLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "EscapeRoom/Components/ERInteractComponent.h"
@@ -100,6 +101,8 @@ AERKeypadBase::AERKeypadBase()
 	HelpLight->SetSourceWidth(8.f);
 	HelpLight->SetSourceHeight(4.f);
 	HelpLight->SetBarnDoorLength(1.f);
+
+	InteractArea->SetBoxExtent(FVector(60.f, 48.f, 80.f));
 
 	OutlineMeshComponentPtr = RootMesh;
 }
@@ -276,10 +279,10 @@ void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
 
 void AERKeypadBase::PopulateButton2DArray()
 {
-	FKeypadButton Button1{Button1Mesh, 1, EKeypadButtonValue::One}, Button2{Button2Mesh, 2, EKeypadButtonValue::Two}, Button3{Button3Mesh, 3, EKeypadButtonValue::Three};
-	FKeypadButton Button4{Button4Mesh, 4, EKeypadButtonValue::Four}, Button5{Button5Mesh, 5, EKeypadButtonValue::Five}, Button6{Button6Mesh, 6, EKeypadButtonValue::Six};
-	FKeypadButton Button7{Button7Mesh, 7, EKeypadButtonValue::Seven}, Button8{Button8Mesh, 8, EKeypadButtonValue::Eight}, Button9{Button9Mesh, 9, EKeypadButtonValue::Nine};
-	FKeypadButton ButtonDEL{ButtonDELMesh, 10, EKeypadButtonValue::DEL}, Button0{Button0Mesh, 0, EKeypadButtonValue::Zero}, ButtonOK{ButtonOKMesh, 20, EKeypadButtonValue::OK};
+	FKeypadButton Button1{Button1Mesh, 1, EKeypadButtonName::One}, Button2{Button2Mesh, 2, EKeypadButtonName::Two}, Button3{Button3Mesh, 3, EKeypadButtonName::Three};
+	FKeypadButton Button4{Button4Mesh, 4, EKeypadButtonName::Four}, Button5{Button5Mesh, 5, EKeypadButtonName::Five}, Button6{Button6Mesh, 6, EKeypadButtonName::Six};
+	FKeypadButton Button7{Button7Mesh, 7, EKeypadButtonName::Seven}, Button8{Button8Mesh, 8, EKeypadButtonName::Eight}, Button9{Button9Mesh, 9, EKeypadButtonName::Nine};
+	FKeypadButton ButtonDEL{ButtonDELMesh, 10, EKeypadButtonName::DEL}, Button0{Button0Mesh, 0, EKeypadButtonName::Zero}, ButtonOK{ButtonOKMesh, 20, EKeypadButtonName::OK};
 
 	FKeypadButtonArray FirstRowButtons{Button1, Button2, Button3};
 	FKeypadButtonArray SecondRowButtons{Button4, Button5, Button6};
@@ -427,26 +430,10 @@ void AERKeypadBase::ButtonPressed()
 	bCanNavigate = false;
 	bCanPressButton = false;
 
-	OnKeypadButtonPressed.Broadcast(SelectedButton.KeypadButtonValue, SelectedButton.Value);
+	OnKeypadButtonPressed.Broadcast(SelectedButton.Name, SelectedButton.Value);
 
-	switch (SelectedButton.KeypadButtonValue)
+	if (SelectedButton.Name == EKeypadButtonName::OK)
 	{
-	case EKeypadButtonValue::Zero:
-	case EKeypadButtonValue::One:
-	case EKeypadButtonValue::Two:
-	case EKeypadButtonValue::Three:
-	case EKeypadButtonValue::Four:
-	case EKeypadButtonValue::Five:
-	case EKeypadButtonValue::Six:
-	case EKeypadButtonValue::Seven:
-	case EKeypadButtonValue::Eight:
-	case EKeypadButtonValue::Nine:
-		LedFlash(ELedColor::Green, LedShortFlashTime);
-		break;
-	case EKeypadButtonValue::DEL:
-		LedFlash(ELedColor::Red, LedShortFlashTime);
-		break;
-	case EKeypadButtonValue::OK:
 		if (bProcessing)
 		{
 			StartProcessing();
@@ -455,7 +442,15 @@ void AERKeypadBase::ButtonPressed()
 		{
 			LedFlash(ELedColor::Green, LedShortFlashTime);
 		}
-		break;
+	}
+	else if (SelectedButton.Name == EKeypadButtonName::DEL)
+	{
+		LedFlash(ELedColor::Red, LedShortFlashTime);
+	}
+	// Other buttons (0-9)
+	else
+	{
+		LedFlash(ELedColor::Green, LedShortFlashTime);
 	}
 
 	PlayButtonAnimation();
@@ -469,7 +464,7 @@ void AERKeypadBase::ButtonReleased()
 {
 	// If button is OK, do not allow to navigate or press buttons
 	// Navigate and pressing will reset after blinking led ends in StartLedBlinking()
-	if (bProcessing && SelectedButton.KeypadButtonValue == EKeypadButtonValue::OK)
+	if (bProcessing && SelectedButton.Name == EKeypadButtonName::OK)
 	{
 		bCanNavigate = false;
 		bCanPressButton = false;

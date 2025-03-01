@@ -14,7 +14,7 @@ struct FInputActionValue;
 class URectLightComponent;
 
 UENUM(BlueprintType)
-enum class EKeypadButtonValue : uint8
+enum class EKeypadButtonName : uint8
 {
 	Zero,
 	One,
@@ -40,7 +40,7 @@ struct FKeypadButton
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
 	uint8 Value{};
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Button")
-	EKeypadButtonValue KeypadButtonValue{};
+	EKeypadButtonName Name{};
 };
 
 USTRUCT()
@@ -75,7 +75,7 @@ enum class ELedColor : uint8
 
 // TODO make it multicast
 DECLARE_DELEGATE(FOnFinishProcessing)
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonValue, uint8)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonName, uint8)
 
 UCLASS()
 class ESCAPEROOM_API AERKeypadBase : public AERInteractablePawnBase
@@ -163,6 +163,7 @@ private:
 
 #pragma region Camera
 
+private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Camera")
 	TObjectPtr<USpringArmComponent> SpringArm;
 	UPROPERTY(VisibleAnywhere, Category="ER|Camera")

@@ -21,30 +21,22 @@ void AERKeypad::ButtonPressed()
 {
 	Super::ButtonPressed();
 
-	switch (SelectedButton.KeypadButtonValue)
+	if (SelectedButton.Name == EKeypadButtonName::OK)
 	{
-	case EKeypadButtonValue::Zero:
-	case EKeypadButtonValue::One:
-	case EKeypadButtonValue::Two:
-	case EKeypadButtonValue::Three:
-	case EKeypadButtonValue::Four:
-	case EKeypadButtonValue::Five:
-	case EKeypadButtonValue::Six:
-	case EKeypadButtonValue::Seven:
-	case EKeypadButtonValue::Eight:
-	case EKeypadButtonValue::Nine:
-		UserPassword = UserPassword + FString::FromInt(SelectedButton.Value);
-		break;
-	case EKeypadButtonValue::DEL:
+		UE_LOG(LogTemp, Warning, TEXT("UserPassword: %s"), *UserPassword)
+		// In parent here is OnFinishProcessing, if you want to do something after OK, bind to OnFinishProcessing
+	}
+	else if (SelectedButton.Name == EKeypadButtonName::DEL)
+	{
 		if (!UserPassword.IsEmpty())
 		{
 			UserPassword = UserPassword.LeftChop(1);
 		}
-		break;
-	case EKeypadButtonValue::OK:
-		UE_LOG(LogTemp, Warning, TEXT("UserPassword: %s"), *UserPassword)
-	// In parent here is OnFinishProcessing, if you want to do something after OK, bind to OnFinishProcessing
-		break;
+	}
+	// Other buttons (0-9)
+	else
+	{
+		UserPassword = UserPassword + FString::FromInt(SelectedButton.Value);
 	}
 }
 

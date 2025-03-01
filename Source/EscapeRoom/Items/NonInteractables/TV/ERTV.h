@@ -97,7 +97,7 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void OpenToBeContinued();
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|TV|Media", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UMediaPlayer> TVMediaPlayer;
 	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Media")
 	TObjectPtr<UMediaTexture> TVMediaTexture;

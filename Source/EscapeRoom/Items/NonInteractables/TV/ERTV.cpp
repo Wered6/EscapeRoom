@@ -93,7 +93,7 @@ void AERTV::BeginPlay()
 
 	TVSound->SetMediaPlayer(TVMediaPlayer);
 	// Uncomment after debugging
-	// OpenIntro1();
+	OpenIntro1();
 
 	Flashlight->OnFlashlightEquipped.BindUObject(this, &AERTV::OpenStage1);
 	Keypad->OnCorrectPassword.BindUObject(this, &AERTV::OpenStage2);

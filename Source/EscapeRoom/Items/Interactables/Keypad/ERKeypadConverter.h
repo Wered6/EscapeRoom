@@ -20,7 +20,7 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	virtual void Navigate(const FInputActionValue& Value) override;
+	virtual void ButtonPressed() override;
 
 private:
 	void Convert();
