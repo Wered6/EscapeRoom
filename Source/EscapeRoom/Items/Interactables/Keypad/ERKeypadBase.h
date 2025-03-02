@@ -178,19 +178,19 @@ public:
 
 protected:
 	/**
-	* Call for keypad move action
+	* Bind to NavigateAction
 	*/
 	virtual void Navigate(const FInputActionValue& Value);
 	/**
-	 * Call for keypad button pressed action
+	 * Bind to ButtonAction
 	 */
 	virtual void ButtonPressed();
 	/**
-	 * Call for keypad button released action
+	 * Bind to ButtonAction
 	 */
 	void ButtonReleased();
 	/**
-	 * Call for keypad exit action
+	 * Bind to ExitAction
 	 */
 	void Exit();
 
@@ -208,6 +208,7 @@ private:
 
 #pragma region Audio
 
+private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Audio")
 	TObjectPtr<USoundBase> ShortGreenLedSound;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Audio")

@@ -41,5 +41,5 @@ void AERPlayerController::SetupInputComponent()
 	}
 #pragma endregion
 
-	EnhancedInputComponent->BindAction(MenuPause, ETriggerEvent::Started, this, &AERPlayerController::TriggerMenuPause);
+	EnhancedInputComponent->BindAction(MenuPauseAction, ETriggerEvent::Started, this, &AERPlayerController::TriggerMenuPause);
 }

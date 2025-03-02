@@ -23,7 +23,7 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	/**
-	 * Call for menu pause action
+	 * Bind to MenuPause
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
 	void TriggerMenuPause();
@@ -32,7 +32,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Menu")
 	TObjectPtr<UInputMappingContext> MenuMappingContext;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Menu")
-	TObjectPtr<UInputAction> MenuPause;
+	TObjectPtr<UInputAction> MenuPauseAction;
 
 #pragma endregion
 };

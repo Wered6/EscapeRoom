@@ -62,37 +62,28 @@ public:
 
 protected:
 	/**
-	 * Call for Gameplay movement action
+	 * Bind to MoveAction
 	 */
 	void Move(const FInputActionValue& Value);
 
 	/**
-	 * Call for Gameplay looking action
+	 * Bind to LookAction
 	 */
 	void Look(const FInputActionValue& Value);
 
 	/**
-	 * Call for Gameplay change color flashlight action
+	 * Bind FlashlightChangeColorAction
 	 */
 	void UseFlashlight();
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
-	TObjectPtr<UInputMappingContext> GameplayMappingContext;
-	/**
-	 * Gameplay Move Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
 	TObjectPtr<UInputAction> MoveAction;
-	/**
-	 * Gameplay Look Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
 	TObjectPtr<UInputAction> LookAction;
-	/**
-	 * Gameplay Flashlight Change Color Input Action
-	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Input|Gameplay")
+	UPROPERTY(EditDefaultsOnly, Category="ER|Input")
 	TObjectPtr<UInputAction> FlashlightChangeColorAction;
 
 #pragma endregion

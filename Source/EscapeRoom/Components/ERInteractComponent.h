@@ -57,7 +57,7 @@ private:
 
 private:
 	/**
-	* Call for interact action
+	* Bind to InteractAction
 	*/
 	void Interact();
 

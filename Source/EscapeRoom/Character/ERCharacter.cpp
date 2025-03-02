@@ -46,7 +46,7 @@ void AERCharacter::BeginPlay()
 	PlayerController = Cast<AERPlayerController>(Controller);
 
 #pragma region Nullchecks
-	if (!GameplayMappingContext)
+	if (!DefaultMappingContext)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|DefaultMappingContext is nullptr"), *FString(__FUNCTION__))
 		return;
@@ -68,7 +68,7 @@ void AERCharacter::BeginPlay()
 	}
 #pragma endregion
 
-	Subsystem->AddMappingContext(GameplayMappingContext, 0);
+	Subsystem->AddMappingContext(DefaultMappingContext, 0);
 
 	// Intro with TV, uncomment after debugging
 	bLimitMovement = true;
