@@ -5,15 +5,19 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/SpotLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
+#include "EscapeRoom/Components/ERInteractableComponent.h"
 
 AERFlashlight::AERFlashlight()
 {
-	RootMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	RootMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	RootMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	FlashlightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlashlightMesh"));
+	SetRootComponent(FlashlightMesh);
+	FlashlightMesh->SetCollisionResponseToAllChannels(ECR_Block);
+	FlashlightMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	FlashlightMesh->CastShadow = false;
 
 	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
-	SceneCapture->SetupAttachment(RootMesh);
+	SceneCapture->SetupAttachment(FlashlightMesh);
 	SceneCapture->FOVAngle = 30.f;
 	SceneCapture->CaptureSource = SCS_FinalColorLDR;
 
@@ -33,9 +37,8 @@ AERFlashlight::AERFlashlight()
 	SpotLight->SetOuterConeAngle(FOVSceneCapture / 2);
 	SpotLightGlow->SetOuterConeAngle(FOVSceneCapture / 2);
 
-	RootMesh->CastShadow = false;
-
-	OutlineMeshComponentPtr = RootMesh;
+	InteractableComponent = CreateDefaultSubobject<UERInteractableComponent>(TEXT("InteractableComponent"));
+	InteractableComponent->SetupAttachment(FlashlightMesh);
 }
 
 void AERFlashlight::BeginPlay()
@@ -75,11 +78,9 @@ void AERFlashlight::TurnOff() const
 	SpotLightGlow->SetVisibility(false);
 }
 
-void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
+void AERFlashlight::InteractPressTriggered_Implementation()
 {
-	Super::InteractStart_Implementation(OtherInstigator);
-
-	AERCharacter* Character{Cast<AERCharacter>(OtherInstigator)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractableComponent->GetInteractInstigator())};
 
 #pragma region Nullchecks
 	if (!Character)
@@ -91,7 +92,7 @@ void AERFlashlight::InteractStart_Implementation(AActor* OtherInstigator)
 
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	Character->EquipFlashlight(this);
-	RootMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	if (OnFlashlightEquipped.IsBound())
 	{

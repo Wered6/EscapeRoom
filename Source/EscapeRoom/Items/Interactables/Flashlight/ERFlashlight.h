@@ -4,15 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "ERUVGlass.h"
-#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
+#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
 #include "ERFlashlight.generated.h"
 
+class UERInteractableComponent;
 class USpotLightComponent;
 
 DECLARE_DELEGATE(FOnFlashlightEquipped)
 
 UCLASS()
-class ESCAPEROOM_API AERFlashlight : public AERInteractableActor
+class ESCAPEROOM_API AERFlashlight : public AActor, public IERInteractInterface
 {
 	GENERATED_BODY()
 
@@ -29,23 +30,28 @@ public:
 	void SetUltraVioletColor(const FUVGlassData& UVGlassData);
 
 	/**
-	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
+	 * Overriding InteractPressTriggered function from ERInteractInterface (derived from ERInteractableActor)
 	 */
-	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
+	virtual void InteractPressTriggered_Implementation() override;
 
 	FOnFlashlightEquipped OnFlashlightEquipped;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponent2D> SceneCapture;
 
-	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpotLightComponent> SpotLight;
-
-	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight|UV")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpotLightComponent> SpotLightGlow;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|Flashlight|UV|DynamicMaterial")
+	UPROPERTY(EditDefaultsOnly, Category="ER|UV")
 	TObjectPtr<UMaterialInstance> PostProcessMask;
 	// TODO add light mask to look like flashlight
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UERInteractableComponent> InteractableComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> FlashlightMesh;
 };

@@ -31,6 +31,16 @@ void UERInteractComponent::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s|InteractMappingContext is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
+	if (!InteractPressAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractPressAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!InteractHoldAction)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractHoldAction is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
 #pragma endregion
 
 	const APlayerController* PlayerController{CharacterOwner->GetController<APlayerController>()};
@@ -60,7 +70,15 @@ void UERInteractComponent::BeginPlay()
 #pragma endregion
 
 	Subsystem->AddMappingContext(InteractMappingContext, 0);
-	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &UERInteractComponent::Interact);
+	EnhancedInputComponent->BindAction(InteractPressAction, ETriggerEvent::Started, this, &UERInteractComponent::InteractPressStarted);
+	EnhancedInputComponent->BindAction(InteractPressAction, ETriggerEvent::Triggered, this, &UERInteractComponent::InteractPressTriggered);
+	EnhancedInputComponent->BindAction(InteractPressAction, ETriggerEvent::Completed, this, &UERInteractComponent::InteractPressCompleted);
+
+	EnhancedInputComponent->BindAction(InteractHoldAction, ETriggerEvent::Started, this, &UERInteractComponent::InteractHoldStarted);
+	EnhancedInputComponent->BindAction(InteractHoldAction, ETriggerEvent::Ongoing, this, &UERInteractComponent::InteractHoldOngoing);
+	EnhancedInputComponent->BindAction(InteractHoldAction, ETriggerEvent::Canceled, this, &UERInteractComponent::InteractHoldCanceled);
+	EnhancedInputComponent->BindAction(InteractHoldAction, ETriggerEvent::Triggered, this, &UERInteractComponent::InteractHoldTriggered);
+	EnhancedInputComponent->BindAction(InteractHoldAction, ETriggerEvent::Completed, this, &UERInteractComponent::InteractHoldCompleted);
 }
 
 void UERInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -70,8 +88,8 @@ void UERInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	PerformInteractionCheck();
 }
 
-// TODO try const function
-void UERInteractComponent::Interact()
+// ReSharper disable once CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractPressStarted()
 {
 #pragma region Nullchecks
 	if (!CharacterOwner)
@@ -81,14 +99,92 @@ void UERInteractComponent::Interact()
 	}
 #pragma endregion
 
-	if (!InteractableActor)
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractPressStarted(InteractableActor, CharacterOwner);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractPressTriggered()
+{
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractPressTriggered(InteractableActor);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractPressCompleted()
+{
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractPressCompleted(InteractableActor);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractHoldStarted(const FInputActionInstance& Instance)
+{
+#pragma region Nullchecks
+	if (!CharacterOwner)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|CharacterOwner is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	if (!InteractableActor || !InteractableActor->Implements<UERInteractInterface>())
 	{
 		return;
 	}
 
-	if (InteractableActor->Implements<UERInteractInterface>())
+	float OutHoldTimeThreshold{};
+	IERInteractInterface::Execute_InteractHoldStarted(InteractableActor, CharacterOwner, OutHoldTimeThreshold);
+
+	for (UInputTrigger* Trigger : Instance.GetTriggers())
 	{
-		IERInteractInterface::Execute_InteractStart(InteractableActor, CharacterOwner);
+		if (UInputTriggerHold* TriggerHold{Cast<UInputTriggerHold>(Trigger)})
+		{
+			TriggerHold->HoldTimeThreshold = OutHoldTimeThreshold;
+			break;
+		}
+	}
+}
+
+// ReSharper disable o4nce CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractHoldOngoing(const FInputActionInstance& Instance)
+{
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractHoldOngoing(InteractableActor, Instance.GetElapsedTime());
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractHoldCanceled()
+{
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractHoldCanceled(InteractableActor);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractHoldTriggered()
+{
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractHoldTriggered(InteractableActor);
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void UERInteractComponent::InteractHoldCompleted()
+{
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	{
+		IERInteractInterface::Execute_InteractHoldCompleted(InteractableActor);
 	}
 }
 
@@ -147,29 +243,64 @@ void UERInteractComponent::PerformInteractionCheck()
 	AActor* HitActor{HitResult.GetActor()};
 	UPrimitiveComponent* HitComponent{HitResult.GetComponent()};
 
-	// If hitting the same interactable component, do nothing and return
-	if (HitComponent == InteractableHitComponent)
+	// If hit actor doesn't implements interact interface reset interaction and return
+	if (!HitActor->Implements<UERInteractInterface>())
 	{
+		ClearInteraction();
+		return;
+	}
+	// Here we know it does implement interface, so we can check if we can interact with this actor
+	if (!IERInteractInterface::Execute_CanInteract(HitActor))
+	{
+		ClearInteraction();
 		return;
 	}
 
-	// If previously interacting with something else, hide its UI
+	if (IERInteractInterface::Execute_DoesUseCustomInteractArea(HitActor))
+	{
+		// If hit the same interactable component, do nothing and return
+		if (HitComponent == InteractableHitComponent)
+		{
+			return;
+		}
+	}
+	else
+	{
+		// If hit the same interactable actor, do nothing and return
+		if (HitActor == InteractableActor)
+		{
+			return;
+		}
+	}
+
+	// If previously interact with something else, hide its UI
 	if (InteractableActor)
 	{
 		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
 	}
 
-	// Check if the hit actor implements the interact interface and has correct collision
-	if (HitActor->Implements<UERInteractInterface>() && HitComponent->GetCollisionProfileName() == FName("InteractArea"))
+	if (IERInteractInterface::Execute_DoesUseCustomInteractArea(HitActor))
 	{
-		IERInteractInterface::Execute_DisplayInteractionUI(HitActor, true);
-		InteractableActor = HitActor;
-		InteractableHitComponent = HitComponent;
+		if (HitComponent->GetCollisionProfileName() == FName("InteractArea"))
+		{
+			SetInteraction(HitActor, HitComponent);
+		}
+		else
+		{
+			ClearInteraction();
+		}
 	}
 	else
 	{
-		ClearInteraction();
+		SetInteraction(HitActor, HitComponent);
 	}
+}
+
+void UERInteractComponent::SetInteraction(AActor* InteractedActor, UPrimitiveComponent* InteractedComponent)
+{
+	IERInteractInterface::Execute_DisplayInteractionUI(InteractedActor, true);
+	InteractableActor = InteractedActor;
+	InteractableHitComponent = InteractedComponent;
 }
 
 void UERInteractComponent::ClearInteraction()
@@ -177,7 +308,7 @@ void UERInteractComponent::ClearInteraction()
 	if (InteractableActor)
 	{
 		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
+		InteractableActor = nullptr;
+		InteractableHitComponent = nullptr;
 	}
-	InteractableActor = nullptr;
-	InteractableHitComponent = nullptr;
 }

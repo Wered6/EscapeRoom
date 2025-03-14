@@ -2,7 +2,6 @@
 
 
 #include "ERDoor.h"
-#include "Components/BoxComponent.h"
 #include "EscapeRoom/Components/ERLockComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -11,32 +10,26 @@ AERDoor::AERDoor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
-	DoorMesh->SetupAttachment(RootMesh);
-	DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+	FrameMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	SetRootComponent(FrameMesh);
 
-	InteractArea->SetupAttachment(DoorMesh);
+	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
+	DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	DoorMesh->SetupAttachment(FrameMesh);
 
 	HandleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HandleMesh"));
-	HandleMesh->SetupAttachment(DoorMesh);
 	HandleMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	HandleMesh->SetupAttachment(DoorMesh);
 
 	LockComponent = CreateDefaultSubobject<UERLockComponent>(TEXT("LockComponent"));
-
-	OutlineMeshComponentPtr = HandleMesh;
 }
 
 void AERDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-#pragma region Nullchecks
-	if (!LockComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|LockComponent is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
+	OutlineMeshComponentPtr = HandleMesh;
 
 	LockComponent->OnUnlock.BindUObject(this, &AERDoor::PlayUnlockSound);
 }

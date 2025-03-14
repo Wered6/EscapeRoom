@@ -219,7 +219,7 @@ void AERCharacter::EquipFlashlight(AERFlashlight* Flashlight)
 	HandSocket->AttachActor(EquippedFlashlight, Mesh1P);
 }
 
-void AERCharacter::CollectUVGlass(const FUVGlassData& UVGlassData)
+void AERCharacter::CollectUVGlassData(const FUVGlassData& UVGlassData)
 {
 	CollectedUVGlasses.Add(UVGlassData);
 }

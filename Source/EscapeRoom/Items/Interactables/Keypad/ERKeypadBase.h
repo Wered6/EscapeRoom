@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractablePawnBase.h"
+#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
 #include "ERKeypadBase.generated.h"
 
+class UERInteractableComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
@@ -78,7 +79,7 @@ DECLARE_DELEGATE(FOnFinishProcessing)
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonName, uint8)
 
 UCLASS()
-class ESCAPEROOM_API AERKeypadBase : public AERInteractablePawnBase
+class ESCAPEROOM_API AERKeypadBase : public APawn, public IERInteractInterface
 {
 	GENERATED_BODY()
 
@@ -89,10 +90,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	/**
-	* Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor in KeyItem)
-	*/
-	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
+	virtual void InteractPressTriggered_Implementation() override;
 
 protected:
 	void EnterKeypadMode();
@@ -123,6 +121,9 @@ protected:
 
 	FOnKeypadButtonPressed OnKeypadButtonPressed;
 	FOnFinishProcessing OnFinishProcessing;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UERInteractableComponent> InteractableComponent;
 
 private:
 	void PopulateButton2DArray();
@@ -156,7 +157,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category="ER|Keypad|Button", meta=(AllowPrivateAccess=true))
 	float ButtonDepthScale{4.f};
 
-	UPROPERTY(EditAnywhere, Category="ER|Keypad|Light")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<URectLightComponent> HelpLight;
 
 	// TODO convert all logic beside keypad sending which key was pressed to anything that uses keypad
@@ -164,9 +165,9 @@ private:
 #pragma region Camera
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="ER|Camera")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArm;
-	UPROPERTY(VisibleAnywhere, Category="ER|Camera")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> Camera;
 
 #pragma endregion
@@ -218,50 +219,51 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|Keypad|Audio")
 	TObjectPtr<USoundBase> LongRedLedSound;
 
-
 #pragma endregion
 
 #pragma region Meshes
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> BodyMesh;
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button0Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button1Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button2Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button3Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button4Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button5Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button6Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button7Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button8Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Button9Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ButtonDELMesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ButtonOKMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ScrewL1Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ScrewL2Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ScrewR1Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ScrewR2Mesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ShieldLogoMesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> GreenLedMesh;
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> RedLedMesh;
 
 #pragma endregion

@@ -6,6 +6,24 @@
 #include "UObject/Interface.h"
 #include "ERInteractInterface.generated.h"
 
+class UWidgetComponent;
+
+UENUM(BlueprintType)
+enum class EERInteractType : uint8
+{
+	Press,
+	Hold
+};
+
+UENUM(BlueprintType)
+enum class EERInteractCategory : uint8
+{
+	Use,
+	Collect,
+	Open,
+	Unlock
+};
+
 UINTERFACE()
 class UERInteractInterface : public UInterface
 {
@@ -21,7 +39,32 @@ class IERInteractInterface
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
-	void InteractStart(AActor* OtherInstigator);
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	void DisplayInteractionUI(const bool bShowInteract);
+
+	/** Interact press functions */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Press")
+	void InteractPressStarted(AActor* OtherInstigator);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Press")
+	void InteractPressTriggered();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Press")
+	void InteractPressCompleted();
+
+	/** Interact hold functions */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
+	void InteractHoldStarted(AActor* OtherInstigator, float& HoldTimeThreshold);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
+	void InteractHoldOngoing(const float ElapsedSeconds);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
+	void InteractHoldCanceled();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
+	void InteractHoldTriggered();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
+	void InteractHoldCompleted();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	bool DoesUseCustomInteractArea();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	bool CanInteract();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	USceneComponent* GetWidgetAttachmentComponent();
 };

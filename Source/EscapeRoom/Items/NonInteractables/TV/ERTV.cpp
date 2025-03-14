@@ -14,7 +14,7 @@
 #include "EscapeRoom/Components/ERInteractComponent.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
-#include "EscapeRoom/Items/Interactables/Keypad/ERKeypad.h"
+#include "EscapeRoom/Items/Interactables/Keypad/ERKeypadPassword.h"
 #include "EscapeRoom/Items/NonInteractables/AlarmClock/ERAlarmClock.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"

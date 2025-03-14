@@ -25,6 +25,6 @@ protected:
 private:
 	void Convert();
 
-	UPROPERTY(EditInstanceOnly, Category="ER|KeypadTV")
+	UPROPERTY(EditInstanceOnly, Category="ER|KeypadConverter")
 	TObjectPtr<AERTV> TV;
 };

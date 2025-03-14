@@ -3,25 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableActorBase.h"
 #include "ERKey.generated.h"
 
 class UERKeyComponent;
 
 UCLASS()
-class ESCAPEROOM_API AERKey : public AERInteractableActor
+class ESCAPEROOM_API AERKey : public AERInteractableActorBase
 {
 	GENERATED_BODY()
 
 public:
 	AERKey();
 
-	/**
-	 * Overriding InteractStart function from ERInteractInterface (derived from ERInteractableActor)
-	 */
-	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
+	virtual void BeginPlay() override;
+
+	virtual void InteractHoldTriggered_Implementation() override;
+	virtual void InteractHoldCompleted_Implementation() override;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="ER|Components")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UERKeyComponent> KeyComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> KeyMesh;
 };

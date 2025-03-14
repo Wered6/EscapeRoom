@@ -9,15 +9,30 @@ AERKey::AERKey()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	KeyComponent = CreateDefaultSubobject<UERKeyComponent>(TEXT("KeyComponent"));
+	KeyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("KeyMesh"));
+	KeyMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	SetRootComponent(KeyMesh);
 
-	OutlineMeshComponentPtr = RootMesh;
+	KeyComponent = CreateDefaultSubobject<UERKeyComponent>(TEXT("KeyComponent"));
 }
 
-void AERKey::InteractStart_Implementation(AActor* OtherInstigator)
+void AERKey::BeginPlay()
 {
-	Super::InteractStart_Implementation(OtherInstigator);
+	Super::BeginPlay();
+
+	OutlineMeshComponentPtr = KeyMesh;
+}
+
+void AERKey::InteractHoldTriggered_Implementation()
+{
+	Super::InteractHoldTriggered_Implementation();
 
 	KeyComponent->UnlockLockedItems();
+}
+
+void AERKey::InteractHoldCompleted_Implementation()
+{
+	Super::InteractHoldCompleted_Implementation();
+
 	Destroy();
 }

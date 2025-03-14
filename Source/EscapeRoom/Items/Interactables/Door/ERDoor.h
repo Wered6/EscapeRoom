@@ -3,34 +3,34 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableActorBase.h"
 #include "ERDoor.generated.h"
 
 class UERLockComponent;
 
 UCLASS()
-class ESCAPEROOM_API AERDoor : public AERInteractableActor
+class ESCAPEROOM_API AERDoor : public AERInteractableActorBase
 {
 	GENERATED_BODY()
 
 public:
 	AERDoor();
 
-protected:
 	virtual void BeginPlay() override;
-
-protected:
-	UPROPERTY(EditDefaultsOnly, Category="ER|Audio")
-	TObjectPtr<USoundBase> UnlockSound;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> DoorMesh;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> HandleMesh;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="ER|Components")
-	TObjectPtr<UERLockComponent> LockComponent;
 
 private:
 	void PlayUnlockSound();
+
+	UPROPERTY(EditDefaultsOnly, Category="ER|Audio")
+	TObjectPtr<USoundBase> UnlockSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	TObjectPtr<UERLockComponent> LockComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> FrameMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	TObjectPtr<UStaticMeshComponent> DoorMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	TObjectPtr<UStaticMeshComponent> HandleMesh;
 };

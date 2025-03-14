@@ -2,6 +2,8 @@
 
 
 #include "ERKeypadHangman.h"
+
+#include "EscapeRoom/Components/ERInteractableComponent.h"
 #include "EscapeRoom/Items/NonInteractables/TV/ERTV.h"
 
 
@@ -64,5 +66,5 @@ void AERKeypadHangman::ButtonPressed()
 void AERKeypadHangman::ExitAndDisableInteraction() const
 {
 	ExitKeypadMode();
-	DisableInteraction();
+	InteractableComponent->SetCanInteract(false);
 }

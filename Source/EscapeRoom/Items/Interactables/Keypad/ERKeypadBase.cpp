@@ -6,9 +6,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "Camera/CameraComponent.h"
-#include "Components/BoxComponent.h"
 #include "Components/RectLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
+#include "EscapeRoom/Components/ERInteractableComponent.h"
 #include "EscapeRoom/Components/ERInteractComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,73 +18,75 @@ AERKeypadBase::AERKeypadBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	RootMesh->SetCollisionProfileName("NoCollision");
+	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
+	SetRootComponent(BodyMesh);
+	BodyMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
 	// Buttons
 	Button0Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button0Mesh"));
 	Button0Mesh->SetCollisionProfileName("NoCollision");
-	Button0Mesh->SetupAttachment(RootMesh);
+	Button0Mesh->SetupAttachment(BodyMesh);
 	Button1Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button1Mesh"));
 	Button1Mesh->SetCollisionProfileName("NoCollision");
-	Button1Mesh->SetupAttachment(RootMesh);
+	Button1Mesh->SetupAttachment(BodyMesh);
 	Button2Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button2Mesh"));
 	Button2Mesh->SetCollisionProfileName("NoCollision");
-	Button2Mesh->SetupAttachment(RootMesh);
+	Button2Mesh->SetupAttachment(BodyMesh);
 	Button3Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button3Mesh"));
 	Button3Mesh->SetCollisionProfileName("NoCollision");
-	Button3Mesh->SetupAttachment(RootMesh);
+	Button3Mesh->SetupAttachment(BodyMesh);
 	Button4Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button4Mesh"));
 	Button4Mesh->SetCollisionProfileName("NoCollision");
-	Button4Mesh->SetupAttachment(RootMesh);
+	Button4Mesh->SetupAttachment(BodyMesh);
 	Button5Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button5Mesh"));
 	Button5Mesh->SetCollisionProfileName("NoCollision");
-	Button5Mesh->SetupAttachment(RootMesh);
+	Button5Mesh->SetupAttachment(BodyMesh);
 	Button6Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button6Mesh"));
 	Button6Mesh->SetCollisionProfileName("NoCollision");
-	Button6Mesh->SetupAttachment(RootMesh);
+	Button6Mesh->SetupAttachment(BodyMesh);
 	Button7Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button7Mesh"));
 	Button7Mesh->SetCollisionProfileName("NoCollision");
-	Button7Mesh->SetupAttachment(RootMesh);
+	Button7Mesh->SetupAttachment(BodyMesh);
 	Button8Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button8Mesh"));
 	Button8Mesh->SetCollisionProfileName("NoCollision");
-	Button8Mesh->SetupAttachment(RootMesh);
+	Button8Mesh->SetupAttachment(BodyMesh);
 	Button9Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button9Mesh"));
 	Button9Mesh->SetCollisionProfileName("NoCollision");
-	Button9Mesh->SetupAttachment(RootMesh);
+	Button9Mesh->SetupAttachment(BodyMesh);
 	ButtonDELMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonDELMesh"));
 	ButtonDELMesh->SetCollisionProfileName("NoCollision");
-	ButtonDELMesh->SetupAttachment(RootMesh);
+	ButtonDELMesh->SetupAttachment(BodyMesh);
 	ButtonOKMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonOKMesh"));
 	ButtonOKMesh->SetCollisionProfileName("NoCollision");
-	ButtonOKMesh->SetupAttachment(RootMesh);
+	ButtonOKMesh->SetupAttachment(BodyMesh);
 
 	ScrewL1Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScrewL1Mesh"));
 	ScrewL1Mesh->SetCollisionProfileName("NoCollision");
-	ScrewL1Mesh->SetupAttachment(RootMesh);
+	ScrewL1Mesh->SetupAttachment(BodyMesh);
 	ScrewL2Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScrewL2Mesh"));
 	ScrewL2Mesh->SetCollisionProfileName("NoCollision");
-	ScrewL2Mesh->SetupAttachment(RootMesh);
+	ScrewL2Mesh->SetupAttachment(BodyMesh);
 	ScrewR1Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScrewR1Mesh"));
 	ScrewR1Mesh->SetCollisionProfileName("NoCollision");
-	ScrewR1Mesh->SetupAttachment(RootMesh);
+	ScrewR1Mesh->SetupAttachment(BodyMesh);
 	ScrewR2Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScrewR2Mesh"));
 	ScrewR2Mesh->SetCollisionProfileName("NoCollision");
-	ScrewR2Mesh->SetupAttachment(RootMesh);
+	ScrewR2Mesh->SetupAttachment(BodyMesh);
 	ShieldLogoMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShieldLogoMesh"));
 	ShieldLogoMesh->SetCollisionProfileName("NoCollision");
-	ShieldLogoMesh->SetupAttachment(RootMesh);
+	ShieldLogoMesh->SetupAttachment(BodyMesh);
 
 	// Led meshes
 	GreenLedMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GreenLedMesh"));
 	GreenLedMesh->SetCollisionProfileName("NoCollision");
-	GreenLedMesh->SetupAttachment(RootMesh);
+	GreenLedMesh->SetupAttachment(BodyMesh);
 	RedLedMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RedLedMesh"));
 	RedLedMesh->SetCollisionProfileName("NoCollision");
-	RedLedMesh->SetupAttachment(RootMesh);
+	RedLedMesh->SetupAttachment(BodyMesh);
 
 	// Camera
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetupAttachment(RootMesh);
+	SpringArm->SetupAttachment(BodyMesh);
 	SpringArm->TargetArmLength = 50.f;
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
@@ -92,7 +94,7 @@ AERKeypadBase::AERKeypadBase()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	HelpLight = CreateDefaultSubobject<URectLightComponent>(TEXT("HelpLight"));
-	HelpLight->SetupAttachment(RootMesh);
+	HelpLight->SetupAttachment(BodyMesh);
 	HelpLight->SetRelativeLocation(FVector(0.f, 0.f, 70.f));
 	HelpLight->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 	HelpLight->SetIntensityUnits(ELightUnits::Unitless);
@@ -102,9 +104,8 @@ AERKeypadBase::AERKeypadBase()
 	HelpLight->SetSourceHeight(4.f);
 	HelpLight->SetBarnDoorLength(1.f);
 
-	InteractArea->SetBoxExtent(FVector(60.f, 48.f, 80.f));
-
-	OutlineMeshComponentPtr = RootMesh;
+	InteractableComponent = CreateDefaultSubobject<UERInteractableComponent>(TEXT("InteractableComponent"));
+	InteractableComponent->SetupAttachment(BodyMesh);
 }
 
 void AERKeypadBase::BeginPlay()
@@ -117,17 +118,15 @@ void AERKeypadBase::BeginPlay()
 	RedLedDynMat = RedLedMesh->CreateDynamicMaterialInstance(0);
 }
 
-void AERKeypadBase::InteractStart_Implementation(AActor* OtherInstigator)
+void AERKeypadBase::InteractPressTriggered_Implementation()
 {
-	Super::InteractStart_Implementation(OtherInstigator);
-
 	EnterKeypadMode();
 }
 
 void AERKeypadBase::EnterKeypadMode()
 {
 	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
-	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractableComponent->GetInteractInstigator())};
 
 #pragma region Nullchecks
 	if (!KeypadMappingContext)
@@ -170,7 +169,7 @@ void AERKeypadBase::EnterKeypadMode()
 void AERKeypadBase::ExitKeypadMode() const
 {
 	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
-	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractableComponent->GetInteractInstigator())};
 
 #pragma region Nullchecks
 	if (!KeypadMappingContext)
@@ -204,7 +203,7 @@ void AERKeypadBase::ExitKeypadMode() const
 
 	Character->GetInteractComponent()->SetCanCheckInteraction(true);
 	Character->SetIndicatorVisibility(true);
-	PlayerController->Possess(Cast<APawn>(InteractInstigator));
+	PlayerController->Possess(Cast<APawn>(InteractableComponent->GetInteractInstigator()));
 
 	SelectedButton.Mesh->SetRenderCustomDepth(false);
 	SelectedButton.Mesh->SetCustomDepthStencilValue(0);

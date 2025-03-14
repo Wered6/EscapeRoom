@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
+#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
 #include "ERUVGlass.generated.h"
 
+class UERInteractableComponent;
 USTRUCT(BlueprintType)
 struct FUVGlassData
 {
@@ -20,20 +21,24 @@ struct FUVGlassData
 };
 
 UCLASS()
-class ESCAPEROOM_API AERUVGlass : public AERInteractableActor
+class ESCAPEROOM_API AERUVGlass : public AActor, public IERInteractInterface
 {
 	GENERATED_BODY()
 
 public:
 	AERUVGlass();
 
-	/**
-	 * Overriding InteractStart function from ERInteractableInterface (derived from ERInteractableActor)
-	 */
-	virtual void InteractStart_Implementation(AActor* OtherInstigator) override;
+	virtual void InteractHoldTriggered_Implementation() override;
+	virtual void InteractHoldCompleted_Implementation() override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="ER|UVGlass")
 	FUVGlassData Data;
-	// TODO material MI_Glass doenst show outline
+	// TODO material MI_Glass doesnt show outline
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UERInteractableComponent> InteractableComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> GlassMesh;
 };

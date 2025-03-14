@@ -6,8 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "ERTV.generated.h"
 
+class AERKeypadPassword;
 class UMediaTexture;
-class AERKeypad;
 class AERFlashlight;
 class UERTVConverterScreenWidget;
 class AERAlarmClock;
@@ -53,7 +53,7 @@ private:
 	void ShowConverterWidgetOnScreen();
 
 	UPROPERTY(EditInstanceOnly, Category="ER|TV|Keypad")
-	TObjectPtr<AERKeypad> Keypad;
+	TObjectPtr<AERKeypadPassword> Keypad;
 
 	UPROPERTY(EditInstanceOnly, Category="ER|TV|Flashlight")
 	TObjectPtr<AERFlashlight> Flashlight;

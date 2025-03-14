@@ -8,9 +8,18 @@ AERLampSwitch::AERLampSwitch()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	SwitchMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwitchMesh"));
-	SwitchMesh->SetupAttachment(RootMesh);
-	SwitchMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
+	FrameMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	SetRootComponent(FrameMesh);
 
-	OutlineMeshComponentPtr = SwitchMesh;
+	SwitchMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwitchMesh"));
+	SwitchMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	SwitchMesh->SetupAttachment(FrameMesh);
+}
+
+void AERLampSwitch::BeginPlay()
+{
+	Super::BeginPlay();
+
+	OutlineMeshComponentPtr = FrameMesh;
 }

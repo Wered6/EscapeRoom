@@ -8,22 +8,22 @@ AERCabinet::AERCabinet()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
-	SetRootComponent(RootMesh);
-	RootMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
+	SetRootComponent(BodyMesh);
+	BodyMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
 	DoorLeft = CreateDefaultSubobject<UChildActorComponent>(TEXT("DoorLeft"));
-	DoorLeft->SetupAttachment(RootMesh);
+	DoorLeft->SetupAttachment(BodyMesh);
 
 	DoorRight = CreateDefaultSubobject<UChildActorComponent>(TEXT("DoorRight"));
-	DoorRight->SetupAttachment(RootMesh);
+	DoorRight->SetupAttachment(BodyMesh);
 
 	DrawerFirst = CreateDefaultSubobject<UChildActorComponent>(TEXT("DrawerFirst"));
-	DrawerFirst->SetupAttachment(RootMesh);
+	DrawerFirst->SetupAttachment(BodyMesh);
 
 	DrawerSecond = CreateDefaultSubobject<UChildActorComponent>(TEXT("DrawerSecond"));
-	DrawerSecond->SetupAttachment(RootMesh);
+	DrawerSecond->SetupAttachment(BodyMesh);
 
 	DrawerThird = CreateDefaultSubobject<UChildActorComponent>(TEXT("DrawerThird"));
-	DrawerThird->SetupAttachment(RootMesh);
+	DrawerThird->SetupAttachment(BodyMesh);
 }

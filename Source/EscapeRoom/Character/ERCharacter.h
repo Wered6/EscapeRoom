@@ -103,7 +103,7 @@ public:
 
 	void EquipFlashlight(AERFlashlight* Flashlight);
 
-	void CollectUVGlass(const FUVGlassData& UVGlassData);
+	void CollectUVGlassData(const FUVGlassData& UVGlassData);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Flashlight")

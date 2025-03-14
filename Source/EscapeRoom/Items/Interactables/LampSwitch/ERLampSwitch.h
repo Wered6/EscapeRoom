@@ -3,24 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractableActor.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableActorBase.h"
 #include "ERLampSwitch.generated.h"
 
 class AERCeilingLamp;
 
 UCLASS()
-class ESCAPEROOM_API AERLampSwitch : public AERInteractableActor
+class ESCAPEROOM_API AERLampSwitch : public AERInteractableActorBase
 {
 	GENERATED_BODY()
 
 public:
 	AERLampSwitch();
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ER|LampSwitch|Mesh")
-	TObjectPtr<UStaticMeshComponent> SwitchMesh;
+	virtual void BeginPlay() override;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="ER|LampSwitch")
+private:
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="ER|LampSwitch")
 	TObjectPtr<AERCeilingLamp> Lamp;
 	// TODO add sound click switch
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> FrameMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+	TObjectPtr<UStaticMeshComponent> SwitchMesh;
 };

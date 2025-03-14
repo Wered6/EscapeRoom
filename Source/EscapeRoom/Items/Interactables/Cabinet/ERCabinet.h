@@ -18,8 +18,8 @@ public:
 	AERCabinet();
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
-	TObjectPtr<UStaticMeshComponent> RootMesh;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> BodyMesh;
 
 	UPROPERTY(EditAnywhere, Category="ER|Drawers")
 	TObjectPtr<UChildActorComponent> DoorLeft;

@@ -6,13 +6,14 @@
 #include "Components/ActorComponent.h"
 #include "ERInteractComponent.generated.h"
 
+struct FInputActionInstance;
 class UInputAction;
 class UInputMappingContext;
 
 /**
- * Enable character to interact with Actor which has InteractInterface
+ * Component that enables character to interact with object which has InteractInterface
  */
-UCLASS(ClassGroup=(Interact), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(Interact))
 class ESCAPEROOM_API UERInteractComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -28,7 +29,7 @@ public:
 
 public:
 	/**
-	 * Stops performing interaction check but InteractableActor stays set
+	 * Stops performing interaction check but InteractableActor stay set
 	 */
 	FORCEINLINE void SetCanCheckInteraction(const bool bValue)
 	{
@@ -37,6 +38,7 @@ public:
 
 private:
 	void PerformInteractionCheck();
+	void SetInteraction(AActor* InteractedActor, UPrimitiveComponent* InteractedComponent);
 	void ClearInteraction();
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
@@ -49,7 +51,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	bool bCanCheckInteraction{true};
 
-	/** Character interact component belongs to */
+	/**
+	 * Character interact component belongs to
+	 */
 	UPROPERTY()
 	TObjectPtr<ACharacter> CharacterOwner;
 
@@ -57,14 +61,27 @@ private:
 
 private:
 	/**
-	* Bind to InteractAction
+	* Bind to InteractPressAction
 	*/
-	void Interact();
+	void InteractPressStarted();
+	void InteractPressTriggered();
+	void InteractPressCompleted();
+
+	/**
+	 * Bind to InteractHold1Action
+	 */
+	void InteractHoldStarted(const FInputActionInstance& Instance);
+	void InteractHoldOngoing(const FInputActionInstance& Instance);
+	void InteractHoldCanceled();
+	void InteractHoldTriggered();
+	void InteractHoldCompleted();
 
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact|Input")
 	TObjectPtr<UInputMappingContext> InteractMappingContext;
 	UPROPERTY(EditDefaultsOnly, Category="ER|Interact|Input")
-	TObjectPtr<UInputAction> InteractAction;
+	TObjectPtr<UInputAction> InteractPressAction;
+	UPROPERTY(EditDefaultsOnly, Category="ER|Interact|Input")
+	TObjectPtr<UInputAction> InteractHoldAction;
 
 #pragma endregion
 };

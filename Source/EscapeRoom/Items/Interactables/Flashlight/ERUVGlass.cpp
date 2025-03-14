@@ -3,20 +3,24 @@
 
 #include "ERUVGlass.h"
 #include "EscapeRoom/Character/ERCharacter.h"
+#include "EscapeRoom/Components/ERInteractableComponent.h"
 
 
 AERUVGlass::AERUVGlass()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	OutlineMeshComponentPtr = RootMesh;
+	GlassMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GlassMesh"));
+	SetRootComponent(GlassMesh);
+	GlassMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+	InteractableComponent = CreateDefaultSubobject<UERInteractableComponent>(TEXT("InteractableComponent"));
+	InteractableComponent->SetupAttachment(GlassMesh);
 }
 
-void AERUVGlass::InteractStart_Implementation(AActor* OtherInstigator)
+void AERUVGlass::InteractHoldTriggered_Implementation()
 {
-	Super::InteractStart_Implementation(OtherInstigator);
-
-	AERCharacter* Character{Cast<AERCharacter>(OtherInstigator)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractableComponent->GetInteractInstigator())};
 
 #pragma region Nullchecks
 	if (!Character)
@@ -26,7 +30,10 @@ void AERUVGlass::InteractStart_Implementation(AActor* OtherInstigator)
 	}
 #pragma endregion
 
-	Character->CollectUVGlass(Data);
+	Character->CollectUVGlassData(Data);
+}
 
+void AERUVGlass::InteractHoldCompleted_Implementation()
+{
 	Destroy();
 }
