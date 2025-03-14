@@ -99,7 +99,7 @@ void UERInteractComponent::InteractPressStarted()
 	}
 #pragma endregion
 
-	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Press)
 	{
 		IERInteractInterface::Execute_InteractPressStarted(InteractableActor, CharacterOwner);
 	}
@@ -108,7 +108,7 @@ void UERInteractComponent::InteractPressStarted()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractPressTriggered()
 {
-	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Press)
 	{
 		IERInteractInterface::Execute_InteractPressTriggered(InteractableActor);
 	}
@@ -117,7 +117,7 @@ void UERInteractComponent::InteractPressTriggered()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractPressCompleted()
 {
-	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Press)
 	{
 		IERInteractInterface::Execute_InteractPressCompleted(InteractableActor);
 	}
@@ -134,7 +134,7 @@ void UERInteractComponent::InteractHoldStarted(const FInputActionInstance& Insta
 	}
 #pragma endregion
 
-	if (!InteractableActor || !InteractableActor->Implements<UERInteractInterface>())
+	if (!InteractableActor || !InteractableActor->Implements<UERInteractInterface>() || IERInteractInterface::Execute_GetInteractType(InteractableActor) != EERInteractType::Hold)
 	{
 		return;
 	}
@@ -155,7 +155,7 @@ void UERInteractComponent::InteractHoldStarted(const FInputActionInstance& Insta
 // ReSharper disable o4nce CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldOngoing(const FInputActionInstance& Instance)
 {
-	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Hold)
 	{
 		IERInteractInterface::Execute_InteractHoldOngoing(InteractableActor, Instance.GetElapsedTime());
 	}
@@ -164,7 +164,7 @@ void UERInteractComponent::InteractHoldOngoing(const FInputActionInstance& Insta
 // ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldCanceled()
 {
-	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Hold)
 	{
 		IERInteractInterface::Execute_InteractHoldCanceled(InteractableActor);
 	}
@@ -173,7 +173,7 @@ void UERInteractComponent::InteractHoldCanceled()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldTriggered()
 {
-	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Hold)
 	{
 		IERInteractInterface::Execute_InteractHoldTriggered(InteractableActor);
 	}
@@ -182,7 +182,7 @@ void UERInteractComponent::InteractHoldTriggered()
 // ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldCompleted()
 {
-	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>())
+	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Hold)
 	{
 		IERInteractInterface::Execute_InteractHoldCompleted(InteractableActor);
 	}

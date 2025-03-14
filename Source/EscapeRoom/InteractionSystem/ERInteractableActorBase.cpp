@@ -94,11 +94,18 @@ void AERInteractableActorBase::DisplayInteractionUI_Implementation(const bool bS
 void AERInteractableActorBase::InteractPressStarted_Implementation(AActor* OtherInstigator)
 {
 	InteractInstigator = OtherInstigator;
+	UE_LOG(LogTemp, Warning, TEXT("PressStarted"))
+}
+
+void AERInteractableActorBase::InteractPressTriggered_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("PressTriggered"))
 }
 
 void AERInteractableActorBase::InteractPressCompleted_Implementation()
 {
 	InteractInstigator = nullptr;
+	UE_LOG(LogTemp, Warning, TEXT("PressCompleted"))
 }
 
 void AERInteractableActorBase::InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold)
@@ -114,6 +121,7 @@ void AERInteractableActorBase::InteractHoldStarted_Implementation(AActor* OtherI
 	InteractInstigator = OtherInstigator;
 	OutHoldTimeThreshold = HoldTimeThreshold;
 	InteractWidget->SetIsHolding(true);
+	UE_LOG(LogTemp, Warning, TEXT("HoldStarted"))
 }
 
 void AERInteractableActorBase::InteractHoldOngoing_Implementation(const float ElapsedSeconds)
@@ -126,8 +134,14 @@ void AERInteractableActorBase::InteractHoldOngoing_Implementation(const float El
 	}
 #pragma endregion
 
-	CurrentRoundProgressbarPercent = FMath::Clamp(ElapsedSeconds / HoldTimeThreshold, 0.f, 1.f);
+	const float CurrentRoundProgressbarPercent{FMath::Clamp(ElapsedSeconds / HoldTimeThreshold, 0.f, 1.f)};
 	InteractWidget->SetProgressbarPercent(CurrentRoundProgressbarPercent);
+	UE_LOG(LogTemp, Warning, TEXT("HoldOngoing"))
+}
+
+void AERInteractableActorBase::InteractHoldTriggered_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("HoldTriggered"))
 }
 
 void AERInteractableActorBase::InteractHoldCanceled_Implementation()
@@ -142,6 +156,7 @@ void AERInteractableActorBase::InteractHoldCanceled_Implementation()
 
 	InteractInstigator = nullptr;
 	InteractWidget->SetIsHolding(false);
+	UE_LOG(LogTemp, Warning, TEXT("HoldCanceled"))
 }
 
 void AERInteractableActorBase::InteractHoldCompleted_Implementation()
@@ -156,6 +171,7 @@ void AERInteractableActorBase::InteractHoldCompleted_Implementation()
 
 	InteractInstigator = nullptr;
 	InteractWidget->SetIsHolding(false);
+	UE_LOG(LogTemp, Warning, TEXT("HoldCompleted"))
 }
 
 bool AERInteractableActorBase::DoesUseCustomInteractArea_Implementation()
@@ -166,4 +182,9 @@ bool AERInteractableActorBase::DoesUseCustomInteractArea_Implementation()
 bool AERInteractableActorBase::CanInteract_Implementation()
 {
 	return bCanInteract;
+}
+
+EERInteractType AERInteractableActorBase::GetInteractType_Implementation()
+{
+	return InteractType;
 }

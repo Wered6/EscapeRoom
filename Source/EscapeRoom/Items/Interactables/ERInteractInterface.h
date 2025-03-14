@@ -67,4 +67,6 @@ public:
 	bool CanInteract();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	USceneComponent* GetWidgetAttachmentComponent();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	EERInteractType GetInteractType();
 };

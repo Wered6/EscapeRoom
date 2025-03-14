@@ -6,6 +6,7 @@
 #include "Components/SpotLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "EscapeRoom/Components/ERInteractableComponent.h"
+#include "EscapeRoom/Items/Interactables/UVGlass/ERUVGlass.h"
 
 AERFlashlight::AERFlashlight()
 {

@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ERUVGlass.h"
 #include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
 #include "ERFlashlight.generated.h"
 
+struct FUVGlassData;
 class UERInteractableComponent;
 class USpotLightComponent;
 

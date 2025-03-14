@@ -35,13 +35,16 @@ public:
 
 	virtual void DisplayInteractionUI_Implementation(const bool bShowInteract) override;
 	virtual void InteractPressStarted_Implementation(AActor* OtherInstigator) override;
+	virtual void InteractPressTriggered_Implementation() override;
 	virtual void InteractPressCompleted_Implementation() override;
 	virtual void InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold) override;
 	virtual void InteractHoldOngoing_Implementation(const float ElapsedSeconds) override;
+	virtual void InteractHoldTriggered_Implementation() override;
 	virtual void InteractHoldCanceled_Implementation() override;
 	virtual void InteractHoldCompleted_Implementation() override;
 	virtual bool DoesUseCustomInteractArea_Implementation() override;
 	virtual bool CanInteract_Implementation() override;
+	virtual EERInteractType GetInteractType_Implementation() override;
 
 protected:
 	/**
@@ -90,12 +93,6 @@ private:
 	 */
 	UPROPERTY(EditAnywhere, meta=(ClampMin="0", ClampMax="1", UIMin="0", UIMax="1"), Category="ER|Interact")
 	float InitialRoundProgressbarPercent{};
-	/**
-	 * Tracks the current percentage of the round progress bar for an interaction.
-	 * Used to visually represent the progress of ongoing interactions.
-	 */
-	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
-	float CurrentRoundProgressbarPercent{};
 
 	/**
 	 * Defines the size of the round progress bar in the interaction widget.
