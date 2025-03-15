@@ -29,7 +29,7 @@ void AERDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OutlineMeshComponents.Add(FrameMesh);
+	OutlineMeshComponents.Add(DoorMesh);
 
 	LockComponent->OnUnlock.BindUObject(this, &AERDoor::PlayUnlockSound);
 }

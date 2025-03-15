@@ -66,11 +66,11 @@ void UERInteractIconWidget::NativePreConstruct()
 		break;
 	case EERInteractType::Hold:
 		RoundProgressbar->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		IconSwitcher->SetRenderOpacity(0.3f);
+		SetProgressbarPercent(InitialRoundProgressbarPercent);
+		SetSize(RoundProgressbarSize, IconSize);
 		break;
 	}
-
-	SetProgressbarPercent(InitialRoundProgressbarPercent);
-	SetSize(RoundProgressbarSize, IconSize);
 }
 
 void UERInteractIconWidget::Init(const EERInteractCategory NewInteractCategory,
