@@ -2,7 +2,6 @@
 
 
 #include "ERPicture.h"
-#include "EscapeRoom/Components/ERInteractableComponent.h"
 
 
 AERPicture::AERPicture()
@@ -10,15 +9,14 @@ AERPicture::AERPicture()
 	PrimaryActorTick.bCanEverTick = false;
 
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrontMesh"));
-	SetRootComponent(FrameMesh);
 	FrameMesh->SetCollisionProfileName(TEXT("NoCollision"));
-	PaintingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PaintingMesh"));
-	PaintingMesh->SetupAttachment(FrameMesh);
-	PaintingMesh->SetCollisionProfileName(TEXT("NoCollision"));
-	BackMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackMesh"));
-	BackMesh->SetupAttachment(FrameMesh);
-	BackMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	SetRootComponent(FrameMesh);
 
-	InteractableComponent = CreateDefaultSubobject<UERInteractableComponent>(TEXT("InteractableComponent"));
-	InteractableComponent->SetupAttachment(FrameMesh);
+	PaintingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PaintingMesh"));
+	PaintingMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	PaintingMesh->SetupAttachment(FrameMesh);
+
+	BackMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackMesh"));
+	BackMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	BackMesh->SetupAttachment(FrameMesh);
 }

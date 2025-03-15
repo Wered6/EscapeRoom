@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableActorBase.h"
 #include "ERPicture.generated.h"
 
 class UERInteractableComponent;
 
 UCLASS()
-class ESCAPEROOM_API AERPicture : public AActor, public IERInteractInterface
+class ESCAPEROOM_API AERPicture : public AERInteractableActorBase
 {
 	GENERATED_BODY()
 
@@ -17,9 +17,6 @@ public:
 	AERPicture();
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UERInteractableComponent> InteractableComponent;
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> FrameMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))

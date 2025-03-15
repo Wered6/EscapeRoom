@@ -50,7 +50,7 @@ protected:
 	/**
 	 * Represents the actor responsible for initiating interaction with this interactable object.
 	 */
-	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	UPROPERTY(VisibleInstanceOnly, Category="ER|Interact")
 	TObjectPtr<AActor> InteractInstigator;
 
 	/**
@@ -65,16 +65,16 @@ protected:
 	EERInteractType InteractType{};
 
 	/**
-	 * Pointer to the mesh component used for outline rendering or visual effects on the interactable actor.
+	 * Stores a collection of mesh components used for rendering outlines or visual effects on the interactable actor.
 	 */
 	UPROPERTY(BlueprintReadWrite, Category="ER|Interact")
-	TObjectPtr<UMeshComponent> OutlineMeshComponentPtr;
+	TArray<TObjectPtr<UMeshComponent>> OutlineMeshComponents;
 
 private:
 	/**
 	 * Specifies the widget class used to define the interaction UI for the interactable actor.
 	 */
-	UPROPERTY(EditDefaultsOnly, Category="ER|Interact")
+	UPROPERTY(EditDefaultsOnly, meta=(DisplayPriority=0), Category="ER|Interact")
 	TSubclassOf<UERInteractIconWidget> InteractWidgetClass;
 	/**
 	 * Represents the specific interaction UI widget instance for the interactable actor.
@@ -91,20 +91,24 @@ private:
 	 * Specifies the initial percentage value for the round progress bar in the interaction UI.
 	 * Used to initialize the visual representation of interaction progress.
 	 */
-	UPROPERTY(EditAnywhere, meta=(ClampMin="0", ClampMax="1", UIMin="0", UIMax="1"), Category="ER|Interact")
+	UPROPERTY(EditAnywhere, meta=(ClampMin="0", ClampMax="1", UIMin="0", UIMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	float InitialRoundProgressbarPercent{};
 
 	/**
 	 * Defines the size of the round progress bar in the interaction widget.
-	 * Visible only if InteractType is Hold.
 	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
+	UPROPERTY(EditAnywhere, meta=(EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	FVector2D RoundProgressbarSize{100.f, 100.f};
 	/**
 	 * Defines the size of the icon displayed in the interaction widget.
 	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
+	UPROPERTY(EditAnywhere, meta=(EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	FVector2D IconSize{50.f, 50.f};
+	/**
+	 * Defines the time threshold (in seconds) required for a "Hold" interaction to be triggered.
+	 */
+	UPROPERTY(EditAnywhere, meta=(UIMin="0", ClampMin="0", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	float HoldTimeThreshold{};
 
 	/**
 	 * Indicates whether this actor can currently be interacted with.
@@ -117,10 +121,4 @@ private:
 	 */
 	UPROPERTY(EditAnywhere, Category="ER|Interact")
 	bool bUseCustomInteractArea{};
-
-	/**
-	 * Defines the time threshold (in seconds) required for a "Hold" interaction to be triggered.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", ClampMin="0"), Category="ER|Interact")
-	float HoldTimeThreshold{};
 };

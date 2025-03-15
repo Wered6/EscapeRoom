@@ -3,17 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableActorBase.h"
 #include "ERFlashlight.generated.h"
 
 struct FUVGlassData;
-class UERInteractableComponent;
 class USpotLightComponent;
 
 DECLARE_DELEGATE(FOnFlashlightEquipped)
 
 UCLASS()
-class ESCAPEROOM_API AERFlashlight : public AActor, public IERInteractInterface
+class ESCAPEROOM_API AERFlashlight : public AERInteractableActorBase
 {
 	GENERATED_BODY()
 
@@ -29,10 +28,7 @@ public:
 
 	void SetUltraVioletColor(const FUVGlassData& UVGlassData);
 
-	/**
-	 * Overriding InteractPressTriggered function from ERInteractInterface (derived from ERInteractableActor)
-	 */
-	virtual void InteractPressTriggered_Implementation() override;
+	virtual void InteractHoldTriggered_Implementation() override;
 
 	FOnFlashlightEquipped OnFlashlightEquipped;
 
@@ -49,9 +45,6 @@ private:
 	TObjectPtr<UMaterialInstance> PostProcessMask;
 	// TODO add light mask to look like flashlight
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UERInteractableComponent> InteractableComponent;
-
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true))
 	TObjectPtr<UStaticMeshComponent> FlashlightMesh;
 };

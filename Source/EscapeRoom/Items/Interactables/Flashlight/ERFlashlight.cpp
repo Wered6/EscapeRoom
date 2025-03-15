@@ -5,41 +5,37 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/SpotLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
-#include "EscapeRoom/Components/ERInteractableComponent.h"
 #include "EscapeRoom/Items/Interactables/UVGlass/ERUVGlass.h"
 
 AERFlashlight::AERFlashlight()
 {
 	FlashlightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlashlightMesh"));
-	SetRootComponent(FlashlightMesh);
 	FlashlightMesh->SetCollisionResponseToAllChannels(ECR_Block);
 	FlashlightMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	FlashlightMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	FlashlightMesh->CastShadow = false;
+	SetRootComponent(FlashlightMesh);
 
 	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
-	SceneCapture->SetupAttachment(FlashlightMesh);
 	SceneCapture->FOVAngle = 30.f;
 	SceneCapture->CaptureSource = SCS_FinalColorLDR;
+	SceneCapture->SetupAttachment(FlashlightMesh);
 
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLight"));
-	SpotLight->SetupAttachment(SceneCapture);
 	SpotLight->Intensity = 10000.f;
 	SpotLight->IntensityUnits = ELightUnits::Unitless;
 	SpotLight->SetVisibility(false);
+	SpotLight->SetupAttachment(SceneCapture);
 
 	SpotLightGlow = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightGlow"));
-	SpotLightGlow->SetupAttachment(SceneCapture);
 	SpotLightGlow->Intensity = 10000.f;
 	SpotLightGlow->IntensityUnits = ELightUnits::Unitless;
 	SpotLightGlow->SetVisibility(false);
+	SpotLightGlow->SetupAttachment(SceneCapture);
 
 	const float FOVSceneCapture{SceneCapture->FOVAngle};
 	SpotLight->SetOuterConeAngle(FOVSceneCapture / 2);
 	SpotLightGlow->SetOuterConeAngle(FOVSceneCapture / 2);
-
-	InteractableComponent = CreateDefaultSubobject<UERInteractableComponent>(TEXT("InteractableComponent"));
-	InteractableComponent->SetupAttachment(FlashlightMesh);
 }
 
 void AERFlashlight::BeginPlay()
@@ -63,6 +59,8 @@ void AERFlashlight::BeginPlay()
 
 	Super::BeginPlay();
 
+	OutlineMeshComponents.Add(FlashlightMesh);
+
 	// TODO try to set decals to full invisible
 	// TODO using metal isn't good, find something else
 }
@@ -79,9 +77,11 @@ void AERFlashlight::TurnOff() const
 	SpotLightGlow->SetVisibility(false);
 }
 
-void AERFlashlight::InteractPressTriggered_Implementation()
+void AERFlashlight::InteractHoldTriggered_Implementation()
 {
-	AERCharacter* Character{Cast<AERCharacter>(InteractableComponent->GetInteractInstigator())};
+	Super::InteractHoldTriggered_Implementation();
+
+	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
 
 #pragma region Nullchecks
 	if (!Character)

@@ -84,10 +84,13 @@ void AERInteractableActorBase::DisplayInteractionUI_Implementation(const bool bS
 
 	InteractWidgetComp->SetVisibility(bShowInteract);
 
-	if (OutlineMeshComponentPtr)
+	for (UMeshComponent* OutlineMeshComponent : OutlineMeshComponents)
 	{
-		OutlineMeshComponentPtr->SetRenderCustomDepth(bShowInteract);
-		OutlineMeshComponentPtr->SetCustomDepthStencilValue(bShowInteract ? 1 : 0);
+		if (OutlineMeshComponent)
+		{
+			OutlineMeshComponent->SetRenderCustomDepth(bShowInteract);
+			OutlineMeshComponent->SetCustomDepthStencilValue(bShowInteract ? 1 : 0);
+		}
 	}
 }
 

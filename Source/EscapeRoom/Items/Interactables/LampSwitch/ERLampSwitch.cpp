@@ -21,5 +21,5 @@ void AERLampSwitch::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OutlineMeshComponentPtr = FrameMesh;
+	OutlineMeshComponents.Add(FrameMesh);
 }
