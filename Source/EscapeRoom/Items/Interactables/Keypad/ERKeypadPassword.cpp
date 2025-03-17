@@ -2,7 +2,6 @@
 
 
 #include "ERKeypadPassword.h"
-#include "EscapeRoom/Components/ERInteractableComponent.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
 
 
@@ -48,7 +47,7 @@ void AERKeypadPassword::CheckPassword()
 		KeyComponent->UnlockLockedItems();
 		LedFlash(ELedColor::Green, LedLongFlashTime);
 		ExitKeypadMode();
-		InteractableComponent->SetCanInteract(false);
+		SetCanInteract(false);
 
 		if (OnCorrectPassword.IsBound())
 		{

@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ERInteractableActorBase.h"
+#include "ERInteractablePawnBase.h"
 #include "Components/WidgetComponent.h"
 #include "EscapeRoom/UI/ERInteractIconWidget.h"
 
 
-AERInteractableActorBase::AERInteractableActorBase()
+AERInteractablePawnBase::AERInteractablePawnBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AERInteractableActorBase::BeginPlay()
+void AERInteractablePawnBase::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -39,7 +39,7 @@ void AERInteractableActorBase::BeginPlay()
 	}
 #pragma endregion
 
-	InteractWidget->Init(InteractCategory, InteractType, MinimalIconOpacity, InitialIconOpacity, IconSize, MinimalProgressCircleOpacity, InitialProgressCircleOpacity, ProgressCircleSize, InitialProgressCirclePercent);
+	// InteractWidget->Init(InteractCategory, InteractType, InitialRoundProgressbarPercent, RoundProgressbarSize, IconSize);
 	InteractWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	InteractWidgetComp->SetDrawAtDesiredSize(true);
 	InteractWidgetComp->SetVisibility(false);
@@ -54,12 +54,12 @@ void AERInteractableActorBase::BeginPlay()
 	InteractWidgetComp->AttachToComponent(WidgetAttachComp, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
-void AERInteractableActorBase::SetCanInteract(const bool bNewCanInteract)
+void AERInteractablePawnBase::SetCanInteract(const bool bNewCanInteract)
 {
 	bCanInteract = bNewCanInteract;
 }
 
-void AERInteractableActorBase::SetShowInteractWidget(const bool bShow) const
+void AERInteractablePawnBase::SetShowInteractWidget(const bool bShow) const
 {
 #pragma region Nullchecks
 	if (!InteractWidgetComp)
@@ -72,7 +72,7 @@ void AERInteractableActorBase::SetShowInteractWidget(const bool bShow) const
 	InteractWidgetComp->SetVisibility(bShow);
 }
 
-void AERInteractableActorBase::DisplayInteractionUI_Implementation(const bool bShowInteract)
+void AERInteractablePawnBase::DisplayInteractionUI_Implementation(const bool bShowInteract)
 {
 #pragma region Nullchecks
 	if (!InteractWidgetComp)
@@ -94,24 +94,24 @@ void AERInteractableActorBase::DisplayInteractionUI_Implementation(const bool bS
 	}
 }
 
-void AERInteractableActorBase::InteractPressStarted_Implementation(AActor* OtherInstigator)
+void AERInteractablePawnBase::InteractPressStarted_Implementation(AActor* OtherInstigator)
 {
 	InteractInstigator = OtherInstigator;
 	UE_LOG(LogTemp, Warning, TEXT("PressStarted"))
 }
 
-void AERInteractableActorBase::InteractPressTriggered_Implementation()
+void AERInteractablePawnBase::InteractPressTriggered_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("PressTriggered"))
 }
 
-void AERInteractableActorBase::InteractPressCompleted_Implementation()
+void AERInteractablePawnBase::InteractPressCompleted_Implementation()
 {
 	InteractInstigator = nullptr;
 	UE_LOG(LogTemp, Warning, TEXT("PressCompleted"))
 }
 
-void AERInteractableActorBase::InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold)
+void AERInteractablePawnBase::InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold)
 {
 #pragma region Nullchecks
 	if (!InteractWidget)
@@ -127,7 +127,7 @@ void AERInteractableActorBase::InteractHoldStarted_Implementation(AActor* OtherI
 	UE_LOG(LogTemp, Warning, TEXT("HoldStarted"))
 }
 
-void AERInteractableActorBase::InteractHoldOngoing_Implementation(const float ElapsedSeconds)
+void AERInteractablePawnBase::InteractHoldOngoing_Implementation(const float ElapsedSeconds)
 {
 #pragma region Nullchecks
 	if (!InteractWidget)
@@ -140,16 +140,15 @@ void AERInteractableActorBase::InteractHoldOngoing_Implementation(const float El
 	const float CurrentRoundProgressbarPercent{FMath::Clamp(ElapsedSeconds / HoldTimeThreshold, 0.f, 1.f)};
 	InteractWidget->SetProgressCircleOpacity(CurrentRoundProgressbarPercent);
 	InteractWidget->SetProgressCirclePercent(CurrentRoundProgressbarPercent);
-	InteractWidget->SetIconOpacity(CurrentRoundProgressbarPercent);
 	UE_LOG(LogTemp, Warning, TEXT("HoldOngoing"))
 }
 
-void AERInteractableActorBase::InteractHoldTriggered_Implementation()
+void AERInteractablePawnBase::InteractHoldTriggered_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("HoldTriggered"))
 }
 
-void AERInteractableActorBase::InteractHoldCanceled_Implementation()
+void AERInteractablePawnBase::InteractHoldCanceled_Implementation()
 {
 #pragma region Nullchecks
 	if (!InteractWidget)
@@ -164,7 +163,7 @@ void AERInteractableActorBase::InteractHoldCanceled_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("HoldCanceled"))
 }
 
-void AERInteractableActorBase::InteractHoldCompleted_Implementation()
+void AERInteractablePawnBase::InteractHoldCompleted_Implementation()
 {
 #pragma region Nullchecks
 	if (!InteractWidget)
@@ -179,17 +178,17 @@ void AERInteractableActorBase::InteractHoldCompleted_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("HoldCompleted"))
 }
 
-bool AERInteractableActorBase::DoesUseCustomInteractArea_Implementation()
+bool AERInteractablePawnBase::DoesUseCustomInteractArea_Implementation()
 {
 	return bUseCustomInteractArea;
 }
 
-bool AERInteractableActorBase::CanInteract_Implementation()
+bool AERInteractablePawnBase::CanInteract_Implementation()
 {
 	return bCanInteract;
 }
 
-EERInteractType AERInteractableActorBase::GetInteractType_Implementation()
+EERInteractType AERInteractablePawnBase::GetInteractType_Implementation()
 {
 	return InteractType;
 }

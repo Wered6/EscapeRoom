@@ -26,7 +26,7 @@ protected:
 	virtual void ButtonPressed() override;
 
 private:
-	void ExitAndDisableInteraction() const;
+	void ExitAndDisableInteraction();
 
 	UPROPERTY(EditInstanceOnly, Category="ER|KeypadHangman")
 	TObjectPtr<AERTV> TV;

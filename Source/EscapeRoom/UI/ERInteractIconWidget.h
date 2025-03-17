@@ -22,12 +22,20 @@ public:
 
 	void Init(const EERInteractCategory NewInteractCategory,
 	          const EERInteractType NewInteractType,
-	          const float NewRoundProgressbarPercent,
-	          const FVector2D NewRoundProgressbarSize,
-	          const FVector2D NewIconSize);
+	          const float NewMinimalIconOpacity,
+	          const float NewInitialIconOpacity,
+	          const FVector2D NewIconSize,
+	          const float NewMinimalProgressCircleOpacity,
+	          const float NewInitialProgressCircleOpacity,
+	          const FVector2D NewProgressCircleSize,
+	          const float NewProgressCirclePercent);
 
-	void SetProgressbarPercent(const float Percent) const;
-	void SetSize(const FVector2D NewRoundProgressbarSize, const FVector2D NewIconSize) const;
+	void SetIconOpacity(const float Opacity) const;
+	void SetIconSize(const FVector2D Size) const;
+
+	void SetProgressCircleOpacity(const float Opacity) const;
+	void SetProgressCircleSize(const FVector2D Size) const;
+	void SetProgressCirclePercent(const float Percent) const;
 
 	FORCEINLINE void SetIsHolding(const bool bNewIsHolding)
 	{
@@ -44,17 +52,26 @@ private:
 	EERInteractType InteractType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1"), Category="ER|Interact")
-	float InitialRoundProgressbarPercent{};
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category="ER|Interact")
-	FVector2D RoundProgressbarSize{};
+	float MinimalIconOpacity{};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1"), Category="ER|Interact")
+	float InitialIconOpacity{0.3f};
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category="ER|Interact")
 	FVector2D IconSize{};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	float MinimalProgressCircleOpacity{};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	float InitialProgressCircleOpacity{};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	FVector2D ProgressCircleSize{};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	float InitialProgressCirclePercent{};
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	bool bIsHolding{};
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess=true), Category="ER|Interact")
-	TObjectPtr<UERRoundProgressbar> RoundProgressbar;
+	TObjectPtr<UERRoundProgressbar> ProgressCircle;
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess=true), Category="ER|Interact")
 	TObjectPtr<UWidgetSwitcher> IconSwitcher;
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess=true), Category="ER|Interact")

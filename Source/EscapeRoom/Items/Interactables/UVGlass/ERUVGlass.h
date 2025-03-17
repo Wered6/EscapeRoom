@@ -6,8 +6,6 @@
 #include "EscapeRoom/InteractionSystem/ERInteractableActorBase.h"
 #include "ERUVGlass.generated.h"
 
-class UERInteractableComponent;
-
 USTRUCT(BlueprintType)
 struct FUVGlassData
 {

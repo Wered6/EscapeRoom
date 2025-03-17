@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
-#include "GameFramework/Actor.h"
-#include "ERInteractableActorBase.generated.h"
+#include "GameFramework/Pawn.h"
+#include "ERInteractablePawnBase.generated.h"
 
 class UERInteractIconWidget;
 
 UCLASS()
-class ESCAPEROOM_API AERInteractableActorBase : public AActor, public IERInteractInterface
+class ESCAPEROOM_API AERInteractablePawnBase : public APawn, public IERInteractInterface
 {
 	GENERATED_BODY()
 
 public:
-	AERInteractableActorBase();
+	AERInteractablePawnBase();
 
 	virtual void BeginPlay() override;
 
@@ -77,7 +77,7 @@ private:
 	/**
 	 * Represents the specific interaction UI widget instance for the interactable actor.
 	 */
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	TObjectPtr<UERInteractIconWidget> InteractWidget;
 	/**
      * Widget component used to display interaction UI elements for the interactable actor.
@@ -86,44 +86,24 @@ private:
 	TObjectPtr<UWidgetComponent> InteractWidgetComp;
 
 	/**
-	 * Defines the initial opacity level for the interaction icon, lerped between MinimalIconOpacity and 1.f.
+	 * Specifies the initial percentage value for the round progress bar in the interaction UI.
+	 * Used to initialize the visual representation of interaction progress.
 	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1"), Category="ER|Interact")
-	float InitialIconOpacity{};
-	/**
-	 * Defines the dimensions (width and height) of the interaction icon.
-	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	FVector2D IconSize{50.f, 50.f};
+	UPROPERTY(EditAnywhere, meta=(ClampMin="0", ClampMax="1", UIMin="0", UIMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	float InitialRoundProgressbarPercent{};
 
 	/**
-	 * Defines the minimum transparency level for the interaction icon.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float MinimalIconOpacity{};
-	/**
-	 * Defines the minimum opacity for the progress circle.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float MinimalProgressCircleOpacity{};
-	/**
-	 * Defines the initial opacity level for the progress circle, lerped between MinimalProgressCircleOpacity and 1.f.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCircleOpacity{};
-	/**
-	 * Defines the dimensions (width and height) of the interaction progress circle.
+	 * Defines the size of the round progress bar in the interaction widget.
 	 */
 	UPROPERTY(EditAnywhere, meta=(EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	FVector2D ProgressCircleSize{100.f, 100.f};
+	FVector2D RoundProgressbarSize{100.f, 100.f};
 	/**
-	 * Defines the initial progress percentage (0 to 1) of the interaction progress circle.
+	 * Defines the size of the icon displayed in the interaction widget.
 	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCirclePercent{};
-
+	UPROPERTY(EditAnywhere, meta=(EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	FVector2D IconSize{50.f, 50.f};
 	/**
-	 * Specifies the required duration, in seconds, for a successful hold interaction.
+	 * Defines the time threshold (in seconds) required for a "Hold" interaction to be triggered.
 	 */
 	UPROPERTY(EditAnywhere, meta=(UIMin="0", ClampMin="0", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	float HoldTimeThreshold{};
@@ -134,8 +114,8 @@ private:
 	UPROPERTY(EditAnywhere, Category="ER|Interact")
 	bool bCanInteract{};
 	/**
-	 * Determines whether a custom interaction area is used for this actor.
-	 * If true, create collision with profile preset "InteractArea"
+	 * Determines whether this actor uses a custom-defined interaction area or itself.
+	 * If true add collision with collision preset "InteractArea".
 	 */
 	UPROPERTY(EditAnywhere, Category="ER|Interact")
 	bool bUseCustomInteractArea{};

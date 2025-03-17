@@ -3,10 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
+#include "EscapeRoom/InteractionSystem/ERInteractablePawnBase.h"
 #include "ERKeypadBase.generated.h"
 
-class UERInteractableComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
@@ -79,7 +78,7 @@ DECLARE_DELEGATE(FOnFinishProcessing)
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnKeypadButtonPressed, EKeypadButtonName, uint8)
 
 UCLASS()
-class ESCAPEROOM_API AERKeypadBase : public APawn, public IERInteractInterface
+class ESCAPEROOM_API AERKeypadBase : public AERInteractablePawnBase
 {
 	GENERATED_BODY()
 
@@ -121,9 +120,6 @@ protected:
 
 	FOnKeypadButtonPressed OnKeypadButtonPressed;
 	FOnFinishProcessing OnFinishProcessing;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UERInteractableComponent> InteractableComponent;
 
 private:
 	void PopulateButton2DArray();

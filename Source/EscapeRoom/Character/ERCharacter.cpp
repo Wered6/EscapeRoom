@@ -10,6 +10,7 @@
 #include "EscapeRoom/Components/ERInteractComponent.h"
 #include "EscapeRoom/HUD/ERHUD.h"
 #include "EscapeRoom/Items/Interactables/Flashlight/ERFlashlight.h"
+#include "EscapeRoom/Items/Interactables/UVGlass/ERUVGlass.h"
 #include "EscapeRoom/PlayerController/ERPlayerController.h"
 
 AERCharacter::AERCharacter()

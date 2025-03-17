@@ -29,6 +29,19 @@ void UERRoundProgressbar::NativePreConstruct()
 	SetImageSize(ImageSize);
 }
 
+void UERRoundProgressbar::SetPercent(const float InPercent) const
+{
+#pragma region Nullchecks
+	if (!RoundProgressBarMatDyn)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|RoundProgressBarMatInst is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	RoundProgressBarMatDyn->SetScalarParameterValue(FName("Percent"), InPercent);
+}
+
 float UERRoundProgressbar::GetPercent() const
 {
 #pragma region Nullchecks
@@ -45,17 +58,33 @@ float UERRoundProgressbar::GetPercent() const
 	return OutPercent;
 }
 
-void UERRoundProgressbar::SetPercent(const float InPercent) const
+void UERRoundProgressbar::SetOpacity(const float InOpacity) const
 {
 #pragma region Nullchecks
 	if (!RoundProgressBarMatDyn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|RoundProgressBarMatInst is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|RoundProgressBarMatDyn is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	RoundProgressBarMatDyn->SetScalarParameterValue(FName("Percent"), InPercent);
+	RoundProgressBarMatDyn->SetScalarParameterValue(FName("Opacity"), InOpacity);
+}
+
+float UERRoundProgressbar::GetOpacity() const
+{
+#pragma region Nullchecks
+	if (!RoundProgressBarMatDyn)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|RoundProgressBarMatDyn is nullptr"), *FString(__FUNCTION__))
+		return 0.f;
+	}
+#pragma endregion
+
+	float OutOpacity;
+	RoundProgressBarMatDyn->GetScalarParameterValue(FName("Opacity"), OutOpacity);
+
+	return OutOpacity;
 }
 
 void UERRoundProgressbar::SetImageSize(const FVector2D InImageSize) const

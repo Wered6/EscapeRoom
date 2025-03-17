@@ -8,7 +8,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/RectLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
-#include "EscapeRoom/Components/ERInteractableComponent.h"
 #include "EscapeRoom/Components/ERInteractComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -103,9 +102,6 @@ AERKeypadBase::AERKeypadBase()
 	HelpLight->SetSourceWidth(8.f);
 	HelpLight->SetSourceHeight(4.f);
 	HelpLight->SetBarnDoorLength(1.f);
-
-	InteractableComponent = CreateDefaultSubobject<UERInteractableComponent>(TEXT("InteractableComponent"));
-	InteractableComponent->SetupAttachment(BodyMesh);
 }
 
 void AERKeypadBase::BeginPlay()
@@ -126,7 +122,7 @@ void AERKeypadBase::InteractPressTriggered_Implementation()
 void AERKeypadBase::EnterKeypadMode()
 {
 	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
-	AERCharacter* Character{Cast<AERCharacter>(InteractableComponent->GetInteractInstigator())};
+	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
 
 #pragma region Nullchecks
 	if (!KeypadMappingContext)
@@ -169,7 +165,7 @@ void AERKeypadBase::EnterKeypadMode()
 void AERKeypadBase::ExitKeypadMode() const
 {
 	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
-	AERCharacter* Character{Cast<AERCharacter>(InteractableComponent->GetInteractInstigator())};
+	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
 
 #pragma region Nullchecks
 	if (!KeypadMappingContext)
@@ -203,7 +199,7 @@ void AERKeypadBase::ExitKeypadMode() const
 
 	Character->GetInteractComponent()->SetCanCheckInteraction(true);
 	Character->SetIndicatorVisibility(true);
-	PlayerController->Possess(Cast<APawn>(InteractableComponent->GetInteractInstigator()));
+	PlayerController->Possess(Cast<APawn>(InteractInstigator));
 
 	SelectedButton.Mesh->SetRenderCustomDepth(false);
 	SelectedButton.Mesh->SetCustomDepthStencilValue(0);

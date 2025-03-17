@@ -17,9 +17,15 @@ public:
 	virtual void NativePreConstruct() override;
 
 	UFUNCTION(BlueprintCallable, Category="ER")
-	float GetPercent() const;
-	UFUNCTION(BlueprintCallable, Category="ER")
 	void SetPercent(const float InPercent) const;
+	UFUNCTION(BlueprintCallable, Category="ER")
+	float GetPercent() const;
+
+	UFUNCTION(BlueprintCallable, Category="ER")
+	void SetOpacity(const float InOpacity) const;
+	UFUNCTION(BlueprintCallable, Category="ER")
+	float GetOpacity() const;
+
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void SetImageSize(const FVector2D InImageSize) const;
 	UFUNCTION(BlueprintCallable, Category="ER")
@@ -28,6 +34,8 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category="ER")
 	float Percent{0.5f};
+	UPROPERTY(EditAnywhere, Category="ER")
+	float Opacity{1.f};
 	UPROPERTY(EditAnywhere, Category="ER")
 	FVector2D ImageSize{32.f, 32.f};
 	UPROPERTY(EditAnywhere, Category="ER")
