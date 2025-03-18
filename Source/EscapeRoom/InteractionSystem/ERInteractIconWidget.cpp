@@ -1,8 +1,9 @@
 #include "ERInteractIconWidget.h"
-#include "ERRoundProgressbar.h"
+
+#include "ERInteractInterface.h"
 #include "Components/Image.h"
 #include "Components/WidgetSwitcher.h"
-#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
+#include "EscapeRoom/UI/ERRoundProgressbar.h"
 
 
 void UERInteractIconWidget::NativePreConstruct()
@@ -83,7 +84,7 @@ void UERInteractIconWidget::Init(const EERInteractCategory NewInteractCategory,
                                  const float NewMinimalProgressCircleOpacity,
                                  const float NewInitialProgressCircleOpacity,
                                  const FVector2D NewProgressCircleSize,
-                                 const float NewProgressCirclePercent)
+                                 const float NewInitialProgressCirclePercent)
 {
 	InteractCategory = NewInteractCategory;
 	InteractType = NewInteractType;
@@ -93,7 +94,7 @@ void UERInteractIconWidget::Init(const EERInteractCategory NewInteractCategory,
 	MinimalProgressCircleOpacity = NewMinimalProgressCircleOpacity;
 	InitialProgressCircleOpacity = NewInitialProgressCircleOpacity;
 	ProgressCircleSize = NewProgressCircleSize;
-	InitialProgressCirclePercent = NewProgressCirclePercent;
+	InitialProgressCirclePercent = NewInitialProgressCirclePercent;
 }
 
 void UERInteractIconWidget::SetIconOpacity(const float Opacity) const

@@ -3,6 +3,7 @@
 
 #include "ERKey.h"
 #include "EscapeRoom/Components/ERKeyComponent.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableComponent.h"
 
 
 AERKey::AERKey()
@@ -20,7 +21,7 @@ void AERKey::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OutlineMeshComponents.Add(KeyMesh);
+	InteractableComp->AddOutlineMeshComponent(KeyMesh);
 }
 
 void AERKey::InteractHoldTriggered_Implementation()

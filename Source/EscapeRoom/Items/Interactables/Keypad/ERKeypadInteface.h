@@ -19,13 +19,10 @@ class IERKeypadInterface
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Keypad")
 	void KeypadMove(const FVector2D& MovementVector);
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Keypad")
 	void KeypadButtonPressed();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Keypad")
 	void KeypadButtonReleased();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Keypad")
 	void KeypadExit();
 };

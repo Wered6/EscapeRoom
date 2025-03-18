@@ -28,7 +28,7 @@ public:
 	          const float NewMinimalProgressCircleOpacity,
 	          const float NewInitialProgressCircleOpacity,
 	          const FVector2D NewProgressCircleSize,
-	          const float NewProgressCirclePercent);
+	          const float NewInitialProgressCirclePercent);
 
 	void SetIconOpacity(const float Opacity) const;
 	void SetIconSize(const FVector2D Size) const;

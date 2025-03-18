@@ -4,7 +4,7 @@
 #include "ERInteractComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
+#include "EscapeRoom/InteractionSystem/ERInteractInterface.h"
 #include "GameFramework/Character.h"
 
 
@@ -250,7 +250,7 @@ void UERInteractComponent::PerformInteractionCheck()
 		return;
 	}
 	// Here we know it does implement interface, so we can check if we can interact with this actor
-	if (!IERInteractInterface::Execute_CanInteract(HitActor))
+	if (!IERInteractInterface::Execute_GetCanInteract(HitActor))
 	{
 		ClearInteraction();
 		return;

@@ -2,6 +2,7 @@
 
 
 #include "ERLampSwitch.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableComponent.h"
 
 
 AERLampSwitch::AERLampSwitch()
@@ -21,5 +22,5 @@ void AERLampSwitch::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OutlineMeshComponents.Add(FrameMesh);
+	InteractableComp->AddOutlineMeshComponent(FrameMesh);
 }

@@ -3,6 +3,7 @@
 
 #include "ERDoor.h"
 #include "EscapeRoom/Components/ERLockComponent.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -29,7 +30,7 @@ void AERDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OutlineMeshComponents.Add(DoorMesh);
+	InteractableComp->AddOutlineMeshComponent(DoorMesh);
 
 	LockComponent->OnUnlock.BindUObject(this, &AERDoor::PlayUnlockSound);
 }

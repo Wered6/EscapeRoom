@@ -5,6 +5,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/SpotLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableComponent.h"
 #include "EscapeRoom/Items/Interactables/UVGlass/ERUVGlass.h"
 
 AERFlashlight::AERFlashlight()
@@ -59,7 +60,7 @@ void AERFlashlight::BeginPlay()
 
 	Super::BeginPlay();
 
-	OutlineMeshComponents.Add(FlashlightMesh);
+	InteractableComp->AddOutlineMeshComponent(FlashlightMesh);
 
 	// TODO try to set decals to full invisible
 	// TODO using metal isn't good, find something else
@@ -81,7 +82,7 @@ void AERFlashlight::InteractHoldTriggered_Implementation()
 {
 	Super::InteractHoldTriggered_Implementation();
 
-	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractableComp->GetInteractInstigator())};
 
 #pragma region Nullchecks
 	if (!Character)

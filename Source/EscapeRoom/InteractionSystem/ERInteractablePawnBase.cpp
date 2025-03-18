@@ -2,193 +2,77 @@
 
 
 #include "ERInteractablePawnBase.h"
-#include "Components/WidgetComponent.h"
-#include "EscapeRoom/UI/ERInteractIconWidget.h"
+#include "ERInteractableComponent.h"
 
 
 AERInteractablePawnBase::AERInteractablePawnBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
-}
 
-void AERInteractablePawnBase::BeginPlay()
-{
-	Super::BeginPlay();
-
-#pragma region Nullchecks
-	if (!InteractWidgetClass)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetClass is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractWidget = CreateWidget<UERInteractIconWidget>(GetWorld(), InteractWidgetClass);
-	InteractWidgetComp = NewObject<UWidgetComponent>(this, TEXT("InteractWidgetComp"));
-
-#pragma region Nullchecks
-	if (!InteractWidget)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!InteractWidgetComp)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetComp is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	// InteractWidget->Init(InteractCategory, InteractType, InitialRoundProgressbarPercent, RoundProgressbarSize, IconSize);
-	InteractWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
-	InteractWidgetComp->SetDrawAtDesiredSize(true);
-	InteractWidgetComp->SetVisibility(false);
-	InteractWidgetComp->SetWidget(InteractWidget);
-	InteractWidgetComp->RegisterComponent();
-
-	USceneComponent* WidgetAttachComp{Execute_GetWidgetAttachmentComponent(this)};
-	if (!WidgetAttachComp)
-	{
-		WidgetAttachComp = GetRootComponent();
-	}
-	InteractWidgetComp->AttachToComponent(WidgetAttachComp, FAttachmentTransformRules::KeepRelativeTransform);
-}
-
-void AERInteractablePawnBase::SetCanInteract(const bool bNewCanInteract)
-{
-	bCanInteract = bNewCanInteract;
-}
-
-void AERInteractablePawnBase::SetShowInteractWidget(const bool bShow) const
-{
-#pragma region Nullchecks
-	if (!InteractWidgetComp)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetComp is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractWidgetComp->SetVisibility(bShow);
+	InteractableComp = CreateDefaultSubobject<UERInteractableComponent>(TEXT("InteractableComp"));
 }
 
 void AERInteractablePawnBase::DisplayInteractionUI_Implementation(const bool bShowInteract)
 {
-#pragma region Nullchecks
-	if (!InteractWidgetComp)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetComp is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractWidgetComp->SetVisibility(bShowInteract);
-
-	for (UMeshComponent* OutlineMeshComponent : OutlineMeshComponents)
-	{
-		if (OutlineMeshComponent)
-		{
-			OutlineMeshComponent->SetRenderCustomDepth(bShowInteract);
-			OutlineMeshComponent->SetCustomDepthStencilValue(bShowInteract ? 1 : 0);
-		}
-	}
+	InteractableComp->DisplayInteractionUI(bShowInteract);
 }
 
 void AERInteractablePawnBase::InteractPressStarted_Implementation(AActor* OtherInstigator)
 {
-	InteractInstigator = OtherInstigator;
-	UE_LOG(LogTemp, Warning, TEXT("PressStarted"))
+	InteractableComp->InteractPressStarted(OtherInstigator);
 }
 
 void AERInteractablePawnBase::InteractPressTriggered_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("PressTriggered"))
+	InteractableComp->InteractPressTriggered();
 }
 
 void AERInteractablePawnBase::InteractPressCompleted_Implementation()
 {
-	InteractInstigator = nullptr;
-	UE_LOG(LogTemp, Warning, TEXT("PressCompleted"))
+	InteractableComp->InteractPressCompleted();
 }
 
 void AERInteractablePawnBase::InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold)
 {
-#pragma region Nullchecks
-	if (!InteractWidget)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractInstigator = OtherInstigator;
-	OutHoldTimeThreshold = HoldTimeThreshold;
-	InteractWidget->SetIsHolding(true);
-	UE_LOG(LogTemp, Warning, TEXT("HoldStarted"))
+	InteractableComp->InteractHoldStarted(OtherInstigator, OutHoldTimeThreshold);
 }
 
 void AERInteractablePawnBase::InteractHoldOngoing_Implementation(const float ElapsedSeconds)
 {
-#pragma region Nullchecks
-	if (!InteractWidget)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	const float CurrentRoundProgressbarPercent{FMath::Clamp(ElapsedSeconds / HoldTimeThreshold, 0.f, 1.f)};
-	InteractWidget->SetProgressCircleOpacity(CurrentRoundProgressbarPercent);
-	InteractWidget->SetProgressCirclePercent(CurrentRoundProgressbarPercent);
-	UE_LOG(LogTemp, Warning, TEXT("HoldOngoing"))
+	InteractableComp->InteractHoldOngoing(ElapsedSeconds);
 }
 
 void AERInteractablePawnBase::InteractHoldTriggered_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("HoldTriggered"))
+	InteractableComp->InteractHoldTriggered();
 }
 
 void AERInteractablePawnBase::InteractHoldCanceled_Implementation()
 {
-#pragma region Nullchecks
-	if (!InteractWidget)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractInstigator = nullptr;
-	InteractWidget->SetIsHolding(false);
-	UE_LOG(LogTemp, Warning, TEXT("HoldCanceled"))
+	InteractableComp->InteractHoldCanceled();
 }
 
 void AERInteractablePawnBase::InteractHoldCompleted_Implementation()
 {
-#pragma region Nullchecks
-	if (!InteractWidget)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractInstigator = nullptr;
-	InteractWidget->SetIsHolding(false);
-	UE_LOG(LogTemp, Warning, TEXT("HoldCompleted"))
+	InteractableComp->InteractHoldCompleted();
 }
 
 bool AERInteractablePawnBase::DoesUseCustomInteractArea_Implementation()
 {
-	return bUseCustomInteractArea;
+	return InteractableComp->DoesUseCustomInteractArea();
 }
 
-bool AERInteractablePawnBase::CanInteract_Implementation()
+void AERInteractablePawnBase::SetCanInteract_Implementation(const bool bNewCanInteract)
 {
-	return bCanInteract;
+	InteractableComp->SetCanInteract(bNewCanInteract);
+}
+
+bool AERInteractablePawnBase::GetCanInteract_Implementation()
+{
+	return InteractableComp->GetCanInteract();
 }
 
 EERInteractType AERInteractablePawnBase::GetInteractType_Implementation()
 {
-	return InteractType;
+	return InteractableComp->GetInteractType();
 }

@@ -3,6 +3,7 @@
 
 #include "ERUVGlass.h"
 #include "EscapeRoom/Character/ERCharacter.h"
+#include "EscapeRoom/InteractionSystem/ERInteractableComponent.h"
 
 
 AERUVGlass::AERUVGlass()
@@ -18,7 +19,7 @@ void AERUVGlass::InteractHoldTriggered_Implementation()
 {
 	Super::InteractHoldTriggered_Implementation();
 
-	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
+	AERCharacter* Character{Cast<AERCharacter>(InteractableComp->GetInteractInstigator())};
 
 #pragma region Nullchecks
 	if (!Character)

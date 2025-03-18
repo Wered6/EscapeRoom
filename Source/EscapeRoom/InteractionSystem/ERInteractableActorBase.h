@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EscapeRoom/Items/Interactables/ERInteractInterface.h"
+#include "ERInteractInterface.h"
 #include "GameFramework/Actor.h"
 #include "ERInteractableActorBase.generated.h"
 
-class UERInteractIconWidget;
+class UERInteractableComponent;
 
 UCLASS()
 class ESCAPEROOM_API AERInteractableActorBase : public AActor, public IERInteractInterface
@@ -16,20 +16,6 @@ class ESCAPEROOM_API AERInteractableActorBase : public AActor, public IERInterac
 
 public:
 	AERInteractableActorBase();
-
-	virtual void BeginPlay() override;
-
-	/**
-	 * Sets the interaction state for this actor.
-	 * @param bNewCanInteract Determines whether interaction is enabled (true) or disabled (false).
-	 */
-	UFUNCTION(BlueprintCallable, Category="ER|Interact")
-	void SetCanInteract(const bool bNewCanInteract);
-	/**
-	 * Toggles the visibility of the interaction widget for this actor.
-	 * @param bShow Determines whether the interaction widget should be visible (true) or hidden (false).
-	 */
-	void SetShowInteractWidget(const bool bShow) const;
 
 	virtual void DisplayInteractionUI_Implementation(const bool bShowInteract) override;
 	virtual void InteractPressStarted_Implementation(AActor* OtherInstigator) override;
@@ -41,102 +27,10 @@ public:
 	virtual void InteractHoldCanceled_Implementation() override;
 	virtual void InteractHoldCompleted_Implementation() override;
 	virtual bool DoesUseCustomInteractArea_Implementation() override;
-	virtual bool CanInteract_Implementation() override;
+	virtual void SetCanInteract_Implementation(const bool bNewCanInteract) override;
+	virtual bool GetCanInteract_Implementation() override;
 	virtual EERInteractType GetInteractType_Implementation() override;
 
-protected:
-	/**
-	 * Represents the actor responsible for initiating interaction with this interactable object.
-	 */
-	UPROPERTY(VisibleInstanceOnly, Category="ER|Interact")
-	TObjectPtr<AActor> InteractInstigator;
-
-	/**
-	 * Specifies the category of interaction (e.g., Use, Collect, Open, Unlock) for the interactable actor.
-	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	EERInteractCategory InteractCategory{};
-	/**
-	 * Defines the type of interaction (e.g., Press or Hold) for the interactable actor.
-	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	EERInteractType InteractType{};
-
-	/**
-	 * Stores a collection of mesh components used for rendering outlines or visual effects on the interactable actor.
-	 */
-	UPROPERTY(BlueprintReadWrite, Category="ER|Interact")
-	TArray<TObjectPtr<UMeshComponent>> OutlineMeshComponents;
-
-private:
-	/**
-	 * Specifies the widget class used to define the interaction UI for the interactable actor.
-	 */
-	UPROPERTY(EditDefaultsOnly, meta=(DisplayPriority=0), Category="ER|Interact")
-	TSubclassOf<UERInteractIconWidget> InteractWidgetClass;
-	/**
-	 * Represents the specific interaction UI widget instance for the interactable actor.
-	 */
-	UPROPERTY()
-	TObjectPtr<UERInteractIconWidget> InteractWidget;
-	/**
-     * Widget component used to display interaction UI elements for the interactable actor.
-     */
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UWidgetComponent> InteractWidgetComp;
-
-	/**
-	 * Defines the initial opacity level for the interaction icon, lerped between MinimalIconOpacity and 1.f.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1"), Category="ER|Interact")
-	float InitialIconOpacity{};
-	/**
-	 * Defines the dimensions (width and height) of the interaction icon.
-	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	FVector2D IconSize{50.f, 50.f};
-
-	/**
-	 * Defines the minimum transparency level for the interaction icon.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float MinimalIconOpacity{};
-	/**
-	 * Defines the minimum opacity for the progress circle.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float MinimalProgressCircleOpacity{};
-	/**
-	 * Defines the initial opacity level for the progress circle, lerped between MinimalProgressCircleOpacity and 1.f.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCircleOpacity{};
-	/**
-	 * Defines the dimensions (width and height) of the interaction progress circle.
-	 */
-	UPROPERTY(EditAnywhere, meta=(EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	FVector2D ProgressCircleSize{100.f, 100.f};
-	/**
-	 * Defines the initial progress percentage (0 to 1) of the interaction progress circle.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCirclePercent{};
-
-	/**
-	 * Specifies the required duration, in seconds, for a successful hold interaction.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", ClampMin="0", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float HoldTimeThreshold{};
-
-	/**
-	 * Indicates whether this actor can currently be interacted with.
-	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	bool bCanInteract{};
-	/**
-	 * Determines whether a custom interaction area is used for this actor.
-	 * If true, create collision with profile preset "InteractArea"
-	 */
-	UPROPERTY(EditAnywhere, Category="ER|Interact")
-	bool bUseCustomInteractArea{};
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ER|Interact")
+	TObjectPtr<UERInteractableComponent> InteractableComp;
 };

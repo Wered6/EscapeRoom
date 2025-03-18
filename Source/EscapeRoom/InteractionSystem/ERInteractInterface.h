@@ -64,7 +64,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	bool DoesUseCustomInteractArea();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
-	bool CanInteract();
+	void SetCanInteract(const bool bCanInteract);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	bool GetCanInteract();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	USceneComponent* GetWidgetAttachmentComponent();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")

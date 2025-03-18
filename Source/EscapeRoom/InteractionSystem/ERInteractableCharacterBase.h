@@ -4,19 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "ERInteractInterface.h"
-#include "GameFramework/Pawn.h"
-#include "ERInteractablePawnBase.generated.h"
+#include "GameFramework/Character.h"
+#include "ERInteractableCharacterBase.generated.h"
 
 class UERInteractableComponent;
-class UERInteractIconWidget;
 
 UCLASS()
-class ESCAPEROOM_API AERInteractablePawnBase : public APawn, public IERInteractInterface
+class ESCAPEROOM_API AERInteractableCharacterBase : public ACharacter, public IERInteractInterface
 {
 	GENERATED_BODY()
 
 public:
-	AERInteractablePawnBase();
+	AERInteractableCharacterBase();
 
 	virtual void DisplayInteractionUI_Implementation(const bool bShowInteract) override;
 	virtual void InteractPressStarted_Implementation(AActor* OtherInstigator) override;
