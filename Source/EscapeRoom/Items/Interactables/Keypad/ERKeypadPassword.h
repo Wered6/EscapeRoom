@@ -37,7 +37,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Password")
 	FString UserPassword;
 
-	UPROPERTY(VisibleAnywhere, Category="ER|Key")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UERKeyComponent> KeyComponent;
 
 	// TODO try to combine meshes and textures to lower the size

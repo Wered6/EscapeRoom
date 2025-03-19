@@ -1,5 +1,4 @@
 #include "ERInteractIconWidget.h"
-
 #include "ERInteractInterface.h"
 #include "Components/Image.h"
 #include "Components/WidgetSwitcher.h"
@@ -63,16 +62,17 @@ void UERInteractIconWidget::NativePreConstruct()
 	{
 	case EERInteractType::Press:
 		ProgressCircle->SetVisibility(ESlateVisibility::Collapsed);
+		IconSwitcher->SetRenderOpacity(1.f);
 		break;
 	case EERInteractType::Hold:
 		ProgressCircle->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		SetIconOpacity(InitialIconOpacity);
 		SetProgressCircleOpacity(InitialProgressCircleOpacity);
 		SetProgressCircleSize(ProgressCircleSize);
 		SetProgressCirclePercent(InitialProgressCirclePercent);
 		break;
 	}
 
-	SetIconOpacity(InitialIconOpacity);
 	SetIconSize(IconSize);
 }
 

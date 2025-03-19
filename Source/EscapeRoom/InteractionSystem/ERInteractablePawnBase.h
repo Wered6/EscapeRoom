@@ -8,7 +8,6 @@
 #include "ERInteractablePawnBase.generated.h"
 
 class UERInteractableComponent;
-class UERInteractIconWidget;
 
 UCLASS()
 class ESCAPEROOM_API AERInteractablePawnBase : public APawn, public IERInteractInterface
@@ -19,19 +18,22 @@ public:
 	AERInteractablePawnBase();
 
 	virtual void DisplayInteractionUI_Implementation(const bool bShowInteract) override;
+
 	virtual void InteractPressStarted_Implementation(AActor* OtherInstigator) override;
 	virtual void InteractPressTriggered_Implementation() override;
 	virtual void InteractPressCompleted_Implementation() override;
+
 	virtual void InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold) override;
 	virtual void InteractHoldOngoing_Implementation(const float ElapsedSeconds) override;
 	virtual void InteractHoldTriggered_Implementation() override;
 	virtual void InteractHoldCanceled_Implementation() override;
 	virtual void InteractHoldCompleted_Implementation() override;
+
 	virtual bool DoesUseCustomInteractArea_Implementation() override;
 	virtual void SetCanInteract_Implementation(const bool bNewCanInteract) override;
 	virtual bool GetCanInteract_Implementation() override;
 	virtual EERInteractType GetInteractType_Implementation() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ER|Interact")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UERInteractableComponent> InteractableComp;
 };

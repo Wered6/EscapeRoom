@@ -6,6 +6,7 @@
 #include "EscapeRoom/InteractionSystem/ERInteractablePawnBase.h"
 #include "ERKeypadBase.generated.h"
 
+class UBoxComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
@@ -88,12 +89,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	virtual void InteractPressTriggered_Implementation() override;
-
 protected:
 	void EnterKeypadMode();
-	void ExitKeypadMode() const;
+	void ExitKeypadMode();
 
 	void LedFlash(const ELedColor LedColor, float FlashTime);
 
@@ -157,6 +155,21 @@ private:
 	TObjectPtr<URectLightComponent> HelpLight;
 
 	// TODO convert all logic beside keypad sending which key was pressed to anything that uses keypad
+
+#pragma region Interact
+
+public:
+	virtual void InteractPressStarted_Implementation(AActor* OtherInstigator) override;
+	virtual void InteractPressTriggered_Implementation() override;
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UBoxComponent> InteractArea;
+
+	UPROPERTY()
+	TObjectPtr<AActor> InteractInstigator;
+
+#pragma endregion
 
 #pragma region Camera
 

@@ -2,9 +2,14 @@
 
 
 #include "ERInteractableComponent.h"
+#include "ERInteractableActorBase.h"
+#include "ERInteractableCharacterBase.h"
+#include "ERInteractablePawnBase.h"
 #include "ERInteractIconWidget.h"
 #include "ERInteractInterface.h"
 #include "Components/WidgetComponent.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogInteractableComponent, Log, All);
 
 
 UERInteractableComponent::UERInteractableComponent()
@@ -16,51 +21,8 @@ void UERInteractableComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-#pragma region Nullchecks
-	if (!InteractWidgetClass)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetClass is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractWidget = CreateWidget<UERInteractIconWidget>(GetWorld(), InteractWidgetClass);
-	InteractWidgetComp = NewObject<UWidgetComponent>(this, TEXT("InteractWidgetComp"));
-
-#pragma region Nullchecks
-	if (!InteractWidget)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-	if (!InteractWidgetComp)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetComp is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	InteractWidget->Init(InteractCategory,
-	                     InteractType,
-	                     MinimalIconOpacity,
-	                     InitialIconOpacity,
-	                     IconSize,
-	                     MinimalProgressCircleOpacity,
-	                     InitialProgressCircleOpacity,
-	                     ProgressCircleSize,
-	                     InitialProgressCirclePercent);
-	InteractWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
-	InteractWidgetComp->SetDrawAtDesiredSize(true);
-	InteractWidgetComp->SetVisibility(false);
-	InteractWidgetComp->SetWidget(InteractWidget);
-	InteractWidgetComp->RegisterComponent();
-
-	USceneComponent* WidgetAttachComp{IERInteractInterface::Execute_GetWidgetAttachmentComponent(GetOwner())};
-	if (!WidgetAttachComp)
-	{
-		WidgetAttachComp = GetOwner()->GetRootComponent();
-	}
-	InteractWidgetComp->AttachToComponent(WidgetAttachComp, FAttachmentTransformRules::KeepRelativeTransform);
+	InitializeInteractWidget();
+	UpdateWidgetAttachment();
 }
 
 void UERInteractableComponent::AddOutlineMeshComponent(UMeshComponent* MeshComponent)
@@ -198,4 +160,75 @@ bool UERInteractableComponent::GetCanInteract() const
 EERInteractType UERInteractableComponent::GetInteractType() const
 {
 	return InteractType;
+}
+
+void UERInteractableComponent::OnRegister()
+{
+	Super::OnRegister();
+
+	AActor* Owner{GetOwner()};
+	if (!Cast<AERInteractableActorBase>(Owner) && !Cast<AERInteractablePawnBase>(Owner) && !Cast<AERInteractableCharacterBase>(Owner))
+	{
+		UE_LOG(LogInteractableComponent, Error, TEXT("%s owned by %s must register a component owned by a InteractableActorBase, InteractablePawnBase or InteractableCharacterBase"), *GetName(), *GetNameSafe(GetOwner()))
+	}
+}
+
+void UERInteractableComponent::InitializeInteractWidget()
+{
+#pragma region Nullchecks
+	if (!InteractWidgetClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetClass is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	InteractWidget = CreateWidget<UERInteractIconWidget>(GetWorld(), InteractWidgetClass);
+	InteractWidgetComp = NewObject<UWidgetComponent>(this, TEXT("InteractWidgetComp"));
+
+#pragma region Nullchecks
+	if (!InteractWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+	if (!InteractWidgetComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetComp is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	InteractWidget->Init(InteractCategory,
+	                     InteractType,
+	                     MinimalIconOpacity,
+	                     InitialIconOpacity,
+	                     IconSize,
+	                     MinimalProgressCircleOpacity,
+	                     InitialProgressCircleOpacity,
+	                     ProgressCircleSize,
+	                     InitialProgressCirclePercent);
+	InteractWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	InteractWidgetComp->SetDrawAtDesiredSize(true);
+	InteractWidgetComp->SetVisibility(false);
+	InteractWidgetComp->SetWidget(InteractWidget);
+	InteractWidgetComp->RegisterComponent();
+}
+
+void UERInteractableComponent::UpdateWidgetAttachment() const
+{
+#pragma region Nullchecks
+	if (!InteractWidgetComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidgetComp is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	USceneComponent* WidgetAttachComp{IERInteractInterface::Execute_GetWidgetAttachmentComponent(GetOwner())};
+	if (!WidgetAttachComp)
+	{
+		WidgetAttachComp = GetOwner()->GetRootComponent();
+	}
+	InteractWidgetComp->AttachToComponent(WidgetAttachComp, FAttachmentTransformRules::KeepRelativeTransform);
 }

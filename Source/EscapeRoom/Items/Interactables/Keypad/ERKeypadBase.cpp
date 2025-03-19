@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/RectLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
 #include "EscapeRoom/Components/ERInteractComponent.h"
@@ -103,6 +104,14 @@ AERKeypadBase::AERKeypadBase()
 	HelpLight->SetSourceWidth(8.f);
 	HelpLight->SetSourceHeight(4.f);
 	HelpLight->SetBarnDoorLength(1.f);
+
+	InteractableComp->bCanInteract = true;
+	InteractableComp->bUseCustomInteractArea = true;
+
+	InteractArea = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractArea"));
+	InteractArea->SetCollisionProfileName("InteractArea");
+	InteractArea->SetupAttachment(BodyMesh);
+	InteractArea->SetBoxExtent(FVector(60.f, 56.f, 80.f));
 }
 
 void AERKeypadBase::BeginPlay()
@@ -113,17 +122,14 @@ void AERKeypadBase::BeginPlay()
 
 	GreenLedDynMat = GreenLedMesh->CreateDynamicMaterialInstance(0);
 	RedLedDynMat = RedLedMesh->CreateDynamicMaterialInstance(0);
-}
 
-void AERKeypadBase::InteractPressTriggered_Implementation()
-{
-	EnterKeypadMode();
+	InteractableComp->AddOutlineMeshComponent(BodyMesh);
 }
 
 void AERKeypadBase::EnterKeypadMode()
 {
 	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
-	AERCharacter* Character{Cast<AERCharacter>(InteractableComp->GetInteractInstigator())};
+	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
 
 #pragma region Nullchecks
 	if (!KeypadMappingContext)
@@ -163,10 +169,10 @@ void AERKeypadBase::EnterKeypadMode()
 	UpdateSelectedButton();
 }
 
-void AERKeypadBase::ExitKeypadMode() const
+void AERKeypadBase::ExitKeypadMode()
 {
 	APlayerController* PlayerController{UGameplayStatics::GetPlayerController(this, 0)};
-	AERCharacter* Character{Cast<AERCharacter>(InteractableComp->GetInteractInstigator())};
+	AERCharacter* Character{Cast<AERCharacter>(InteractInstigator)};
 
 #pragma region Nullchecks
 	if (!KeypadMappingContext)
@@ -200,10 +206,12 @@ void AERKeypadBase::ExitKeypadMode() const
 
 	Character->GetInteractComponent()->SetCanCheckInteraction(true);
 	Character->SetIndicatorVisibility(true);
-	PlayerController->Possess(Cast<APawn>(InteractableComp->GetInteractInstigator()));
+	PlayerController->Possess(Cast<APawn>(InteractInstigator));
 
 	SelectedButton.Mesh->SetRenderCustomDepth(false);
 	SelectedButton.Mesh->SetCustomDepthStencilValue(0);
+
+	InteractInstigator = nullptr;
 }
 
 void AERKeypadBase::LedFlash(const ELedColor LedColor, float FlashTime)
@@ -345,6 +353,18 @@ void AERKeypadBase::LedBlinking()
 			OnFinishProcessing.Execute();
 		}
 	}
+}
+
+void AERKeypadBase::InteractPressStarted_Implementation(AActor* OtherInstigator)
+{
+	Super::InteractPressStarted_Implementation(OtherInstigator);
+
+	InteractInstigator = OtherInstigator;
+}
+
+void AERKeypadBase::InteractPressTriggered_Implementation()
+{
+	EnterKeypadMode();
 }
 
 void AERKeypadBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

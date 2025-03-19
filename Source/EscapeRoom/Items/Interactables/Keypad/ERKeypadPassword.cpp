@@ -47,7 +47,7 @@ void AERKeypadPassword::CheckPassword()
 		KeyComponent->UnlockLockedItems();
 		LedFlash(ELedColor::Green, LedLongFlashTime);
 		ExitKeypadMode();
-		SetCanInteract(false);
+		Execute_SetCanInteract(this, false);
 
 		if (OnCorrectPassword.IsBound())
 		{

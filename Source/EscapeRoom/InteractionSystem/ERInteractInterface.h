@@ -64,7 +64,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	bool DoesUseCustomInteractArea();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
-	void SetCanInteract(const bool bCanInteract);
+	void SetCanInteract(const bool bNewCanInteract);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	bool GetCanInteract();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
