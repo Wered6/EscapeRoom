@@ -85,11 +85,6 @@ public:
 	float InitialProgressCircleOpacity{};
 	UPROPERTY(EditAnywhere, meta=(EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	FVector2D ProgressCircleSize{100.f, 100.f};
-	/**
-	 * Initial fill percentage (0 to 1) of the interaction progress circle.
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCirclePercent{};
 
 	/**
 	 * Required time duration (in seconds) to trigger and complete a hold interaction (it's one shot hold trigger).

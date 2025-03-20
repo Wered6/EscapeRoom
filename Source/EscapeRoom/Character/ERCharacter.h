@@ -123,7 +123,7 @@ public:
 	}
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UERInteractComponent> InteractComponent;
 
 #pragma endregion

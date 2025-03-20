@@ -17,7 +17,6 @@ void UERInteractComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// TODO consider do it in PostLoad
 	CharacterOwner = Cast<ACharacter>(GetOwner());
 
 #pragma region Nullchecks
@@ -70,6 +69,7 @@ void UERInteractComponent::BeginPlay()
 #pragma endregion
 
 	Subsystem->AddMappingContext(InteractMappingContext, 0);
+
 	EnhancedInputComponent->BindAction(InteractPressAction, ETriggerEvent::Started, this, &UERInteractComponent::InteractPressStarted);
 	EnhancedInputComponent->BindAction(InteractPressAction, ETriggerEvent::Triggered, this, &UERInteractComponent::InteractPressTriggered);
 	EnhancedInputComponent->BindAction(InteractPressAction, ETriggerEvent::Completed, this, &UERInteractComponent::InteractPressCompleted);
@@ -88,7 +88,6 @@ void UERInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	PerformInteractionCheck();
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractPressStarted()
 {
 #pragma region Nullchecks
@@ -105,7 +104,6 @@ void UERInteractComponent::InteractPressStarted()
 	}
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractPressTriggered()
 {
 	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Press)
@@ -114,7 +112,6 @@ void UERInteractComponent::InteractPressTriggered()
 	}
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractPressCompleted()
 {
 	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Press)
@@ -123,7 +120,6 @@ void UERInteractComponent::InteractPressCompleted()
 	}
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldStarted(const FInputActionInstance& Instance)
 {
 #pragma region Nullchecks
@@ -139,7 +135,7 @@ void UERInteractComponent::InteractHoldStarted(const FInputActionInstance& Insta
 		return;
 	}
 
-	float OutHoldTimeThreshold{};
+	float OutHoldTimeThreshold;
 	IERInteractInterface::Execute_InteractHoldStarted(InteractableActor, CharacterOwner, OutHoldTimeThreshold);
 
 	for (UInputTrigger* Trigger : Instance.GetTriggers())
@@ -152,7 +148,6 @@ void UERInteractComponent::InteractHoldStarted(const FInputActionInstance& Insta
 	}
 }
 
-// ReSharper disable o4nce CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldOngoing(const FInputActionInstance& Instance)
 {
 	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Hold)
@@ -161,7 +156,6 @@ void UERInteractComponent::InteractHoldOngoing(const FInputActionInstance& Insta
 	}
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldCanceled()
 {
 	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Hold)
@@ -170,7 +164,6 @@ void UERInteractComponent::InteractHoldCanceled()
 	}
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void UERInteractComponent::InteractHoldTriggered()
 {
 	if (InteractableActor && InteractableActor->Implements<UERInteractInterface>() && IERInteractInterface::Execute_GetInteractType(InteractableActor) == EERInteractType::Hold)

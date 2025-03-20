@@ -69,7 +69,7 @@ void UERInteractIconWidget::NativePreConstruct()
 		SetIconOpacity(InitialIconOpacity);
 		SetProgressCircleOpacity(InitialProgressCircleOpacity);
 		SetProgressCircleSize(ProgressCircleSize);
-		SetProgressCirclePercent(InitialProgressCirclePercent);
+		SetProgressCirclePercent(0.f);
 		break;
 	}
 
@@ -83,8 +83,7 @@ void UERInteractIconWidget::Init(const EERInteractCategory NewInteractCategory,
                                  const FVector2D NewIconSize,
                                  const float NewMinimalProgressCircleOpacity,
                                  const float NewInitialProgressCircleOpacity,
-                                 const FVector2D NewProgressCircleSize,
-                                 const float NewInitialProgressCirclePercent)
+                                 const FVector2D NewProgressCircleSize)
 {
 	InteractCategory = NewInteractCategory;
 	InteractType = NewInteractType;
@@ -94,7 +93,6 @@ void UERInteractIconWidget::Init(const EERInteractCategory NewInteractCategory,
 	MinimalProgressCircleOpacity = NewMinimalProgressCircleOpacity;
 	InitialProgressCircleOpacity = NewInitialProgressCircleOpacity;
 	ProgressCircleSize = NewProgressCircleSize;
-	InitialProgressCirclePercent = NewInitialProgressCirclePercent;
 }
 
 void UERInteractIconWidget::SetIconOpacity(const float Opacity) const
@@ -182,6 +180,7 @@ void UERInteractIconWidget::NativeTick(const FGeometry& MyGeometry, float InDelt
 	}
 #pragma endregion
 
+	// decrease progress and opacity when not holding during 'Hold' interaction.
 	if (InteractType == EERInteractType::Hold && !bIsHolding && ProgressCircle->GetPercent() > 0.f)
 	{
 		SetProgressCircleOpacity(ProgressCircle->GetOpacity() - InDeltaTime);

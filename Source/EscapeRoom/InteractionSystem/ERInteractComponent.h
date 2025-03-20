@@ -41,35 +41,35 @@ private:
 	void SetInteraction(AActor* InteractedActor, UPrimitiveComponent* InteractedComponent);
 	void ClearInteraction();
 
+	/**
+	 * Reference to the actor currently being interacted with.
+	 */
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	TObjectPtr<AActor> InteractableActor;
 	UPROPERTY()
 	TObjectPtr<UPrimitiveComponent> InteractableHitComponent;
 
+	/**
+	 * The maximum distance at which interaction with an object can occur.
+	 */
 	UPROPERTY(EditAnywhere, Category="ER|Interact")
 	float InteractionDistance{200.f};
+	/**
+	 * Determines if interaction checks can be performed.
+	 */
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	bool bCanCheckInteraction{true};
 
-	/**
-	 * Character interact component belongs to
-	 */
 	UPROPERTY()
 	TObjectPtr<ACharacter> CharacterOwner;
 
 #pragma region Input
 
 private:
-	/**
-	* Bind to InteractPressAction
-	*/
 	void InteractPressStarted();
 	void InteractPressTriggered();
 	void InteractPressCompleted();
 
-	/**
-	 * Bind to InteractHold1Action
-	 */
 	void InteractHoldStarted(const FInputActionInstance& Instance);
 	void InteractHoldOngoing(const FInputActionInstance& Instance);
 	void InteractHoldCanceled();

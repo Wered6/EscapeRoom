@@ -27,8 +27,7 @@ public:
 	          const FVector2D NewIconSize,
 	          const float NewMinimalProgressCircleOpacity,
 	          const float NewInitialProgressCircleOpacity,
-	          const FVector2D NewProgressCircleSize,
-	          const float NewInitialProgressCirclePercent);
+	          const FVector2D NewProgressCircleSize);
 
 	void SetIconOpacity(const float Opacity) const;
 	void SetIconSize(const FVector2D Size) const;
@@ -64,8 +63,6 @@ private:
 	float InitialProgressCircleOpacity{};
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	FVector2D ProgressCircleSize{};
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCirclePercent{};
 
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	bool bIsHolding{};

@@ -206,8 +206,7 @@ void UERInteractableComponent::InitializeInteractWidget()
 	                     IconSize,
 	                     MinimalProgressCircleOpacity,
 	                     InitialProgressCircleOpacity,
-	                     ProgressCircleSize,
-	                     InitialProgressCirclePercent);
+	                     ProgressCircleSize);
 	InteractWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	InteractWidgetComp->SetDrawAtDesiredSize(true);
 	InteractWidgetComp->SetVisibility(false);
