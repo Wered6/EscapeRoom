@@ -9,8 +9,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/RectLightComponent.h"
 #include "EscapeRoom/Character/ERCharacter.h"
-#include "EscapeRoom/Components/ERInteractComponent.h"
 #include "EscapeRoom/InteractionSystem/ERInteractableComponent.h"
+#include "EscapeRoom/InteractionSystem/ERInteractComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 
