@@ -63,23 +63,23 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="ER|TV|Hangman")
 	FString Password{};
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Hangman")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> HangmanWidgetComp;
-	UPROPERTY(VisibleAnywhere, Category="ER|TV|Hangman")
+	UPROPERTY()
 	TObjectPtr<UERTVScreenWidget> HangmanWidget;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Converter")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> ConverterWidgetComp;
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Converter")
+	UPROPERTY()
 	TObjectPtr<UERTVConverterScreenWidget> ConverterWidget;
 
-	UPROPERTY(VisibleAnywhere, Category="ER|TV|Screen")
+	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> ScreenDynMat;
 
-	UPROPERTY(VisibleAnywhere, Category="ER|TV|Components")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UERKeyComponent> KeyComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|TV|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> RootMesh;
 
 #pragma region Movies

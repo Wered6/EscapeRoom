@@ -9,8 +9,8 @@ AERCabinet::AERCabinet()
 	PrimaryActorTick.bCanEverTick = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
-	SetRootComponent(BodyMesh);
 	BodyMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	SetRootComponent(BodyMesh);
 
 	DoorLeft = CreateDefaultSubobject<UChildActorComponent>(TEXT("DoorLeft"));
 	DoorLeft->SetupAttachment(BodyMesh);

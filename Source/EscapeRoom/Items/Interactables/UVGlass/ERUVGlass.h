@@ -31,7 +31,7 @@ public:
 	virtual void InteractHoldCompleted_Implementation() override;
 
 private:
-	UPROPERTY(EditAnywhere, Category="ER|UVGlass")
+	UPROPERTY(EditDefaultsOnly, Category="ER|UVGlass")
 	FUVGlassData Data;
 	// TODO material MI_Glass doesnt show outline
 

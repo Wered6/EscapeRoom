@@ -31,17 +31,17 @@ private:
 	UPROPERTY(EditAnywhere, Category="ER|CeilingLamp|Light")
 	float EmissiveStrength{20.f};
 
-	UPROPERTY(VisibleAnywhere, Category="ER|CeilingLamp|Light")
+	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> LightDynMat;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|Mesh")
+	UPROPERTY(VisibleAnywhere, Category="ER|Mesh")
 	TObjectPtr<UStaticMeshComponent> RootMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|CeilingLamp|Light", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<URectLightComponent> LightRight;
-	UPROPERTY(EditDefaultsOnly, Category="ER|CeilingLamp|Light")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<URectLightComponent> LightLeft;
-	UPROPERTY(EditDefaultsOnly, Category="ER|CeilingLamp|Light")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<URectLightComponent> HelpLight;
 	// TODO add light mask to look like ceiling lamp
 	// TODO add sound buzzing when "on"

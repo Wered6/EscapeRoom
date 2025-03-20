@@ -35,11 +35,11 @@ private:
 	bool bTimerOver{false};
 	bool bStartTimer{false};
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|AlarmClock|Widget")
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UWidgetComponent> AlarmClockWidgetComp;
-	UPROPERTY(VisibleAnywhere, Category="ER|AlarmClock|Widget")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UERAlarmClockWidget> AlarmClockScreenWidget;
 
-	UPROPERTY(EditDefaultsOnly, Category="ER|AlarmClock|Mesh")
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> RootMesh;
 };

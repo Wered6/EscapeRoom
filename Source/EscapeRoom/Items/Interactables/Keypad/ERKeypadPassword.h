@@ -34,7 +34,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="ER|Keypad|Password")
 	FString Password;
-	UPROPERTY(VisibleAnywhere, Category="ER|Keypad|Password")
+	UPROPERTY(VisibleInstanceOnly, Category="ER|Keypad|Password")
 	FString UserPassword;
 
 	UPROPERTY(VisibleAnywhere)
