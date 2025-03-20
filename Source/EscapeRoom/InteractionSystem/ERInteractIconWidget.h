@@ -8,7 +8,7 @@
 
 class UImage;
 class UWidgetSwitcher;
-class UERRoundProgressbar;
+class UERProgressCircle;
 enum class EERInteractType : uint8;
 enum class EERInteractCategory : uint8;
 
@@ -68,7 +68,7 @@ private:
 	bool bIsHolding{};
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess=true), Category="ER|Interact")
-	TObjectPtr<UERRoundProgressbar> ProgressCircle;
+	TObjectPtr<UERProgressCircle> ProgressCircle;
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess=true), Category="ER|Interact")
 	TObjectPtr<UWidgetSwitcher> IconSwitcher;
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess=true), Category="ER|Interact")

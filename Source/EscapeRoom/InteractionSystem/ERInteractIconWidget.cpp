@@ -2,7 +2,7 @@
 #include "ERInteractInterface.h"
 #include "Components/Image.h"
 #include "Components/WidgetSwitcher.h"
-#include "EscapeRoom/UI/ERRoundProgressbar.h"
+#include "EscapeRoom/UI/ERProgressCircle.h"
 
 
 void UERInteractIconWidget::NativePreConstruct()
@@ -37,7 +37,7 @@ void UERInteractIconWidget::NativePreConstruct()
 	}
 	if (!ProgressCircle)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|RoundProgressbar is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|ProgressCircle is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
@@ -175,7 +175,7 @@ void UERInteractIconWidget::NativeTick(const FGeometry& MyGeometry, float InDelt
 #pragma region Nullchecks
 	if (!ProgressCircle)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|RoundProgressbar is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|ProgressCircle is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion

@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ERRoundProgressbar.generated.h"
+#include "ERProgressCircle.generated.h"
 
 class UImage;
 
 UCLASS()
-class ESCAPEROOM_API UERRoundProgressbar : public UUserWidget
+class ESCAPEROOM_API UERProgressCircle : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -42,10 +42,10 @@ private:
 	float BackgroundCircleOpacity{0.2f};
 
 	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> RoundProgressBarMatDyn;
+	TObjectPtr<UMaterialInstanceDynamic> ProgressCircleMatDyn;
 	UPROPERTY(EditDefaultsOnly, Category="ER")
-	TObjectPtr<UMaterialInstance> RoundProgressBarMatInst;
+	TObjectPtr<UMaterialInstance> ProgressCircleMatInst;
 
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UImage> RoundProgressBarImage;
+	TObjectPtr<UImage> ProgressCircleImage;
 };
