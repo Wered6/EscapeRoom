@@ -74,20 +74,21 @@ void UERInteractableComponent::InteractPressCompleted()
 	UE_LOG(LogTemp, Warning, TEXT("PressCompleted"))
 }
 
-void UERInteractableComponent::InteractHoldStarted(AActor* OtherInstigator, float& OutHoldTimeThreshold)
+float UERInteractableComponent::InteractHoldStarted(AActor* OtherInstigator)
 {
 #pragma region Nullchecks
 	if (!InteractWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s|InteractWidget is nullptr"), *FString(__FUNCTION__))
-		return;
+		return 0.f;
 	}
 #pragma endregion
 
 	InteractInstigator = OtherInstigator;
-	OutHoldTimeThreshold = HoldTimeThreshold;
 	InteractWidget->SetIsHolding(true);
 	UE_LOG(LogTemp, Warning, TEXT("HoldStarted"))
+
+	return HoldTimeThreshold;
 }
 
 void UERInteractableComponent::InteractHoldOngoing(const float ElapsedSeconds)
@@ -100,10 +101,10 @@ void UERInteractableComponent::InteractHoldOngoing(const float ElapsedSeconds)
 	}
 #pragma endregion
 
-	const float CurrentProgressCirclePercent{FMath::Clamp(ElapsedSeconds / HoldTimeThreshold, 0.f, 1.f)};
-	InteractWidget->SetProgressCircleOpacity(CurrentProgressCirclePercent);
-	InteractWidget->SetProgressCirclePercent(CurrentProgressCirclePercent);
-	InteractWidget->SetIconOpacity(CurrentProgressCirclePercent);
+	const float ProgressFraction{FMath::Clamp(ElapsedSeconds / HoldTimeThreshold, 0.f, 1.f)};
+	InteractWidget->SetIconOpacity(ProgressFraction);
+	InteractWidget->SetProgressCircleOpacity(ProgressFraction);
+	InteractWidget->SetProgressCirclePercent(ProgressFraction);
 	UE_LOG(LogTemp, Warning, TEXT("HoldOngoing"))
 }
 
@@ -202,10 +203,8 @@ void UERInteractableComponent::InitializeInteractWidget()
 	InteractWidget->Init(InteractCategory,
 	                     InteractType,
 	                     MinimalIconOpacity,
-	                     InitialIconOpacity,
 	                     IconSize,
 	                     MinimalProgressCircleOpacity,
-	                     InitialProgressCircleOpacity,
 	                     ProgressCircleSize);
 	InteractWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	InteractWidgetComp->SetDrawAtDesiredSize(true);

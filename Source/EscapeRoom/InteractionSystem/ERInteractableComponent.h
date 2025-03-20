@@ -48,7 +48,7 @@ public:
 	void InteractPressTriggered();
 	void InteractPressCompleted();
 
-	void InteractHoldStarted(AActor* OtherInstigator, float& OutHoldTimeThreshold);
+	float InteractHoldStarted(AActor* OtherInstigator);
 	void InteractHoldOngoing(const float ElapsedSeconds);
 	void InteractHoldTriggered();
 	void InteractHoldCanceled();
@@ -71,18 +71,8 @@ public:
 
 	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	float MinimalIconOpacity{0.3f};
-	/**
-	 * Initial opacity of the interaction icon, lerping from MinimalIconOpacity to fully opaque (1).
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialIconOpacity{};
 	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	float MinimalProgressCircleOpacity{};
-	/**
-	 * Initial opacity of the interaction icon, lerping from MinimalProgressCircleOpacity to fully opaque (1).
-	 */
-	UPROPERTY(EditAnywhere, meta=(UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCircleOpacity{};
 	UPROPERTY(EditAnywhere, meta=(EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
 	FVector2D ProgressCircleSize{100.f, 100.f};
 

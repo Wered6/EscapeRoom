@@ -39,23 +39,7 @@ void UERProgressCircle::SetPercent(const float InPercent) const
 	}
 #pragma endregion
 
-	ProgressCircleMatDyn->SetScalarParameterValue(FName("Percent"), InPercent);
-}
-
-float UERProgressCircle::GetPercent() const
-{
-#pragma region Nullchecks
-	if (!ProgressCircleMatDyn)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|ProgressCircleMatDyn is nullptr"), *FString(__FUNCTION__))
-		return 0.f;
-	}
-#pragma endregion
-
-	float OutPercent;
-	ProgressCircleMatDyn->GetScalarParameterValue(FName("Percent"), OutPercent);
-
-	return OutPercent;
+	ProgressCircleMatDyn->SetScalarParameterValue(FName("Percent"), FMath::Clamp(InPercent, 0.f, 1.f));
 }
 
 void UERProgressCircle::SetOpacity(const float InOpacity) const
@@ -68,23 +52,7 @@ void UERProgressCircle::SetOpacity(const float InOpacity) const
 	}
 #pragma endregion
 
-	ProgressCircleMatDyn->SetScalarParameterValue(FName("Opacity"), InOpacity);
-}
-
-float UERProgressCircle::GetOpacity() const
-{
-#pragma region Nullchecks
-	if (!ProgressCircleMatDyn)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|ProgressCircleMatDyn is nullptr"), *FString(__FUNCTION__))
-		return 0.f;
-	}
-#pragma endregion
-
-	float OutOpacity;
-	ProgressCircleMatDyn->GetScalarParameterValue(FName("Opacity"), OutOpacity);
-
-	return OutOpacity;
+	ProgressCircleMatDyn->SetScalarParameterValue(FName("Opacity"), FMath::Clamp(InOpacity, 0.f, 1.f));
 }
 
 void UERProgressCircle::SetImageSize(const FVector2D InImageSize) const

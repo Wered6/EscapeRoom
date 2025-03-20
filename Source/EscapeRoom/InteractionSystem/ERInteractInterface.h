@@ -6,8 +6,6 @@
 #include "UObject/Interface.h"
 #include "ERInteractInterface.generated.h"
 
-class UWidgetComponent;
-
 UENUM(BlueprintType)
 enum class EERInteractType : uint8
 {
@@ -30,9 +28,6 @@ class UERInteractInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * Remember: Use call to parent in blueprint if u want functionality from C++ and blueprints
- */
 class IERInteractInterface
 {
 	GENERATED_BODY()
@@ -40,8 +35,17 @@ class IERInteractInterface
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	void DisplayInteractionUI(const bool bShowInteract);
+	/**
+	 * Override this if you need an attachment point other than the root component.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
+	USceneComponent* GetWidgetAttachmentComponent();
 
-	/** Interact press functions */
+	/**
+	 * Called when an interaction press is initiated by an actor.
+	 *
+	 * @param OtherInstigator The actor initiating the interaction.
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Press")
 	void InteractPressStarted(AActor* OtherInstigator);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Press")
@@ -49,9 +53,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Press")
 	void InteractPressCompleted();
 
-	/** Interact hold functions */
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
-	void InteractHoldStarted(AActor* OtherInstigator, float& HoldTimeThreshold);
+	/**
+	 * Called when an interaction hold is initiated by an actor.
+	 *
+	 * @param OtherInstigator The actor initiating the interaction.
+	 * @return The hold threshold required to trigger the interaction.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, meta=(ReturnDisplayName="HoldTimeThreshold"), Category="ER|Interact|Hold")
+	float InteractHoldStarted(AActor* OtherInstigator);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
 	void InteractHoldOngoing(const float ElapsedSeconds);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
@@ -61,14 +70,28 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact|Hold")
 	void InteractHoldCompleted();
 
+	/**
+	 * Meant only to be called.
+	 * Do NOT override this, unless you know what are you doing.
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	bool DoesUseCustomInteractArea();
+	/**
+	 * Meant only to be called.
+	 * Do NOT override this, unless you know what are you doing.
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	void SetCanInteract(const bool bNewCanInteract);
+	/**
+	 * Meant only to be called.
+	 * Do NOT override this, unless you know what are you doing.
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	bool GetCanInteract();
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
-	USceneComponent* GetWidgetAttachmentComponent();
+	/**
+	 * Meant only to be called.
+	 * Do NOT override this, unless you know what are you doing.
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ER|Interact")
 	EERInteractType GetInteractType();
 };

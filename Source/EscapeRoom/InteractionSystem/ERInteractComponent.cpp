@@ -135,14 +135,11 @@ void UERInteractComponent::InteractHoldStarted(const FInputActionInstance& Insta
 		return;
 	}
 
-	float OutHoldTimeThreshold;
-	IERInteractInterface::Execute_InteractHoldStarted(InteractableActor, CharacterOwner, OutHoldTimeThreshold);
-
 	for (UInputTrigger* Trigger : Instance.GetTriggers())
 	{
 		if (UInputTriggerHold* TriggerHold{Cast<UInputTriggerHold>(Trigger)})
 		{
-			TriggerHold->HoldTimeThreshold = OutHoldTimeThreshold;
+			TriggerHold->HoldTimeThreshold = IERInteractInterface::Execute_InteractHoldStarted(InteractableActor, CharacterOwner);
 			break;
 		}
 	}

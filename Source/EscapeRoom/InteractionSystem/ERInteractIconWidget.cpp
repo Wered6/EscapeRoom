@@ -62,14 +62,16 @@ void UERInteractIconWidget::NativePreConstruct()
 	{
 	case EERInteractType::Press:
 		ProgressCircle->SetVisibility(ESlateVisibility::Collapsed);
-		IconSwitcher->SetRenderOpacity(1.f);
+		SetIconOpacity(1.f);
+		UE_LOG(LogTemp, Warning, TEXT("Press"))
 		break;
 	case EERInteractType::Hold:
 		ProgressCircle->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		SetIconOpacity(InitialIconOpacity);
-		SetProgressCircleOpacity(InitialProgressCircleOpacity);
-		SetProgressCircleSize(ProgressCircleSize);
+		SetIconOpacity(0.f);
+		SetProgressCircleOpacity(0.f);
 		SetProgressCirclePercent(0.f);
+		SetProgressCircleSize(ProgressCircleSize);
+		UE_LOG(LogTemp, Warning, TEXT("Hold"))
 		break;
 	}
 
@@ -79,34 +81,16 @@ void UERInteractIconWidget::NativePreConstruct()
 void UERInteractIconWidget::Init(const EERInteractCategory NewInteractCategory,
                                  const EERInteractType NewInteractType,
                                  const float NewMinimalIconOpacity,
-                                 const float NewInitialIconOpacity,
                                  const FVector2D NewIconSize,
                                  const float NewMinimalProgressCircleOpacity,
-                                 const float NewInitialProgressCircleOpacity,
                                  const FVector2D NewProgressCircleSize)
 {
 	InteractCategory = NewInteractCategory;
 	InteractType = NewInteractType;
 	MinimalIconOpacity = NewMinimalIconOpacity;
-	InitialIconOpacity = NewInitialIconOpacity;
 	IconSize = NewIconSize;
 	MinimalProgressCircleOpacity = NewMinimalProgressCircleOpacity;
-	InitialProgressCircleOpacity = NewInitialProgressCircleOpacity;
 	ProgressCircleSize = NewProgressCircleSize;
-}
-
-void UERInteractIconWidget::SetIconOpacity(const float Opacity) const
-{
-#pragma region Nullchecks
-	if (!IconSwitcher)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|IconSwitcher is nullptr"), *FString(__FUNCTION__))
-		return;
-	}
-#pragma endregion
-
-	const float LerpedOpacity{FMath::Lerp(MinimalIconOpacity, 1.f, Opacity)};
-	IconSwitcher->SetRenderOpacity(LerpedOpacity);
 }
 
 void UERInteractIconWidget::SetIconSize(const FVector2D Size) const
@@ -128,18 +112,21 @@ void UERInteractIconWidget::SetIconSize(const FVector2D Size) const
 	}
 }
 
-void UERInteractIconWidget::SetProgressCircleOpacity(const float Opacity) const
+void UERInteractIconWidget::SetIconOpacity(const float Opacity)
 {
 #pragma region Nullchecks
-	if (!ProgressCircle)
+	if (!IconSwitcher)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s|ProgressCircle is nullptr"), *FString(__FUNCTION__))
+		UE_LOG(LogTemp, Warning, TEXT("%s|IconSwitcher is nullptr"), *FString(__FUNCTION__))
 		return;
 	}
 #pragma endregion
 
-	const float LerpedOpacity{FMath::Lerp(MinimalProgressCircleOpacity, 1.f, Opacity)};
-	ProgressCircle->SetOpacity(LerpedOpacity);
+	const float ClampedOpacity{FMath::Clamp(Opacity, 0.f, 1.f)};
+	CurrentIconOpacity = FMath::Lerp(MinimalIconOpacity, 1.f, ClampedOpacity);
+
+	UE_LOG(LogTemp, Warning, TEXT("Opacity: %f, ClampedOpacity: %f, CurrentIconOpacity: %f"), Opacity, ClampedOpacity, CurrentIconOpacity)
+	IconSwitcher->SetRenderOpacity(CurrentIconOpacity);
 }
 
 void UERInteractIconWidget::SetProgressCircleSize(const FVector2D Size) const
@@ -155,7 +142,7 @@ void UERInteractIconWidget::SetProgressCircleSize(const FVector2D Size) const
 	ProgressCircle->SetImageSize(Size);
 }
 
-void UERInteractIconWidget::SetProgressCirclePercent(const float Percent) const
+void UERInteractIconWidget::SetProgressCircleOpacity(const float Opacity)
 {
 #pragma region Nullchecks
 	if (!ProgressCircle)
@@ -165,7 +152,24 @@ void UERInteractIconWidget::SetProgressCirclePercent(const float Percent) const
 	}
 #pragma endregion
 
-	ProgressCircle->SetPercent(Percent);
+	const float ClampedOpacity{FMath::Clamp(Opacity, 0.f, 1.f)};
+	CurrentProgressCircleOpacity = FMath::Lerp(MinimalProgressCircleOpacity, 1.f, ClampedOpacity);
+	ProgressCircle->SetOpacity(CurrentProgressCircleOpacity);
+}
+
+void UERInteractIconWidget::SetProgressCirclePercent(const float Percent)
+{
+#pragma region Nullchecks
+	if (!ProgressCircle)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s|ProgressCircle is nullptr"), *FString(__FUNCTION__))
+		return;
+	}
+#pragma endregion
+
+	const float ClampedPercent{FMath::Clamp(Percent, 0.f, 1.f)};
+	CurrentProgressCirclePercent = ClampedPercent;
+	ProgressCircle->SetPercent(CurrentProgressCirclePercent);
 }
 
 void UERInteractIconWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -180,11 +184,30 @@ void UERInteractIconWidget::NativeTick(const FGeometry& MyGeometry, float InDelt
 	}
 #pragma endregion
 
-	// decrease progress and opacity when not holding during 'Hold' interaction.
-	if (InteractType == EERInteractType::Hold && !bIsHolding && ProgressCircle->GetPercent() > 0.f)
+	// Check if progress or opacity needs to be reduced
+	const bool bNeedsReduction
 	{
-		SetProgressCircleOpacity(ProgressCircle->GetOpacity() - InDeltaTime);
-		ProgressCircle->SetPercent(ProgressCircle->GetPercent() - InDeltaTime);
-		SetIconOpacity(ProgressCircle->GetOpacity() - InDeltaTime);
+		CurrentIconOpacity > MinimalIconOpacity || CurrentProgressCircleOpacity > MinimalProgressCircleOpacity || CurrentProgressCirclePercent > 0.f
+	};
+	// Decrease progress and opacity when not holding and if interact type is hold.
+	if (InteractType == EERInteractType::Hold && !bIsHolding && bNeedsReduction)
+	{
+		DecreaseIconOpacity(InDeltaTime);
+		DecreaseProgressCircleOpacity(InDeltaTime);
+		SetProgressCirclePercent(CurrentProgressCirclePercent - InDeltaTime);
 	}
+}
+
+void UERInteractIconWidget::DecreaseIconOpacity(const float Value)
+{
+	CurrentIconOpacity -= Value;
+	CurrentIconOpacity = FMath::Clamp(CurrentIconOpacity, MinimalIconOpacity, 1.f);
+	IconSwitcher->SetRenderOpacity(CurrentIconOpacity);
+}
+
+void UERInteractIconWidget::DecreaseProgressCircleOpacity(const float Value)
+{
+	CurrentProgressCircleOpacity -= Value;
+	CurrentProgressCircleOpacity = FMath::Clamp(CurrentProgressCircleOpacity, MinimalProgressCircleOpacity, 1.f);
+	ProgressCircle->SetOpacity(CurrentProgressCircleOpacity);
 }

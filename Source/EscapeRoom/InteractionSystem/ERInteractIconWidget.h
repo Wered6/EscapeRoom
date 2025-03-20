@@ -23,18 +23,33 @@ public:
 	void Init(const EERInteractCategory NewInteractCategory,
 	          const EERInteractType NewInteractType,
 	          const float NewMinimalIconOpacity,
-	          const float NewInitialIconOpacity,
 	          const FVector2D NewIconSize,
 	          const float NewMinimalProgressCircleOpacity,
-	          const float NewInitialProgressCircleOpacity,
 	          const FVector2D NewProgressCircleSize);
 
-	void SetIconOpacity(const float Opacity) const;
 	void SetIconSize(const FVector2D Size) const;
+	/**
+	 * Sets the opacity of the interaction icon by interpolating between the minimal and 1.f opacity.
+	 * To decrease @see DecreaseIconOpacity
+	 *
+	 * @see MinimalIconOpacity
+	 */
+	void SetIconOpacity(const float Opacity);
 
-	void SetProgressCircleOpacity(const float Opacity) const;
 	void SetProgressCircleSize(const FVector2D Size) const;
-	void SetProgressCirclePercent(const float Percent) const;
+	/**
+	 * Sets the opacity of the progress circle by interpolating between the minimal and 1.f opacity.
+	 * To decrease @see DecreaseProgressCircleOpacity
+	 *
+	 * @see MinimalProgressCircleOpacity
+	 */
+	void SetProgressCircleOpacity(const float Opacity);
+	/**
+	 * Updates the progress circle's fill percentage.
+	 *
+	 * @param Percent Range: 0.f to 1.f.
+	 */
+	void SetProgressCirclePercent(const float Percent);
 
 	FORCEINLINE void SetIsHolding(const bool bNewIsHolding)
 	{
@@ -45,25 +60,37 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
+	/**
+	 * Reduces the opacity of the interaction icon by a specified value.
+	 */
+	void DecreaseIconOpacity(const float Value);
+	/**
+	 * Reduces the opacity of the progress circle by the specified value.
+	 *
+	 */
+	void DecreaseProgressCircleOpacity(const float Value);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category="ER|Interact")
 	EERInteractCategory InteractCategory;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category="ER|Interact")
 	EERInteractType InteractType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1"), Category="ER|Interact")
-	float MinimalIconOpacity{};
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1"), Category="ER|Interact")
-	float InitialIconOpacity{0.3f};
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category="ER|Interact")
-	FVector2D IconSize{};
+	FVector2D IconSize{50.f, 50.f};
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float MinimalProgressCircleOpacity{};
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	float InitialProgressCircleOpacity{};
+	float MinimalIconOpacity{0.3f};
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
-	FVector2D ProgressCircleSize{};
+	FVector2D ProgressCircleSize{100.f, 100.f};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true, UIMin="0", UIMax="1", ClampMin="0", ClampMax="1", EditCondition="InteractType==EERInteractType::Hold"), Category="ER|Interact")
+	float MinimalProgressCircleOpacity{0.f};
 
+	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	float CurrentIconOpacity{};
+	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	float CurrentProgressCircleOpacity{};
+	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
+	float CurrentProgressCirclePercent{};
 	UPROPERTY(VisibleAnywhere, Category="ER|Interact")
 	bool bIsHolding{};
 

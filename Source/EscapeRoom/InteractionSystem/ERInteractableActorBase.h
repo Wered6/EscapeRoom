@@ -23,7 +23,7 @@ public:
 	virtual void InteractPressTriggered_Implementation() override;
 	virtual void InteractPressCompleted_Implementation() override;
 
-	virtual void InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold) override;
+	virtual float InteractHoldStarted_Implementation(AActor* OtherInstigator) override;
 	virtual void InteractHoldOngoing_Implementation(const float ElapsedSeconds) override;
 	virtual void InteractHoldTriggered_Implementation() override;
 	virtual void InteractHoldCanceled_Implementation() override;

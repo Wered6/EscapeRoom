@@ -32,9 +32,9 @@ void AERInteractablePawnBase::InteractPressCompleted_Implementation()
 	InteractableComp->InteractPressCompleted();
 }
 
-void AERInteractablePawnBase::InteractHoldStarted_Implementation(AActor* OtherInstigator, float& OutHoldTimeThreshold)
+float AERInteractablePawnBase::InteractHoldStarted_Implementation(AActor* OtherInstigator)
 {
-	InteractableComp->InteractHoldStarted(OtherInstigator, OutHoldTimeThreshold);
+	return InteractableComp->InteractHoldStarted(OtherInstigator);
 }
 
 void AERInteractablePawnBase::InteractHoldOngoing_Implementation(const float ElapsedSeconds)

@@ -21,22 +21,12 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void SetPercent(const float InPercent) const;
-	/**
-	 * Returns the percentage of the foreground circle.
-	 */
-	UFUNCTION(BlueprintCallable, Category="ER")
-	float GetPercent() const;
 
 	/**
 	 * Sets the opacity of the foreground circle.
 	 */
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void SetOpacity(const float InOpacity) const;
-	/**
-	 * Returns the opacity of the foreground circle.
-	 */
-	UFUNCTION(BlueprintCallable, Category="ER")
-	float GetOpacity() const;
 
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void SetImageSize(const FVector2D InImageSize) const;
