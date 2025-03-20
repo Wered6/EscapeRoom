@@ -16,13 +16,25 @@ class ESCAPEROOM_API UERProgressCircle : public UUserWidget
 public:
 	virtual void NativePreConstruct() override;
 
+	/**
+	 * Sets the percentage of the foreground circle.
+	 */
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void SetPercent(const float InPercent) const;
+	/**
+	 * Returns the percentage of the foreground circle.
+	 */
 	UFUNCTION(BlueprintCallable, Category="ER")
 	float GetPercent() const;
 
+	/**
+	 * Sets the opacity of the foreground circle.
+	 */
 	UFUNCTION(BlueprintCallable, Category="ER")
 	void SetOpacity(const float InOpacity) const;
+	/**
+	 * Returns the opacity of the foreground circle.
+	 */
 	UFUNCTION(BlueprintCallable, Category="ER")
 	float GetOpacity() const;
 
@@ -32,8 +44,14 @@ public:
 	void SetBackgroundCircleOpacity(const float InOpacity) const;
 
 private:
+	/**
+	 * Percentage of the foreground circle.
+	 */
 	UPROPERTY(EditAnywhere, Category="ER")
 	float Percent{0.5f};
+	/**
+	 * Opacity of the foreground circle.
+	 */
 	UPROPERTY(EditAnywhere, Category="ER")
 	float Opacity{1.f};
 	UPROPERTY(EditAnywhere, Category="ER")
