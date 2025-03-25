@@ -68,7 +68,7 @@ We can create interactable object in C++ and in blueprints.
 ![image](https://github.com/user-attachments/assets/b1c97b89-6c7d-410a-8277-f43fa91dbb37)  
 
 ## Interactable component ([code](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.h))
-It's tightly connected with [interact interface](#interact-interface). In blueprint you have to select Interact Widget Class. Thanks to this component we can easily change properties via C++ or inside blueprint details.
+It's tightly connected with [interact interface](#interact-interface-code). In blueprint you have to select Interact Widget Class. Thanks to this component we can easily change properties via C++ or inside blueprint details.
 ### C++
 constructor  
 ![image](https://github.com/user-attachments/assets/588be6c9-c390-45f8-80e5-6987c161d3c1)  
