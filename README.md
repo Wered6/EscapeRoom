@@ -29,7 +29,7 @@ I implemented a designer-friendly customizable FPP interaction system based on l
   - [Interactable component](#interactable-component-code) ([code](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.h))
   - [Interact interface](#interact-interface-code) ([code](Source/EscapeRoom/InteractionSystem/ERInteractInterface.h))
 - [**Interact icon widget**](#interact-icon-widget-code) ([code](Source/EscapeRoom/InteractionSystem/ERInteractIconWidget.h))
-  - [Progress circle](#progress-circle)
+  - [Progress circle](#progress-circle-code)
 
 ## Interact component ([code](Source/EscapeRoom/InteractionSystem/ERInteractComponent.h))
 It's easy to add to C++ class or blueprint.
@@ -55,7 +55,7 @@ Hold input action has *Hold* trigger and `OneShot` marked, so after `HoldTimeThr
 
 ![image](https://github.com/user-attachments/assets/682a9e47-b7b8-4e3a-b24f-d5982b3dc4bf)
 
-Thanks to this trigger we can visualize it using [Progress circle](#progress-circle).
+Thanks to this trigger we can visualize it using [Progress circle](#progress-circle-code).
 
 ## Interactable base classes
 I combined interface, component, and inheritance to create three base classes for actors, pawns, and characters. I'm aware it's not a perfect solution, mainly due to repetitive code in those classes and the existence of two ways to check if an object is interactable - via the base class and via the interface. However, it's the best idea I came up with. Thanks to wrapping the logic into the [interactable component](#interactable-component), repetitive code is reduced, and any modifications can be made directly in the interactable component.
