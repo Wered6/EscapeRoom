@@ -1,8 +1,8 @@
 #include "ERInteractIconWidget.h"
 #include "ERInteractInterface.h"
+#include "ERProgressCircle.h"
 #include "Components/Image.h"
 #include "Components/WidgetSwitcher.h"
-#include "EscapeRoom/UI/ERProgressCircle.h"
 
 
 void UERInteractIconWidget::NativePreConstruct()

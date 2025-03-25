@@ -230,23 +230,25 @@ void UERInteractComponent::PerformInteractionCheck()
 		return;
 	}
 
+	// Validate actor and interface
 	AActor* HitActor{HitResult.GetActor()};
 	UPrimitiveComponent* HitComponent{HitResult.GetComponent()};
-
-	// If hit actor doesn't implements interact interface reset interaction and return
-	if (!HitActor->Implements<UERInteractInterface>())
+	if (!HitActor || !HitActor->Implements<UERInteractInterface>())
 	{
 		ClearInteraction();
 		return;
 	}
-	// Here we know it does implement interface, so we can check if we can interact with this actor
+
+	// Check if the actor is currently interactable
 	if (!IERInteractInterface::Execute_GetCanInteract(HitActor))
 	{
 		ClearInteraction();
 		return;
 	}
 
-	if (IERInteractInterface::Execute_DoesUseCustomInteractArea(HitActor))
+	// Determine if we use a custom interact area
+	const bool bUsesCustomInteractArea{IERInteractInterface::Execute_DoesUseCustomInteractArea(HitActor)};
+	if (bUsesCustomInteractArea)
 	{
 		// If hit the same interactable component, do nothing and return
 		if (HitComponent == InteractableHitComponent)
@@ -263,13 +265,14 @@ void UERInteractComponent::PerformInteractionCheck()
 		}
 	}
 
-	// If previously interact with something else, hide its UI
+	// Hide UI from previously focused interactable object
 	if (InteractableActor)
 	{
 		IERInteractInterface::Execute_DisplayInteractionUI(InteractableActor, false);
 	}
 
-	if (IERInteractInterface::Execute_DoesUseCustomInteractArea(HitActor))
+	// Depending on custom area usage, set or clear interaction
+	if (bUsesCustomInteractArea)
 	{
 		if (HitComponent->GetCollisionProfileName() == FName("InteractArea"))
 		{
