@@ -6,13 +6,13 @@ FPP Escape Room game made with Unreal Engine 5.5
 Escape room is a project primarily made for class, but it is evolving into my first portfolio entry.
 
 ## 🛠️ Key Mechanics Implemented
-| Mechanic | Description |
-|----------|-------------|
-| [Interact System](#interact-system) ([code](Source/EscapeRoom/InteractionSystem)) | Core interaction system |
-| Lock-Key System (to be documented) | Lock and key mechanic with keys and matching locks |
-| UV Flashlight (to be documented) | Reveals hidden clues or writings when aimed at certain surfaces |
-| Interactive Keypads (to be documented) | Custom keypads for puzzles with code input and validation logic |
-| TV System (to be documented) | Plays movies or switches to interactive widgets |
+| Mechanic                                                                          | Description                                                     |
+|-----------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| [Interact System](#interact-system) ([code](Source/EscapeRoom/InteractionSystem)) | Core interaction system                                         |
+| Lock-Key System (to be documented)                                                | Lock and key mechanic with keys and matching locks              |
+| UV Flashlight (to be documented)                                                  | Reveals hidden clues or writings when aimed at certain surfaces |
+| Interactive Keypads (to be documented)                                            | Custom keypads for puzzles with code input and validation logic |
+| TV System (to be documented)                                                      | Plays movies or switches to interactive widgets                 |
 
 
 # Interact System
@@ -35,12 +35,14 @@ I implemented a designer-friendly customizable FPP interaction system based on l
 It's easy to add to C++ class or blueprint.
 ### C++
 .h
-```c++
+```cpp
 UPROPERTY(VisibleAnywhere)
 TObjectPtr<UERInteractComponent> InteractComponent;
 ```
 constructor  
-![image](https://github.com/user-attachments/assets/5522c9cb-710b-4b5e-b09a-c3143f6643f1)
+```cpp
+InteractComponent = CreateDefaultSubobject<UERInteractComponent>(TEXT("InteractComponent"));
+```
 ### Blueprints
 ![image](https://github.com/user-attachments/assets/ed71782c-2208-4374-b5a4-bb7e9a327dc1)
 
@@ -66,7 +68,10 @@ I combined interface, component, and inheritance to create three base classes fo
 We can create interactable object in C++ and in blueprints.
 ### C++
 .h  
-![image](https://github.com/user-attachments/assets/ac3e834b-bb18-4410-9b17-a5fd625ab4d7)  
+```cpp
+UCLASS()
+class ESCAPEROOM_API AERKey : public AERInteractableActorBase
+```
 ### Blueprints
 ![image](https://github.com/user-attachments/assets/b1c97b89-6c7d-410a-8277-f43fa91dbb37)  
 
@@ -74,7 +79,17 @@ We can create interactable object in C++ and in blueprints.
 It's tightly connected with [interact interface](#interact-interface-code). In blueprint you have to select Interact Widget Class. Thanks to this component we can easily change properties via C++ or inside blueprint details.
 ### C++
 constructor  
-![image](https://github.com/user-attachments/assets/588be6c9-c390-45f8-80e5-6987c161d3c1)  
+```cpp
+InteractableComp->InteractCategory = EERInteractCategory::Collect;
+InteractableComp->InteractType = EERInteractType::Hold;
+InteractableComp->IconSize = FVector2D(25.f, 25.f);
+InteractableComp->InitialIconOpacity = 0.3f;
+InteractableComp->InitialProgressCircleOpacity = 0.f;
+InteractableComp->ProgressCircleSize = FVector2D(50.f, 50.f);
+InteractableComp->HoldTimeThreshold = 1.f;
+InteractableComp->bCanInteract = true;
+InteractableComp->bUseCustomInteractArea = true;
+```
 ### Blueprints
 ![image](https://github.com/user-attachments/assets/2b9d2281-8d45-4e90-9883-88fbc9544998)  
 
@@ -87,7 +102,9 @@ To outline meshes I used Outline material, which I added to Post Process Volume 
 To select which mesh should outline we have to add them to array `OutlineMeshComps` (we can add many).
 ### C++
 constructor or begin play  
-![image](https://github.com/user-attachments/assets/449ed60f-fb55-4224-a23a-79df269d2fd0)  
+```cpp
+InteractableComp->AddOutlineMeshComponent(KeyMesh);
+```
 ### Blueprints
 ![image](https://github.com/user-attachments/assets/9ae56ca0-2b4b-4082-b8fe-779e59d85b76)  
 
@@ -95,9 +112,16 @@ constructor or begin play
 By default interact area is whole object. We can adjust that by setting `bUseCustomInteractArea` to `true`. After this we have to add collision with collision preset `InteractArea` and we can adjust its attachment, size and transform.
 ### C++
 .h  
-![image](https://github.com/user-attachments/assets/b71cb822-01df-4b4f-8028-3fca01d03ad5)  
+```cpp
+UPROPERTY(VisibleAnywhere)
+TObjectPtr<UBoxComponent> InteractBox;
+```
 constructor  
-![image](https://github.com/user-attachments/assets/5039ed92-2fd7-41fb-9373-251b84a76098)  
+```cpp
+InteractableComp->bUseCustomInteractArea = true;
+InteractBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractBox"));
+InteractBox->SetCollisionProfileName(TEXT("InteractArea"));
+```
 ### Blueprints
 ![image](https://github.com/user-attachments/assets/1162e3b6-85ea-4bfa-9d88-35f999d0aa18)
 ![image](https://github.com/user-attachments/assets/2447c27d-534b-4dfe-a0d9-14a003e4e0f2)
@@ -107,9 +131,15 @@ constructor
 By default widget is attached to the root of object. We can adjust that by overriding [interact interface](#interact-interface) function - `GetWidgetAttachmentComponent`. Thanks to this we can reattach and retransform widget attachment as we wish.
 ### C++
 .h  
-![image](https://github.com/user-attachments/assets/e06787fb-2db6-4121-af48-da5ac1aa5ca3)  
-constructor  
-![image](https://github.com/user-attachments/assets/9612c1b0-21bd-4b2b-94cd-59df9e1ee6e8)  
+```cpp
+UPROPERTY(VisibleAnywhere)
+TObjectPtr<USceneComponent> WidgetAttachment;
+```
+constructor
+```cpp
+WidgetAttachment = CreateDefaultSubobject<USceneComponent>(TEXT("WidgetAttachment"));
+WidgetAttachment->SetupAttachment(KeyMesh);
+```
 ### Blueprints
 ![image](https://github.com/user-attachments/assets/88df66d3-6728-4430-bd24-57718d0f86a9)  
 ![image](https://github.com/user-attachments/assets/ab6a6f0a-0e21-425b-a157-cb1b20d7c62b)  
@@ -119,35 +149,45 @@ constructor
 There are several functions, but part of them is only meant to be overriden.  
 Part of them has their basic implementation in [interactable component](#interactable-component):
 ### Can be overriden
-| Function | Description |
-|----------|-------------|
-| [DisplayInteractionUI](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L38) | has basic logic for showing widget and outling correct meshes, called when looking at interactable object |
-| GetWidgetAttachment | has NO basic logic, override it to provide custom widget location/attachment |
-| [InteractPressStarted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L60) | has basic logic for setting interact instigator, called as soon as we press interaction key |
-| InteractPressTriggered | has NO basic logic, override it to provide interaction logic, called after InteractPressStarted |
-| [InteractPressCompleted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L71) | has basic logic for reseting interact instigator, called after InteractPressTriggered |
-| [InteractHoldStarted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L77) | has basic logic for setting interact instigator and setting holding logic, called as soon as we press interaction key |
-| [InteractHoldOngoing](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L94) | has basic logic for interpolating widget visuals, called every frame for [HoldTimeTimeThreshold](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.h#L85) |
-| InteractHoldTriggered | has NO basic logic, override it to provide interaction logic, called after [HoldTimeTimeThreshold](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.h#L85) |
-| [InteractHoldCanceled](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L116) | has basic logic for reseting interact instigator and enables widget visuals to fade down, called when we stopd holding key and InteractHoldTriggered is never getting called |
-| [InteractHoldCompleted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L131) | has basic logic for reseting interact instigator and enables widget visuals to fade down, called after succesful hold after InteractHoldTriggered |
+| Function                                                                                      | Description                                                                                                                                                                  |
+|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [DisplayInteractionUI](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L38)   | has basic logic for showing widget and outling correct meshes, called when looking at interactable object                                                                    |
+| GetWidgetAttachment                                                                           | has NO basic logic, override it to provide custom widget location/attachment                                                                                                 |
+| [InteractPressStarted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L60)   | has basic logic for setting interact instigator, called as soon as we press interaction key                                                                                  |
+| InteractPressTriggered                                                                        | has NO basic logic, override it to provide interaction logic, called after InteractPressStarted                                                                              |
+| [InteractPressCompleted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L71) | has basic logic for reseting interact instigator, called after InteractPressTriggered                                                                                        |
+| [InteractHoldStarted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L77)    | has basic logic for setting interact instigator and setting holding logic, called as soon as we press interaction key                                                        |
+| [InteractHoldOngoing](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L94)    | has basic logic for interpolating widget visuals, called every frame for [HoldTimeTimeThreshold](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.h#L85)          |
+| InteractHoldTriggered                                                                         | has NO basic logic, override it to provide interaction logic, called after [HoldTimeTimeThreshold](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.h#L85)        |
+| [InteractHoldCanceled](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L116)  | has basic logic for reseting interact instigator and enables widget visuals to fade down, called when we stopd holding key and InteractHoldTriggered is never getting called |
+| [InteractHoldCompleted](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L131) | has basic logic for reseting interact instigator and enables widget visuals to fade down, called after succesful hold after InteractHoldTriggered                            |
 
-We can override them in C++ and Blueprints. Note: Do NOT forget about calling to parent/super.  
+We can override them in C++ and Blueprints.  
+*Note:* Do **NOT** forget about calling to parent/super.  
 ### C++
 .h  
-![image](https://github.com/user-attachments/assets/3056168a-302e-4ee4-b3b0-cd5f559166ac)  
+```cpp
+virtual void InteractHoldTriggered_Implementation() override;
+```
 .cpp  
-![image](https://github.com/user-attachments/assets/6f2fd643-465c-4d37-8ac4-ab93aa44bf35)  
+```cpp
+void AERKey::InteractHoldTriggered_Implementation()
+{
+  Super::InteractHoldTriggered_Implementation();
+  
+  // logic
+}
+```
 ### Blueprints
 
 ![image](https://github.com/user-attachments/assets/71406912-cdd8-495e-8533-5d5bbaf2e8f2)  
 ### Meant only to be called
-| Function | Description |
-|----------|-------------|
-| [DoesUseCustomInteractArea](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L146) | determines usage of custom interact area ([usage](Source/EscapeRoom/InteractionSystem/ERInteractComponent.cpp#L250)) |
-| [SetCanInteract](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L151) | determines interactability, can be used to prevent further interaction or enable/disable interaction in specific moment |
-| [GetCanInteract](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L156) | ([usage](Source/EscapeRoom/InteractionSystem/ERInteractComponent.cpp#L243)) |
-| [GetInteractType](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L161) | ([usage](Source/EscapeRoom/InteractionSystem/ERInteractComponent.cpp#L101)) |
+| Function                                                                                          | Description                                                                                                             |
+|---------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| [DoesUseCustomInteractArea](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L146) | determines usage of custom interact area ([usage](Source/EscapeRoom/InteractionSystem/ERInteractComponent.cpp#L250))    |
+| [SetCanInteract](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L151)            | determines interactability, can be used to prevent further interaction or enable/disable interaction in specific moment |
+| [GetCanInteract](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L156)            | ([usage](Source/EscapeRoom/InteractionSystem/ERInteractComponent.cpp#L243))                                             |
+| [GetInteractType](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L161)           | ([usage](Source/EscapeRoom/InteractionSystem/ERInteractComponent.cpp#L101))                                             |
 
 ## Interact icon widget ([code](Source/EscapeRoom/InteractionSystem/ERInteractIconWidget.h))
 Widget that is attached to every interactable object. Based on `InteractCategory` and `InteractType` switches icons and showing/hiding [progress circle](#progress-circle-code).  
