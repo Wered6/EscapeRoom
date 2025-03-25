@@ -35,7 +35,7 @@ I implemented a designer-friendly customizable FPP interaction system based on l
 It's easy to add to C++ class or blueprint.
 ### C++
 .h
-```cpp
+```c++
 UPROPERTY(VisibleAnywhere)
 TObjectPtr<UERInteractComponent> InteractComponent;
 ```
