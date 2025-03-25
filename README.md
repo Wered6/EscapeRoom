@@ -25,7 +25,7 @@ I implemented a designer-friendly customizable FPP interaction system based on l
 ## Implementations
 - [**Interact component**](#interact-component-code) ([code](Source/EscapeRoom/InteractionSystem/ERInteractComponent.h))
   - [Enhanced input](#enhanced-input)
-- [**Interactable base classes**](#interactable-base-classes) (actor [code](Source/EscapeRoom/InteractionSystem/ERInteractableActorBase.h), pawn [code](Source/EscapeRoom/InteractionSystem/ERInteractablePawnBase.h), character [code](Source/EscapeRoom/InteractionSystem/ERInteractableCharacterBase.h)) - their implementations are basically the same thanks to wrapping it to the component
+- [**Interactable base classes**](#interactable-base-classes) (actor [code](Source/EscapeRoom/InteractionSystem/ERInteractableActorBase.h), pawn [code](Source/EscapeRoom/InteractionSystem/ERInteractablePawnBase.h), character [code](Source/EscapeRoom/InteractionSystem/ERInteractableCharacterBase.h)) - their implementations are basically the same thanks to wrapping logic into component
   - [Interactable component](#interactable-component-code) ([code](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.h))
   - [Interact interface](#interact-interface-code) ([code](Source/EscapeRoom/InteractionSystem/ERInteractInterface.h))
 - [**Interact icon widget**](#interact-icon-widget-code) ([code](Source/EscapeRoom/InteractionSystem/ERInteractIconWidget.h))
