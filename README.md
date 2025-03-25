@@ -75,7 +75,7 @@ constructor
 ### Blueprints
 ![image](https://github.com/user-attachments/assets/2b9d2281-8d45-4e90-9883-88fbc9544998)  
 
-### Outline ([logic](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L38))
+### Outline ([logic](Source/EscapeRoom/InteractionSystem/ERInteractableComponent.cpp#L50))
 To outline meshes I used Outline material, which I added to Post Process Volume materials and change `Custom Depth-Stencil Pass` in Project Settings to `Enabled with Stencil`
 ![image](https://github.com/user-attachments/assets/83057750-b73d-4b13-ac54-3cc2dceed0f4)  
 ![image](https://github.com/user-attachments/assets/ffaa3e7c-72c8-4841-8622-336e2f999770)  
