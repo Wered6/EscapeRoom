@@ -34,8 +34,11 @@ I implemented a designer-friendly customizable FPP interaction system based on l
 ## Interact component ([code](Source/EscapeRoom/InteractionSystem/ERInteractComponent.h))
 It's easy to add to C++ class or blueprint.
 ### C++
-.h  
-![image](https://github.com/user-attachments/assets/12d3c077-8d69-4c4c-ad6c-8fc74ceeb6cc)  
+.h
+```cpp
+UPROPERTY(VisibleAnywhere)
+TObjectPtr<UERInteractComponent> InteractComponent;
+```
 constructor  
 ![image](https://github.com/user-attachments/assets/5522c9cb-710b-4b5e-b09a-c3143f6643f1)
 ### Blueprints
