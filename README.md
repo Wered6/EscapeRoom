@@ -156,6 +156,7 @@ Widget that is attached to every interactable object. Based on `InteractCategory
 We setting initial values thanks to [Init](Source/EscapeRoom/InteractionSystem/ERInteractIconWidget.cpp#L81) function.
 
 ## Progress circle ([code](Source/EscapeRoom/InteractionSystem/ERProgressCircle.h))
+![image](https://github.com/user-attachments/assets/08de9d83-2dc7-413e-84c0-19057ccffb4a)  
 Thanks to [this](https://www.youtube.com/watch?v=BgOAbAdi8f0) tutorial I made progress circle material and then widget with some adjustment to my preferences.
 ![image](https://github.com/user-attachments/assets/7e8476f6-1beb-4437-923a-b571eb0d112d)  
 In case screen is not readable enough - [here](https://blueprintue.com/render/n14dzb06/) is link to bluprintue.
