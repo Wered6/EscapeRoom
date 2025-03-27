@@ -125,7 +125,6 @@ void UERInteractIconWidget::SetIconOpacity(const float Opacity)
 	const float ClampedOpacity{FMath::Clamp(Opacity, 0.f, 1.f)};
 	CurrentIconOpacity = FMath::Lerp(MinimalIconOpacity, 1.f, ClampedOpacity);
 
-	UE_LOG(LogTemp, Warning, TEXT("Opacity: %f, ClampedOpacity: %f, CurrentIconOpacity: %f"), Opacity, ClampedOpacity, CurrentIconOpacity)
 	IconSwitcher->SetRenderOpacity(CurrentIconOpacity);
 }
 
